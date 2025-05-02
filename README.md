@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NoteSphere 📚
 
-## Getting Started
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Next.js](https://img.shields.io/badge/Next.js-13.5%2B-black?logo=next.js)](https://nextjs.org/)
+[![Prisma](https://img.shields.io/badge/Prisma-ORM-brightgreen?logo=prisma)](https://prisma.io/)
 
-First, run the development server:
+A modern academic notes sharing platform where students can discover, share, and collaborate on course materials.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+![NoteSphere Screenshot](/public/screenshot.png) <!-- Add your screenshot later -->
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features ✨
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Semester-Based Organization**  
+  Browse notes by academic semesters (Sem 1, Sem 2, etc.)
+  
+- **Subject-Centric Collections**  
+  Find resources for specific courses (e.g., CS101, MATH201)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Rich Note Types**  
+  Supports PDFs, PPTs, handwritten notes, and lecture summaries
 
-## Learn More
+- **Social Learning**  
+  - Like and comment on helpful resources
+  - Track most downloaded notes
 
-To learn more about Next.js, take a look at the following resources:
+- **Admin Moderation**  
+  Quality control with PENDING/APPROVED/REJECTED workflow
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Tech Stack 🛠️
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Component       | Technology |
+|----------------|------------|
+| Frontend       | Next.js 14 (App Router) |
+| Styling        | Tailwind CSS + shadcn/ui |
+| Authentication | Clerk |
+| Database       | PostgreSQL (NeonDB) |
+| ORM            | Prisma |
+| Deployment     | Vercel |
 
-## Deploy on Vercel
+## Getting Started 🚀
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Prerequisites
+- Node.js 18+
+- PostgreSQL database
+- Clerk account (for auth)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Installation
+1. Clone the repo:
+   ```bash
+   git clone https://github.com/your-username/notesphere.git
+   cd notesphere
