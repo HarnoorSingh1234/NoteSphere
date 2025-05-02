@@ -29,7 +29,7 @@ A modern academic notes sharing platform where students can discover, share, and
 
 | Component       | Technology |
 |----------------|------------|
-| Frontend       | Next.js 14 (App Router) |
+| Frontend       | Next.js 15 (App Router) |
 | Styling        | Tailwind CSS + shadcn/ui |
 | Authentication | Clerk |
 | Database       | PostgreSQL (NeonDB) |
