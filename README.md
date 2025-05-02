@@ -6,7 +6,6 @@
 
 A modern academic notes sharing platform where students can discover, share, and collaborate on course materials.
 
-![NoteSphere Screenshot](/public/screenshot.png) <!-- Add your screenshot later -->
 
 ## Features ✨
 
