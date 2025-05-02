@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum NoteType {
+  PPT
+  LECTURE
+  HANDWRITTEN
+  PDF
+}
+
+model User {
+  clerkId    String    @id @unique
+  email      String    @unique
+  firstName  String
+  lastName   String
+  createdAt  DateTime  @default(now())
+
+  // Relations
+  notes      Note[]
+  likes      Like[]
+  comments   Comment[]
+}
+
+model Semester {
+  id        String    @id @default(cuid())
+  number    Int       @unique // e.g., 1, 2, 3, etc.
+  subjects  Subject[]
+}
+
+model Subject {
+  id         String   @id @default(cuid())
+  name       String   // e.g., "Data Structures"
+  code       String   // e.g., "CS201"
+  semester   Semester @relation(fields: [semesterId], references: [id])
+  semesterId String
+  notes      Note[]
+
+  @@unique([code, semesterId]) // Unique subject code within a semester
+}
+
+model Note {
+  id            String   @id @default(cuid())
+  title         String
+  content       String
+  type          NoteType
+  fileUrl       String
+  downloadCount Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  author        User     @relation(fields: [authorClerkId], references: [clerkId])
+  authorClerkId String
+  subject       Subject  @relation(fields: [subjectId], references: [id])
+  subjectId     String
+  likes         Like[]
+  comments      Comment[]
+  tags          Tag[]
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [clerkId])
+  userId    String
+  note      Note     @relation(fields: [noteId], references: [id])
+  noteId    String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, noteId]) // Prevent duplicate likes
+}
+
+model Comment {
+  id        String     @id @default(cuid())
+  content   String
+  createdAt DateTime   @default(now())
+
+  // Relations
+  user      User       @relation(fields: [userId], references: [clerkId])
+  userId    String
+  note      Note       @relation(fields: [noteId], references: [id])
+  noteId    String
+  replies   Comment[]  @relation("Replies")
+  parent    Comment?   @relation("Replies", fields: [parentId], references: [id])
+  parentId  String?
+}
+
+model Tag {
+  id    String  @id @default(cuid())
+  name  String  @unique
+  notes Note[]
+}
