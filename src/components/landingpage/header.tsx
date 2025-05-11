@@ -1,4 +1,3 @@
-// src/components/landing/Header.tsx
 'use client'
 
 import React from 'react'
@@ -20,10 +19,10 @@ export default function Header() {
         <div className="flex items-center gap-2">
           
           <BookOpen className="h-6 w-6" />
-          <span className="text-xl font-bold">StudyShare</span>
-        </div>
+          <span className="text-xl font-bold text-indigo-600 dark:text-indigo-400">NoteSphere</span>
+          </div>
         <nav className="hidden md:flex items-center gap-6">
-          {['features', 'how-it-works', 'testimonials'].map((id) => (
+          {['home','features', 'how-it-works'].map((id) => (
             <Link
               key={id}
               href={`#${id}`}

@@ -21,7 +21,7 @@ export default function FeatureCard({ icon, title, description }: FeatureCardPro
     >
       <Card className="relative bg-white border border-gray-200 shadow-sm overflow-hidden dark:bg-black/40 dark:border-gray-800">
         {/* subtle dark-mode gradient overlay */}
-        <div className="absolute inset-0 hidden dark:block bg-gradient-to-br from-purple-900/10 to-indigo-900/10 opacity-50" />
+        <div className="absolute inset-0 hidden dark:block bg-gradient-to-br from-purple-600/20 to-indigo-700/10 opacity-50" />
         <CardHeader>
           <div className="flex items-center gap-2">
             {icon}

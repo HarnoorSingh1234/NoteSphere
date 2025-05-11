@@ -14,7 +14,7 @@ export default function CTASection() {
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       viewport={{ once: true }}
-      className="w-full py-12 md:py-24 lg:py-32"
+      className="w-full py-12 md:py-24  bg-gradient-to-br from-purple-900/10 to-indigo-900/10 lg:py-32"
     >
       <div className="container mx-auto px-4 md:px-6 text-center space-y-4">
         <h2 className="text-3xl font-bold sm:text-5xl">Ready to Elevate Your Studies?</h2>

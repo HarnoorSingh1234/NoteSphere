@@ -1,9 +1,8 @@
-// src/components/landing/FeaturesSection.tsx
 'use client'
 
 import React from 'react'
 import { FileText, Users, BookOpen } from 'lucide-react'
-import FeatureCard from "./featurecard"
+import FeatureCard from './featurecard'
 
 const features = [
   {
@@ -25,9 +24,9 @@ const features = [
 
 export default function FeaturesSection() {
   return (
-    <section id="features" className="w-full py-12 md:py-24 lg:py-32 bg-zinc-50 dark:bg-zinc-900">
+    <section id="features" className="w-full bg-gradient-to-br from-indigo-900/10 to-purple-700/20 py-12 md:py-24 lg:py-32 ">
       <div className="container mx-auto px-4 md:px-6 text-center space-y-4">
-        <h2 className="text-3xl font-bold sm:text-5xl">Platform Features</h2>
+        <h2 className="text-3xl font-bold not-last:not-first: sm:text-5xl">Platform Features</h2>
         <p className="max-w-[900px] mx-auto text-zinc-500 md:text-xl dark:text-zinc-400">
           Everything you need to excel in your university studies
         </p>
