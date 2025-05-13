@@ -2,12 +2,17 @@
 
 import { ThemeProvider } from '@/components/theme-provider'
 import { ClerkProvider } from '@clerk/nextjs'
+import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 export function Providers({ children }: { children: React.ReactNode }) {
   // Use a state to track the initial theme from localStorage
   const [theme, setTheme] = useState<'light' | 'dark' | 'system'>('light') // Default to light instead of system
   const [mounted, setMounted] = useState(false)
+  const pathname = usePathname()
+  
+  // Check if the path is an auth path
+  const isAuthPath = pathname?.startsWith('/sign-in') || pathname?.startsWith('/sign-up')
   
   // On client-side, get the theme from localStorage on first render
   useEffect(() => {
@@ -37,6 +42,16 @@ export function Providers({ children }: { children: React.ReactNode }) {
     return <div style={{ visibility: 'hidden' }}>{children}</div>
   }
   
+  // If this is an auth path, don't wrap with ClerkProvider as it's already done in the auth layout
+  if (isAuthPath) {
+    return (
+      <ThemeProvider defaultTheme={theme} storageKey="notesphere-theme">
+        {children}
+      </ThemeProvider>
+    )
+  }
+  
+  // For non-auth paths, wrap with ClerkProvider
   return (
     <ClerkProvider>
       <ThemeProvider defaultTheme={theme} storageKey="notesphere-theme">
@@ -44,4 +59,4 @@ export function Providers({ children }: { children: React.ReactNode }) {
       </ThemeProvider>
     </ClerkProvider>
   )
-} 
+}

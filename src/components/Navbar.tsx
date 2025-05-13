@@ -1,13 +1,20 @@
 'use client';
 
 import { SignedOut, SignInButton, SignUpButton, SignedIn, UserButton } from '@clerk/nextjs'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { ThemeToggle } from './theme-toggle'
 import Link from 'next/link'
 import styled from 'styled-components'
 import { BookOpen } from 'lucide-react'
 
-function Navbar() {
+function Navbar({ isAdmin = false }: { isAdmin?: boolean }) {
+  // Check if we're in an environment where we can safely use Clerk components
+  const [canUseClerk, setCanUseClerk] = useState(false)
+  
+  useEffect(() => {
+    // Only enable Clerk components after component is mounted on the client side
+    setCanUseClerk(true)
+  }, [])
   return (
     <StyledNavbar>
       <div className="navbar-pattern-grid" />
@@ -36,26 +43,38 @@ function Navbar() {
             <span>Upload</span>
           </Link>
         </div>
-        
-        <div className="navbar-actions">
+          <div className="navbar-actions">
           <div className="theme-toggle-wrapper">
             <ThemeToggle />
           </div>
-          <SignedOut>
-            <SignInButton>
-              <button className="signin-button">
-                Sign In
-              </button>
-            </SignInButton>
-            <SignUpButton>
-              <button className="signup-button">
-                Sign Up
-              </button>
-            </SignUpButton>
-          </SignedOut>
-          <SignedIn>
-            <UserButton />
-          </SignedIn>
+          
+          {/* Only render Clerk components when safe to do so and not in admin mode */}
+          {canUseClerk && !isAdmin ? (
+            <>
+              <SignedOut>
+                <SignInButton>
+                  <button className="signin-button">
+                    Sign In
+                  </button>
+                </SignInButton>
+                <SignUpButton>
+                  <button className="signup-button">
+                    Sign Up
+                  </button>
+                </SignUpButton>
+              </SignedOut>
+              <SignedIn>
+                <UserButton />
+              </SignedIn>
+            </>
+          ) : null}
+          
+          {/* In admin mode, don't use Clerk components */}
+          {isAdmin && (
+            <div className="admin-indicator">
+              Admin Mode
+            </div>
+          )}
         </div>
       </div>
       <div className="corner-slice" />
@@ -301,10 +320,23 @@ const StyledNavbar = styled.header`
       background-color: var(--primary-hover);
     }
   }
-  
-  .signup-button {
+    .signup-button {
     background-color: white;
     color: var(--text);
+  }
+  
+  .admin-indicator {
+    background-color: var(--accent);
+    color: var(--text);
+    font-weight: 700;
+    padding: 0.5rem 1rem;
+    border: 0.2em solid var(--text);
+    border-radius: 0.4em;
+    box-shadow: 0.3em 0.3em 0 var(--shadow-color);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    position: relative;
+    font-size: 0.8rem;
   }
 
   .corner-slice {

@@ -22,10 +22,15 @@ export function ThemeToggle() {
       </StyledToggleButton>
     )
   }
-
   return (
     <StyledToggleButton 
-      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+      onClick={() => {
+        console.log("Theme toggle clicked, current theme:", theme);
+        // Toggle between dark and light
+        const newTheme = theme === 'dark' ? 'light' : 'dark';
+        console.log("Setting new theme:", newTheme);
+        setTheme(newTheme);
+      }}
       className={theme}
       aria-label="Toggle theme"
     >

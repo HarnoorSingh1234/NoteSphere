@@ -88,17 +88,17 @@ export function ThemeProvider({
       return () => mediaQuery.removeEventListener("change", updateSystemTheme)
     }
   }, [theme, mounted])
-
   const value = {
     theme,
     setTheme: (newTheme: Theme) => {
-      setTheme(newTheme)
+      console.log("Setting theme to:", newTheme);
+      setTheme(newTheme);
     },
   }
 
   return (
     <ThemeProviderContext.Provider {...props} value={value}>
-      {children}
+      {mounted ? children : null}
     </ThemeProviderContext.Provider>
   )
 }

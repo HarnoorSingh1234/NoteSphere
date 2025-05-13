@@ -10,15 +10,17 @@ import Footer from './footer'
 import { renderCanvas } from '@/components/ui/canvas'
 import styled from 'styled-components'
 
-export default function LandingPage() {
+export default function LandingPage() {  
   useEffect(() => {
-    // Make sure we're keeping the light mode as default
-    if (document.documentElement.classList.contains('dark')) {
-      document.documentElement.classList.remove('dark');
-    }
-    
     // Initialize canvas animation
-    renderCanvas();
+    const cleanup = renderCanvas();
+    
+    // Clean up canvas animation when component unmounts
+    return () => {
+      if (typeof cleanup === 'function') {
+        cleanup();
+      }
+    };
   }, []);
 
   return (
@@ -56,6 +58,10 @@ const StyledLandingPage = styled.div`
     height: 100%;
     pointer-events: none;
     z-index: 0;
+  }
+  
+  .dark & .background-canvas {
+    background: #121212; /* Dark background for dark mode */
   }
   
   .main-content {
