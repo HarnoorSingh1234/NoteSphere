@@ -1,31 +1,103 @@
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
+'use client';
+
+import StyledAdminCard from "./StyledAdminCard";
+import { BookOpen } from "lucide-react";
+import styled from "styled-components";
 
 export default function PopularSubjects() {
-  const subjects = ["Computer Science", "Biology", "Economics", "Physics", "Mathematics"]
+  const subjects = ["Computer Science", "Biology", "Economics", "Physics", "Mathematics"];
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Popular Subjects</CardTitle>
-        <CardDescription>Most active subject areas</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {subjects.map((subject, i) => (
-            <div key={subject} className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-zinc-100 text-xs font-bold dark:bg-zinc-800">
-                  {i + 1}
-                </div>
-                <span className="text-sm font-medium">{subject}</span>
-              </div>
-              <span className="text-xs text-zinc-500 dark:text-zinc-400">
-                {Math.floor(Math.random() * 100) + 20} notes
-              </span>
+    <StyledAdminCard 
+      title="Popular Subjects" 
+      description="Most active subject areas"
+      icon={<BookOpen size={20} />}
+      accentColor="#4d61ff"
+      secondaryColor="#E99F4C"
+    >
+      <SubjectsList>
+        {subjects.map((subject, i) => (
+          <SubjectItem key={subject}>
+            <div className="subject-ranking">
+              <div className="rank-number">{i + 1}</div>
+              <span className="subject-name">{subject}</span>
             </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
-  )
+            <span className="subject-count">
+              {Math.floor(Math.random() * 100) + 20} notes
+            </span>
+          </SubjectItem>
+        ))}
+      </SubjectsList>
+    </StyledAdminCard>
+  );
 }
+
+const SubjectsList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+`;
+
+const SubjectItem = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  background-color: rgba(0, 0, 0, 0.02);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  
+  &:hover {
+    transform: translateX(0.25rem);
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+  
+  .subject-ranking {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .rank-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 50%;
+    background-color: var(--accent-color);
+    color: white;
+    font-weight: 700;
+    font-size: 0.875rem;
+  }
+  
+  .subject-name {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--text-color);
+  }
+  
+  .subject-count {
+    font-size: 0.75rem;
+    color: var(--text-color);
+    opacity: 0.7;
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 0.25rem 0.5rem;
+    border-radius: 1rem;
+  }
+  
+  /* Dark mode */
+  .dark & {
+    background-color: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+    
+    .subject-count {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+`;

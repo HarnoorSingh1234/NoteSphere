@@ -1,24 +1,44 @@
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-import { LucideIcon } from "lucide-react"
+'use client';
+
+import StyledAdminCard from "./StyledAdminCard";
+import { LucideIcon } from "lucide-react";
+import styled from "styled-components";
 
 interface StatsCardProps {
-  title: string
-  value: string
-  description: string
-  icon: LucideIcon
+  title: string;
+  value: string;
+  description: string;
+  icon: LucideIcon;
 }
 
 export default function StatsCard({ title, value, description, icon: Icon }: StatsCardProps) {
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-sm font-medium">{title}</CardTitle>
-        <Icon className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
-      </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold">{value}</div>
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">{description}</p>
-      </CardContent>
-    </Card>
-  )
+    <StyledAdminCard 
+      title={title} 
+      icon={<Icon size={20} />}
+    >
+      <StatsContent>
+        <div className="stats-value">{value}</div>
+        <p className="stats-description">{description}</p>
+      </StatsContent>
+    </StyledAdminCard>
+  );
 }
+
+const StatsContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  
+  .stats-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-color);
+  }
+  
+  .stats-description {
+    font-size: 0.875rem;
+    color: var(--text-color);
+    opacity: 0.7;
+  }
+`;
