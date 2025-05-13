@@ -103,8 +103,7 @@ export default function AcademicsPage() {
               >
                 <NavigationCard
                   title={year.name}
-                  tagText="Year"
-                  description={`Access all resources, subjects, and materials for ${year.name.toLowerCase()} courses.`}
+                  tagText="Year"                  description={`Access all resources, subjects, and study materials for ${year.name.toLowerCase()} courses.`}
                   features={[
                     { icon: <SemesterIcon />, text: `${year.id === '1' || year.id === '2' ? '2' : '2'} Semesters` },
                     { icon: <SubjectIcon />, text: "Multiple Subjects" },

@@ -2,14 +2,14 @@
 'use client'
 
 import Link from 'next/link'
-import React, { use, useEffect } from 'react'
+import React, { use } from 'react'
 import { Button } from '@/components/ui/button'
 import { motion } from '@/lib/motion-utils'
 import { FileText } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import NavigationCard from '@/components/ui/NavigationCard'
 import { SemesterIcon, SubjectIcon, NotesIcon } from '@/components/ui/NavigationIcons'
-import { renderCanvas } from '@/components/ui/canvas'
+import { CanvasBackground } from '@/components/ui/CanvasBackground'
 
 const semesters = [
   { id: '1', yearId: '1', number: 1 },
@@ -23,7 +23,7 @@ const semesters = [
 ]
 
 // Semester accent colors
-const semesterColors = {
+const semesterColors: Record<number, { accent: string; secondary: string }> = {
   1: { accent: "#4f46e5", secondary: "#818cf8" }, // Indigo
   2: { accent: "#8b5cf6", secondary: "#a78bfa" }, // Purple
   3: { accent: "#ec4899", secondary: "#f472b6" }, // Pink
@@ -40,16 +40,9 @@ export default function SemesterPage({ params }: { params: { yearId: string } })
   const { yearId } = unwrappedParams;
   const filteredSemesters = semesters.filter(s => s.yearId === yearId);
   
-  useEffect(() => {
-    renderCanvas();
-  }, []);
-
   return (
     <main className="flex-1 p-4 md:p-6 relative">
-      <canvas
-        className="bg-skin-base pointer-events-none absolute inset-0 mx-auto"
-        id="canvas"
-      ></canvas>
+      <CanvasBackground />
       
       <div className="container mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-center mb-8">
@@ -75,8 +68,7 @@ export default function SemesterPage({ params }: { params: { yearId: string } })
             >
               <NavigationCard
                 title={`Semester ${semester.number}`}
-                tagText="Semester"
-                description={`Access all subjects and materials for semester ${semester.number}.`}
+                tagText="Semester"                description={`Access all subjects and study materials for semester ${semester.number}.`}
                 features={[
                   { icon: <SemesterIcon />, text: `Semester ${semester.number}` },
                   { icon: <SubjectIcon />, text: "Multiple Subjects" },

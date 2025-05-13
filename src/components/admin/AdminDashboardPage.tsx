@@ -1,25 +1,16 @@
 'use client';
 
-import { useEffect } from "react";
 import PopularSubjects from "./popularsubjects";
 import QuickActions from "./quickactions";
 import RecentActivity from "./recentactivity";
 import StatsGrid from "./statsgrid";
 import styled from "styled-components";
-import { renderCanvas } from "@/components/ui/canvas";
+import { CanvasBackground } from "@/components/ui/CanvasBackground";
 
 export default function DashboardPage() {
-  useEffect(() => {
-    // Initialize the background canvas animation, just like in academic pages
-    renderCanvas();
-  }, []);
-
   return (
     <DashboardContainer>
-      <canvas
-        className="canvas-background"
-        id="canvas"
-      ></canvas>
+      <CanvasBackground />
 
       <main className="dashboard-main">
         <div className="dashboard-content">

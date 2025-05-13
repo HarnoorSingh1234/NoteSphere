@@ -1,34 +1,19 @@
 // src/components/landing/LandingPage.tsx
 'use client'
 import Header from './header'
-import React, { useEffect } from 'react'
+import React from 'react'
 import CTASection from './ctasection'
 import FeaturesSection from './featuresection'
 import HeroSection from './herosection'
 import HowItWorksSection from './howitworks'
 import Footer from './footer'
-import { renderCanvas } from '@/components/ui/canvas'
+import { CanvasBackground } from '@/components/ui/CanvasBackground'
 import styled from 'styled-components'
 
 export default function LandingPage() {  
-  useEffect(() => {
-    // Initialize canvas animation
-    const cleanup = renderCanvas();
-    
-    // Clean up canvas animation when component unmounts
-    return () => {
-      if (typeof cleanup === 'function') {
-        cleanup();
-      }
-    };
-  }, []);
-
   return (
     <StyledLandingPage>
-      <canvas
-        className="background-canvas"
-        id="canvas"
-      ></canvas>
+      <CanvasBackground />
       <Header />
 
       <main className="main-content">

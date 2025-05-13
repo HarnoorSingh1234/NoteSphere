@@ -48,9 +48,8 @@ function Navbar({ isAdmin = false }: { isAdmin?: boolean }) {
             <ThemeToggle />
           </div>
           
-          {/* Only render Clerk components when safe to do so and not in admin mode */}
-          {canUseClerk && !isAdmin ? (
-            <>
+          {/* Only render Clerk components when safe to do so and not in admin mode */}          {canUseClerk && !isAdmin ? (
+            <div suppressHydrationWarning>
               <SignedOut>
                 <SignInButton>
                   <button className="signin-button">
@@ -66,7 +65,7 @@ function Navbar({ isAdmin = false }: { isAdmin?: boolean }) {
               <SignedIn>
                 <UserButton />
               </SignedIn>
-            </>
+            </div>
           ) : null}
           
           {/* In admin mode, don't use Clerk components */}

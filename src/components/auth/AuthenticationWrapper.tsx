@@ -24,15 +24,14 @@ export default function AuthenticationWrapper({
       router.push('/user-dashboard');
     }
   }, [isLoaded, isSignedIn, router, mounted]);
-
   if (!mounted) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+    return <div className="flex justify-center items-center h-screen" suppressHydrationWarning>Loading...</div>;
   }
 
   return (
     <>
       <ClerkLoading>
-        <div className="flex justify-center items-center h-screen">
+        <div className="flex justify-center items-center h-screen" suppressHydrationWarning>
           Loading authentication...
         </div>
       </ClerkLoading>
@@ -71,19 +70,18 @@ export function ProtectedAuthenticationWrapper({
       // }
     }
   }, [isLoaded, isSignedIn, router, mounted, adminRequired]);
-
   if (!mounted || !isLoaded) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+    return <div className="flex justify-center items-center h-screen" suppressHydrationWarning>Loading...</div>;
   }
 
   if (!isSignedIn) {
-    return <div className="flex justify-center items-center h-screen">Redirecting to login...</div>;
+    return <div className="flex justify-center items-center h-screen" suppressHydrationWarning>Redirecting to login...</div>;
   }
 
   return (
     <>
       <ClerkLoading>
-        <div className="flex justify-center items-center h-screen">
+        <div className="flex justify-center items-center h-screen" suppressHydrationWarning>
           Loading authentication...
         </div>
       </ClerkLoading>

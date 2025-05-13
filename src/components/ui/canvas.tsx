@@ -14,9 +14,10 @@ interface Position {
 }
 
 // Simple canvas animation
-export function renderCanvas(): (() => void) | undefined {
+export function renderCanvas(canvasElement?: HTMLCanvasElement): (() => void) | undefined {
   try {
-    const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+    // Wait for the DOM to be ready before accessing canvas
+    const canvas = canvasElement || document.getElementById("canvas") as HTMLCanvasElement;
     if (!canvas) {
       console.error("Canvas element not found");
       return;

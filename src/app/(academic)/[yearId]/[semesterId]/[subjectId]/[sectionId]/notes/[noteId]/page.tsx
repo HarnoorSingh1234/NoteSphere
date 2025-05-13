@@ -8,6 +8,7 @@ import { FileText, Download, Heart, ChevronLeft } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useRouter } from 'next/navigation'
+import { CanvasBackground } from '@/components/ui/CanvasBackground'
 
 // Hardcoded notes data matching the list from the notes page
 const notesFiles = [
@@ -114,9 +115,11 @@ export default function NoteDetailPage({ params }: { params: { yearId: string, s
   const note = notesFiles.find(n => n.id === noteId);
   const [liked, setLiked] = React.useState(false);
 
-  if (!note) return notFound()
+  if (!note) return notFound();
+  
   return (
-    <main className="flex-1 p-4 md:p-6">
+    <main className="flex-1 p-4 md:p-6 relative">
+      <CanvasBackground />
       <div className="max-w-4xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-center mb-6">
           <Link href={`/${yearId}/${semesterId}/${subjectId}/${sectionId}/notes`} className="inline-flex items-center">

@@ -2,9 +2,8 @@
 
 import React from 'react';
 import { motion } from '@/lib/motion-utils';
+import { CanvasBackground } from '@/components/ui/CanvasBackground';
 import NavigationCard from '@/components/ui/NavigationCard';
-import { renderCanvas } from '@/components/ui/canvas';
-import { useEffect } from 'react';
 import { 
   SubjectIcon, 
   SectionIcon, 
@@ -52,10 +51,6 @@ const sections = [
 ];
 
 export default function SubjectsPage() {
-  useEffect(() => {
-    renderCanvas();
-  }, []);
-
   // Group subjects by year
   const groupedSubjects = subjects.reduce((groups, subject) => {
     const semester = semesters.find(s => s.id === subject.semesterId);
@@ -73,13 +68,9 @@ export default function SubjectsPage() {
     
     return groups;
   }, {});
-
   return (
     <main className="flex-1 p-4 md:p-6 relative">
-      <canvas
-        className="bg-skin-base pointer-events-none absolute inset-0 mx-auto"
-        id="canvas"
-      ></canvas>
+      <CanvasBackground />
 
       <div className="container mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-center mb-8">
@@ -116,18 +107,15 @@ export default function SubjectsPage() {
                   <NavigationCard
                     title={subject.name}
                     tagText={subject.code}
-                    description={`Access all ${subject.name} materials for Semester ${subject.semesterNumber}.`}
-                    features={[
+                    description={`Access all ${subject.name} notes and study materials for Semester ${subject.semesterNumber}.`}                    features={[
                       { icon: <NotesIcon />, text: "Lecture Notes" },
-                      { icon: <SectionIcon />, text: `${sections.length} Sections` },
                       { icon: <UploadIcon />, text: "Upload Materials" },
-                      { icon: <SearchIcon />, text: "Find Resources" }
-                    ]}
-                    buttonText="View Subject"
-                    buttonHref={`/${subject.yearId}/${subject.semesterId}/${subject.id}/section`}
+                      { icon: <SearchIcon />, text: "Find Resources" }                    ]}
+                    buttonText="View Notes"
+                    buttonHref={`/${subject.yearId}/${subject.semesterId}/${subject.id}/AId/notes`}
                     accentColor={
                       subject.yearId === '1' ? "#4f46e5" : 
-                      subject.yearId === '2' ? "#ea580c" : 
+                      subject.yearId === '2' ? "#ea580c" :
                       subject.yearId === '3' ? "#0ea5e9" : 
                       "#16a34a"
                     }

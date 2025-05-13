@@ -1,6 +1,6 @@
 'use client'
 
-import React, { use, useEffect } from 'react'
+import React, { useEffect, use } from 'react'
 import Link from 'next/link'
 import { motion } from '@/lib/motion-utils'
 import { Button } from '@/components/ui/button'
@@ -9,7 +9,7 @@ import { FileText, Download, Heart, Eye } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useRouter } from 'next/navigation'
-import { renderCanvas } from '@/components/ui/canvas'
+import { CanvasBackground } from '@/components/ui/CanvasBackground'
 
 const subjects = [
   { id: '1', semesterId: '1', name: 'Mathematics', code: 'MATH101' },
@@ -30,7 +30,9 @@ const sections = [
 ];
 
 // Note type color schemes
-const noteTypeColors = {
+const noteTypeColors: {
+  [key: string]: { accent: string; secondary: string }
+} = {
   'LECTURE': { accent: "#4f46e5", secondary: "#818cf8" }, // Indigo
   'HANDWRITTEN': { accent: "#f97316", secondary: "#fb923c" }, // Orange
   'PPT': { accent: "#ec4899", secondary: "#f472b6" }, // Pink
@@ -104,28 +106,23 @@ export default function NotesPage({ params }: { params: { yearId: string, semest
   const { yearId, semesterId, subjectId, sectionId } = unwrappedParams;
   
   const subject = subjects.find(s => s.id === subjectId);
-  const section = sections.find(s => s.id === sectionId);
+  const section = sections.find(s => s.id === sectionId) || sections.find(s => s.id === 'AId'); // Fallback to section A if not found
   
   const subjectName = subject ? subject.name : 'Subject';
   const sectionName = section ? section.name : 'Section';
-  
-  useEffect(() => {
-    renderCanvas();
+    useEffect(() => {
+    // No need to call renderCanvas() as it's handled in CanvasBackground component
   }, []);
   
   return (
     <main className="flex-1 p-4 md:p-6 relative">
-      <canvas
-        className="bg-skin-base pointer-events-none absolute inset-0 mx-auto"
-        id="canvas"
-      ></canvas>
+      <CanvasBackground />
       
       <div className="container mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-center mb-8">
-          <div>
+        <div className="flex flex-col md:flex-row justify-between items-center mb-8">          <div>
             <h1 className="text-2xl font-bold">Notes and Materials</h1>
             <p className="text-zinc-500 mt-1">
-              {subjectName} | Section {sectionName}
+              {subjectName}
             </p>
           </div>
           <div className="mt-4 md:mt-0">

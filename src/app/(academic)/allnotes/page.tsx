@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { motion } from '@/lib/motion-utils';
-import { renderCanvas } from '@/components/ui/canvas';
 import { useEffect } from 'react';
 import { 
   NotesIcon,
@@ -15,6 +14,7 @@ import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { CanvasBackground } from '@/components/ui/CanvasBackground';
 
 // Hardcoded notes data
 const notesFiles = [
@@ -165,16 +165,9 @@ const notesFiles = [
 ];
 
 export default function AllNotesPage() {
-  useEffect(() => {
-    renderCanvas();
-  }, []);
-
   return (
     <main className="flex-1 p-4 md:p-6 relative">
-      <canvas
-        className="bg-skin-base pointer-events-none absolute inset-0 mx-auto"
-        id="canvas"
-      ></canvas>
+      <CanvasBackground />
 
       <div className="container mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-center mb-8">
