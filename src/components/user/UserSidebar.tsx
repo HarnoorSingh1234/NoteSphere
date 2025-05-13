@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from "framer-motion"
+import { motion } from "@/lib/motion-utils"
 import { LayoutDashboard, Users, ImageIcon, Settings, LogOut, Book, BookA, BookAIcon, BookOpen} from "lucide-react"
 import { useState } from "react"
 import { Sidebar, SidebarBody, SidebarLink } from "../ui/sidebar"

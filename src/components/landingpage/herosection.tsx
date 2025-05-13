@@ -1,57 +1,88 @@
 'use client'
 
-import React from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
-import { Button } from '@/components/ui/button'
-import { ArrowRight } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { useEffect } from "react";
+import Link from "next/link";
+import { DIcons } from "dicons";
+import { Button } from "@/components/ui/button";
 
 export default function HeroSection() {
   return (
-    <motion.section
-      id="hero"
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      viewport={{ once: true }}
-      className="w-full py-12 md:py-24 bg-gradient-to-br from-purple-700/20 to-indigo-900/20 lg:py-32 xl:py-48"
-    >
-      <div className="container mx-auto px-4 sm:px-6">
-        <div className="flex flex-col-reverse lg:grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-          {/* Left Text */}
-          <div className="text-center lg:text-left space-y-6">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight">
-              Share Knowledge, Ace Your Exams
-            </h1>
-            <p className="max-w-[600px] mx-auto lg:mx-0 text-zinc-600 dark:text-zinc-400 text-base sm:text-lg md:text-xl">
-              StudyShare is the ultimate platform for university students to share and discover high-quality notes, collaborate with peers, and excel in their studies.
-            </p>
-            <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
-              <Button asChild size="lg">
-                <Link href="/notes">
-                  Semester Notes <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-              <Button asChild variant="outline" size="lg">
-                <Link href="/sign-up">
-                  Sign Up <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
+    <section id="home">
+      <div className="animation-delay-8 animate-fadeIn mt-20 flex flex-col items-center justify-center px-4 text-center md:mt-20">
+        <div className="z-10 mb-6 mt-10 sm:justify-center md:mb-4 md:mt-20">
+          <div className="relative flex items-center whitespace-nowrap rounded-full border bg-popover px-3 py-1 text-xs leading-6 text-primary/60">
+            <DIcons.Shapes className="h-5 p-1" /> Welcome to NoteSphere
+            <Link
+              href="/academics"
+              className="hover:text-ali ml-1 flex items-center font-semibold"
+            >
+              <div className="absolute inset-0 flex" aria-hidden="true" />
+              Explore{" "}
+              <span aria-hidden="true">
+                <DIcons.ArrowRight className="h-4 w-4" />
+              </span>
+            </Link>
+          </div>
+        </div>
+
+        <div className="mb-10 mt-4 md:mt-6">
+          <div className="px-2">
+            <div className="border-ali relative mx-auto h-full max-w-7xl border p-6 [mask-image:radial-gradient(800rem_96rem_at_center,white,transparent)] md:px-12 md:py-20">
+              <h1 className="flex select-none flex-col px-3 py-2 text-center text-5xl font-semibold leading-none tracking-tight md:flex-col md:text-8xl lg:flex-row lg:text-8xl">
+                <DIcons.Plus
+                  strokeWidth={4}
+                  className="text-ali absolute -left-5 -top-5 h-10 w-10"
+                />
+                <DIcons.Plus
+                  strokeWidth={4}
+                  className="text-ali absolute -bottom-5 -left-5 h-10 w-10"
+                />
+                <DIcons.Plus
+                  strokeWidth={4}
+                  className="text-ali absolute -right-5 -top-5 h-10 w-10"
+                />
+                <DIcons.Plus
+                  strokeWidth={4}
+                  className="text-ali absolute -bottom-5 -right-5 h-10 w-10"
+                />
+                Share Knowledge, Ace Your Exams
+              </h1>
+              <div className="flex items-center justify-center gap-1">
+                <span className="relative flex h-3 w-3 items-center justify-center">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75"></span>
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
+                </span>
+                <p className="text-xs text-green-500">Available Now</p>
+              </div>
             </div>
           </div>
-          {/* Right Image */}
-          <div className="w-full flex justify-center">
-            <Image
-              src="/placeholder.svg"
-              alt="StudyShare Platform"
-              width={500}
-              height={500}
-              className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg rounded-lg object-cover"
-            />
+
+          <h1 className="mt-8 text-2xl md:text-2xl">
+            Welcome to NoteSphere, the ultimate platform for students!
+          </h1>
+
+          <p className="md:text-md mx-auto mb-16 mt-2 max-w-2xl px-6 text-sm text-primary/60 sm:px-6 md:max-w-4xl md:px-20 lg:text-lg">
+            StudyShare is the ultimate platform for university students to share and discover high-quality notes, collaborate with peers, and excel in their studies.
+          </p>
+          <div className="flex flex-wrap justify-center gap-2">
+            <Link href="/academics">
+              <Button variant="default" size="lg">
+                Browse Academics
+              </Button>
+            </Link>
+            <Link href="/subjects">
+              <Button variant="outline" size="lg">
+                All Subjects
+              </Button>
+            </Link>
+            <Link href="/allnotes">
+              <Button variant="outline" size="lg">
+                All Notes
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
-    </motion.section>
-  )
+    </section>
+  );
 }

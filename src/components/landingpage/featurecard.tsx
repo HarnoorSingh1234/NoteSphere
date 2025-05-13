@@ -1,7 +1,7 @@
 'use client'
 
 import React, { ReactNode } from 'react'
-import { motion } from 'framer-motion'
+import { motion } from '@/lib/motion-utils'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 interface FeatureCardProps {

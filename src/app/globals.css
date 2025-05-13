@@ -197,3 +197,59 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Canvas animation styles */
+.bg-skin-base {
+  background-color: transparent;
+}
+
+.text-ali {
+  color: #6366f1;
+}
+
+.border-ali {
+  border-color: #6366f1;
+}
+
+.animation-delay-8 {
+  animation-delay: 0.8s;
+}
+
+.animate-fadeIn {
+  animation: fadeIn 1s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+#canvas {
+  z-index: -1;
+}
+
+/* Theme transition styles */
+:root {
+  color-scheme: light;
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+/* Apply smooth transitions to colors when theme changes */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+@media (prefers-reduced-motion) {
+  * {
+    transition: none !important;
+  }
+}

@@ -2,7 +2,7 @@
 'use client'
 
 import React from 'react'
-import { motion } from 'framer-motion'
+import { motion } from '@/lib/motion-utils'
 
 const steps = [
   { num: '1', title: 'Create an Account', desc: 'Sign up with your university email to join the StudyShare community.' },
