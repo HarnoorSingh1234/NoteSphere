@@ -1,4 +1,4 @@
-import ProtectRoute from "@/app/protected/ProtectRoute"
+import ProtectRoute from "@/app/(auth)/protected/ProtectRoute"
 import DashboardPage from "@/components/admin/AdminDashboardPage"
 
 const AdminDashboard = () => {

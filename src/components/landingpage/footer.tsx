@@ -1,18 +1,16 @@
 "use client"
 
 import * as React from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { BookOpen, GraduationCap, Github, Instagram, Moon, Sun } from "lucide-react"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
-import { Textarea } from "@/components/ui/textarea"
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { Facebook, Instagram, Linkedin, Moon, Send, Sun, Twitter, BookOpen, GraduationCap, Disc, Github } from "lucide-react"
+import Link from "next/link"
 
 function Footer() {
   const [isDarkMode, setIsDarkMode] = React.useState(true)
@@ -26,101 +24,141 @@ function Footer() {
   }, [isDarkMode])
 
   return (
-    <footer className="relative border-t  bg-gradient-to-br from-purple-900/10 to-indigo-900/10 bg-background text-foreground transition-colors duration-300">
-      <div className="container mx-auto px-4 py-12 md:px-6 lg:px-8">
-        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
-          <div className="relative">
-            <div className="flex items-center gap-2 mb-4">
-              <BookOpen className="h-6 w-6 text-primary" />
-              <h2 className="text-3xl font-bold tracking-tight">NoteSphere</h2>
+    <footer className="relative w-full bg-[#EDDCD9] border-t-[0.35em] border-[#264143] pt-16 pb-8 overflow-hidden group">
+      {/* Pattern grid background */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,0,0,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.05)_1px,transparent_1px)] bg-[length:1em_1em] pointer-events-none opacity-30 transition-opacity duration-300 ease-in-out z-[1] group-hover:opacity-50" />
+      
+      {/* Overlay dots */}
+      <div className="absolute inset-0 bg-[radial-gradient(rgba(0,0,0,0.05)_1px,transparent_1px)] bg-[length:2em_2em] bg-[-1em_-1em] pointer-events-none opacity-10 transition-opacity duration-300 ease-in-out z-[1] group-hover:opacity-30" />
+      
+      {/* Decorative elements */}
+      <div className="absolute top-[15%] left-[5%] w-[2em] h-[2em] bg-[#DE5499] border-[0.15em] border-[#264143] rounded-[0.3em] rotate-12 shadow-[0.2em_0.2em_0_#E99F4C] transition-transform duration-300 ease-in-out group-hover:rotate-6 group-hover:scale-110" />
+      <div className="absolute bottom-[25%] right-[8%] w-[3em] h-[3em] bg-[#E99F4C] border-[0.15em] border-[#264143] rounded-[0.3em] rotate-45 shadow-[0.2em_0.2em_0_#DE5499] transition-transform duration-300 ease-in-out group-hover:rotate-[55deg] group-hover:scale-110" />
+      
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="bg-white border-[0.25em] border-[#264143] rounded-[0.6em] p-8 shadow-[0.5em_0.5em_0_#E99F4C] transition-all duration-300 ease-in-out group-hover:shadow-[0.7em_0.7em_0_#E99F4C]">
+          <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
+            {/* Logo and description */}
+            <div className="relative">
+              <div className="flex items-center gap-2.5 mb-6">
+                <div className="flex items-center justify-center w-[2.2rem] h-[2.2rem] bg-white border-[0.2em] border-[#264143] rounded-[0.4em] shadow-[0.2em_0.2em_0_#E99F4C] transition-all duration-200 ease-in-out hover:rotate-[-5deg] hover:scale-105">
+                  <BookOpen className="w-[1.3rem] h-[1.3rem] text-[#264143]" />
+                </div>
+                <h2 className="text-2xl font-bold text-[#264143]">NoteSphere</h2>
+              </div>
+              <p className="mb-6 text-[#264143]/80">
+                The academic hub for sharing and discovering quality course notes.
+              </p>
             </div>
-            <p className="mb-6 text-muted-foreground">
-              The academic hub for sharing and discovering quality course notes.
+            
+            {/* Quick Links */}
+            <div>
+              <h3 className="mb-4 text-lg font-bold flex items-center gap-2 text-[#264143]">
+                <div className="flex items-center justify-center w-7 h-7 bg-white border-[0.15em] border-[#264143] rounded-[0.3em] shadow-[0.15em_0.15em_0_#DE5499]">
+                  <GraduationCap className="h-4 w-4 text-[#264143]" />
+                </div>
+                Quick Links
+              </h3>
+              <nav className="space-y-3 text-sm">
+                {["Home", "Browse Notes", "Submit Notes", "About NoteSphere"].map((link, i) => (
+                  <a 
+                    key={i}
+                    href={link === "Home" ? "/" : `/${link.toLowerCase().replace(/\s/g, "-")}`} 
+                    className="block text-[#264143]/80 hover:text-[#DE5499] transition-colors relative pl-4 before:content-[''] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-2 before:h-2 before:bg-[#E99F4C] before:rounded-sm before:border-[0.1em] before:border-[#264143] before:transition-all before:duration-200 hover:before:rotate-45 hover:before:scale-110"
+                  >
+                    {link}
+                  </a>
+                ))}
+              </nav>
+            </div>
+            
+            {/* Contact */}
+            <div>
+              <h3 className="mb-4 text-lg font-bold text-[#264143]">Get In Touch</h3>
+              <address className="space-y-2 text-sm not-italic text-[#264143]/80 border-l-[0.2em] border-[#DE5499] pl-4">
+                <p>Guru Nanak Dev University</p>
+                <p>Amritsar, Punjab 143001</p>
+                <p className="flex items-center">
+                  Email: 
+                  <a 
+                    href="mailto:gnducoders@gmail.com" 
+                    className="ml-1 text-[#DE5499] hover:underline"
+                  >
+                    gnducoders@gmail.com
+                  </a>
+                </p>
+              </address>
+            </div>
+            
+            {/* Social Links */}
+            <div className="relative">
+              <h3 className="mb-4 text-lg font-bold text-[#264143]">Connect With Us</h3>
+              <div className="mb-6 flex space-x-4">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button className="flex items-center justify-center w-10 h-10 bg-white border-[0.15em] border-[#264143] rounded-full shadow-[0.15em_0.15em_0_#DE5499] hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#DE5499] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#DE5499] transition-all duration-200">
+                        <Github className="h-5 w-5 text-[#264143]" />
+                        <span className="sr-only">Github</span>
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-white border-[0.15em] border-[#264143] shadow-[0.2em_0.2em_0_#E99F4C]">
+                      <p>Check out the code!</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Link href="https://www.instagram.com/harnoor_singh124/">
+                        <button className="flex items-center justify-center w-10 h-10 bg-white border-[0.15em] border-[#264143] rounded-full shadow-[0.15em_0.15em_0_#E99F4C] hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#E99F4C] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#E99F4C] transition-all duration-200">
+                          <Instagram className="h-5 w-5 text-[#264143]" />
+                          <span className="sr-only">Instagram</span>
+                        </button>
+                      </Link>
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-white border-[0.15em] border-[#264143] shadow-[0.2em_0.2em_0_#E99F4C]">
+                      <p>Harnoor Singh</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
+                  <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Link href="https://www.instagram.com/tdhingra_16/">
+                        <button className="flex items-center justify-center w-10 h-10 bg-white border-[0.15em] border-[#264143] rounded-full shadow-[0.15em_0.15em_0_#E99F4C] hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#E99F4C] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#E99F4C] transition-all duration-200">
+                          <Instagram className="h-5 w-5 text-[#264143]" />
+                          <span className="sr-only">Instagram</span>
+                        </button>
+                      </Link>
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-white border-[0.15em] border-[#264143] shadow-[0.2em_0.2em_0_#E99F4C]">
+                      <p>Tushar Dhingra</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              
+             
+            </div>
+          </div>
+          
+          {/* Copyright */}
+          <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-[#264143]/20 pt-8 text-center md:flex-row">
+            <p className="text-sm text-[#264143]/70">
+              © 2025 NoteSphere. Academic resources for students, by students.
             </p>
             
-            <div className="absolute -right-4 top-0 h-24 w-24 rounded-full bg-primary/10 blur-2xl" />
+            {/* Corner decorative element */}
+            <div className="absolute bottom-0 right-0 w-[2em] h-[2em] bg-[#EDDCD9] border-l-[0.2em] border-t-[0.2em] border-[#264143] rounded-tl-[0.5em] z-20" />
           </div>
-          <div>
-            <h3 className="mb-4 text-lg font-semibold flex items-center gap-2">
-              <GraduationCap className="h-4 w-4" /> Quick Links
-            </h3>
-            <nav className="space-y-2 text-sm">
-              <a href="/" className="block transition-colors hover:text-primary">
-                Home
-              </a>
-              <a href="/semesters" className="block transition-colors hover:text-primary">
-                Browse Notes
-              </a>
-              <a href="/submit" className="block transition-colors hover:text-primary">
-                Submit Notes
-              </a>
-              <a href="/about" className="block transition-colors hover:text-primary">
-                About NoteSphere
-              </a>
-             
-            </nav>
-          </div>
-          <div>
-            <h3 className="mb-4 text-lg font-semibold">Get In Touch</h3>
-            <address className="space-y-2 text-sm not-italic">
-              <p>Guru Nanak Dev University</p>
-              <p>Amritsar, Punjab 143001</p>
-              <p>Email: gnducoders@gmail.com</p>
-            </address>
-          </div>
-          <div className="relative">
-            <h3 className="mb-4 text-lg font-semibold">Connect With Us</h3>
-            <div className="mb-6 flex space-x-4">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon" className="rounded-full">
-                      <Github className="h-4 w-4" />
-                      <span className="sr-only">Github</span>
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Join our student community</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-          
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon" className="rounded-full">
-                      <Instagram className="h-4 w-4" />
-                      <span className="sr-only">Instagram</span>
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Study tips & highlights</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-             
-            </div>
-            <div className="flex items-center space-x-2">
-              <Sun className="h-4 w-4" />
-              <Switch
-                id="dark-mode"
-                checked={isDarkMode}
-                onCheckedChange={setIsDarkMode}
-              />
-              <Moon className="h-4 w-4" />
-              <Label htmlFor="dark-mode" className="sr-only">
-                Toggle dark mode
-              </Label>
-            </div>
-          </div>
-        </div>
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t pt-8 text-center md:flex-row">
-          <p className="text-sm text-muted-foreground">
-            © 2025 NoteSphere. Academic resources for students, by students.
-          </p>
-          
         </div>
       </div>
+      
+      {/* Corner slice */}
+      <div className="absolute bottom-0 left-0 w-[2.5em] h-[2.5em] bg-white border-r-[0.25em] border-t-[0.25em] border-[#264143] rounded-tr-[0.8em] z-[3]" />
     </footer>
   )
 }
