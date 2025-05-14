@@ -1,8 +1,7 @@
 // app/(academic)/[yearId]/semester/page.tsx
 'use client'
 
-import Link from 'next/link'
-import React, { use } from 'react'
+import React from 'react'
 import { Button } from '@/components/ui/button'
 import { motion } from '@/lib/motion-utils'
 import { FileText } from 'lucide-react'
@@ -10,6 +9,7 @@ import { useRouter } from 'next/navigation'
 import NavigationCard from '@/components/ui/NavigationCard'
 import { SemesterIcon, SubjectIcon, NotesIcon } from '@/components/ui/NavigationIcons'
 import { CanvasBackground } from '@/components/ui/CanvasBackground'
+import { useLoadingNavigation } from '@/components/ui/LoadingProvider'
 
 const semesters = [
   { id: '1', yearId: '1', number: 1 },
@@ -36,8 +36,10 @@ const semesterColors: Record<number, { accent: string; secondary: string }> = {
 
 export default function SemesterPage({ params }: { params: { yearId: string } }) {
   const router = useRouter();
-  const unwrappedParams = use(params);
+  // Unwrap params for Next.js 15+
+  const unwrappedParams = React.use(params);
   const { yearId } = unwrappedParams;
+  const { navigateTo } = useLoadingNavigation();
   const filteredSemesters = semesters.filter(s => s.yearId === yearId);
   
   return (
@@ -51,9 +53,8 @@ export default function SemesterPage({ params }: { params: { yearId: string } })
             <p className="text-zinc-500 mt-1">
               Choose a semester to browse subjects and materials
             </p>
-          </div>
-          <div className="mt-4 md:mt-0">
-            <Button onClick={() => router.push('/upload')}>
+          </div>          <div className="mt-4 md:mt-0">
+            <Button navigateTo="/upload">
               <FileText className="mr-2 h-4 w-4" /> Upload Notes
             </Button>
           </div>

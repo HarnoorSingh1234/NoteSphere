@@ -3,45 +3,48 @@
 import { SignedOut, SignInButton, SignUpButton, SignedIn, UserButton } from '@clerk/nextjs'
 import React, { useEffect, useState } from 'react'
 import { ThemeToggle } from './theme-toggle'
-import Link from 'next/link'
 import styled from 'styled-components'
 import { BookOpen } from 'lucide-react'
+import { LoadingLink } from '@/components/ui/LoadingLink'
+import { useNavigation } from '@/lib/useNavigation'
 
 function Navbar({ isAdmin = false }: { isAdmin?: boolean }) {
   // Check if we're in an environment where we can safely use Clerk components
   const [canUseClerk, setCanUseClerk] = useState(false)
-  
-  useEffect(() => {
+    useEffect(() => {
     // Only enable Clerk components after component is mounted on the client side
     setCanUseClerk(true)
   }, [])
+
+  const { navigate } = useNavigation();
+  
   return (
     <StyledNavbar>
       <div className="navbar-pattern-grid" />
       <div className="navbar-overlay-dots" />
       <div className="navbar-container">
         <div className="navbar-logo">
-          <Link href="/" className="logo-link">
+          <LoadingLink href="/" className="logo-link">
             <div className="logo-wrapper">
               <BookOpen className="logo-icon" />
             </div>
             <span className="logo-text">NoteSphere</span>
-          </Link>
+          </LoadingLink>
         </div>
         
         <div className="navbar-links">
-          <Link href="/academics" className="nav-link">
+          <LoadingLink href="/academics" className="nav-link">
             <span>Academics</span>
-          </Link>
-          <Link href="/subjects" className="nav-link">
+          </LoadingLink>
+          <LoadingLink href="/subjects" className="nav-link">
             <span>Subjects</span>
-          </Link>
-          <Link href="/allnotes" className="nav-link">
+          </LoadingLink>
+          <LoadingLink href="/allnotes" className="nav-link">
             <span>All Notes</span>
-          </Link>
-          <Link href="/upload" className="nav-link">
+          </LoadingLink>
+          <LoadingLink href="/upload" className="nav-link">
             <span>Upload</span>
-          </Link>
+          </LoadingLink>
         </div>
           <div className="navbar-actions">
           <div className="theme-toggle-wrapper">

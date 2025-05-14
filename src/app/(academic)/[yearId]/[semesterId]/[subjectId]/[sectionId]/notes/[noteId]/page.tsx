@@ -1,14 +1,15 @@
 'use client'
 
-import React, { useState, use } from 'react'
+import React, { useState } from 'react'
 import { notFound } from 'next/navigation'
-import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { FileText, Download, Heart, ChevronLeft } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useRouter } from 'next/navigation'
 import { CanvasBackground } from '@/components/ui/CanvasBackground'
+import { LoadingLink } from '@/components/ui/LoadingLink'
+import { useLoadingNavigation } from '@/components/ui/LoadingProvider'
 
 // Hardcoded notes data matching the list from the notes page
 const notesFiles = [
@@ -108,10 +109,17 @@ const notesFiles = [
   }
 ]
 
+function formatDate(date: Date) {
+  // Always outputs YYYY-MM-DD
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
 export default function NoteDetailPage({ params }: { params: { yearId: string, semesterId: string, subjectId: string, sectionId: string, noteId: string } }) {
   const router = useRouter();
-  const unwrappedParams = use(params);
+  // Unwrap params for Next.js 15+
+  const unwrappedParams = React.use(params);
   const { yearId, semesterId, subjectId, sectionId, noteId } = unwrappedParams;
+  const { navigateTo } = useLoadingNavigation();
   const note = notesFiles.find(n => n.id === noteId);
   const [liked, setLiked] = React.useState(false);
 
@@ -122,11 +130,10 @@ export default function NoteDetailPage({ params }: { params: { yearId: string, s
       <CanvasBackground />
       <div className="max-w-4xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-center mb-6">
-          <Link href={`/${yearId}/${semesterId}/${subjectId}/${sectionId}/notes`} className="inline-flex items-center">
+          <LoadingLink href={`/${yearId}/${semesterId}/${subjectId}/${sectionId}/notes`} className="inline-flex items-center">
             <ChevronLeft className="h-4 w-4 mr-1" /> Back to Notes
-          </Link>            
-          <div className="mt-4 md:mt-0">
-            <Button variant="secondary" onClick={() => router.push('/upload')}>
+          </LoadingLink>          <div className="mt-4 md:mt-0">
+            <Button variant="secondary" navigateTo="/upload">
               <FileText className="mr-2 h-4 w-4" /> Upload Notes
             </Button>
           </div>
@@ -137,7 +144,7 @@ export default function NoteDetailPage({ params }: { params: { yearId: string, s
             <h1 className="text-3xl font-bold">{note.title}</h1>
             <div className="flex items-center gap-2 mt-2">
               <span className="text-sm text-zinc-500">By {note.author.name}</span>
-              <span className="text-sm text-zinc-500">{new Date(note.createdAt).toLocaleDateString()}</span>
+              <span className="text-sm text-zinc-500">{formatDate(note.createdAt)}</span>
             </div>
           </div>
           <div className="flex gap-2">

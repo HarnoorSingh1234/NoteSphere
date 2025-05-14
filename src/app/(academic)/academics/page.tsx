@@ -3,7 +3,6 @@
 import React from 'react';
 import { motion } from '@/lib/motion-utils';
 import NavigationCard from '@/components/ui/NavigationCard';
-import { renderCanvas } from '@/components/ui/canvas';
 import { useEffect } from 'react';
 import { 
   YearIcon, 
@@ -16,7 +15,9 @@ import {
   SearchIcon
 } from '@/components/ui/NavigationIcons';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+import { CanvasBackground } from '@/components/ui/CanvasBackground';
+import { LoadingLink } from '@/components/ui/LoadingLink';
+import { useLoadingNavigation } from '@/components/ui/LoadingProvider';
 
 // Years data
 const years = [
@@ -59,16 +60,11 @@ const sections = [
 ];
 
 export default function AcademicsPage() {
-  useEffect(() => {
-    renderCanvas();
-  }, []);
-
+  const { navigateTo } = useLoadingNavigation();
+  
   return (
     <main className="flex-1 p-4 md:p-6 relative">
-      <canvas
-        className="bg-skin-base pointer-events-none absolute inset-0 mx-auto"
-        id="canvas"
-      ></canvas>
+      <CanvasBackground />
 
       <div className="container mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-center mb-8">
@@ -77,18 +73,13 @@ export default function AcademicsPage() {
             <p className="text-zinc-500 mt-1">
               Browse courses, materials, and notes by category
             </p>
-          </div>
-          <div className="mt-4 md:mt-0 flex gap-2">
-            <Link href="/upload">
-              <Button variant="default">
-                Upload Notes
-              </Button>
-            </Link>
-            <Link href="/search">
-              <Button variant="outline">
-                Search
-              </Button>
-            </Link>
+          </div>          <div className="mt-4 md:mt-0 flex gap-2">
+            <Button variant="default" navigateTo="/upload">
+              Upload Notes
+            </Button>
+            <Button variant="outline" navigateTo="/search">
+              Search
+            </Button>
           </div>
         </div>
 

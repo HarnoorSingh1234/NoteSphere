@@ -4,6 +4,7 @@ import { ThemeProvider } from '@/components/theme-provider'
 import { ClerkProvider } from '@clerk/nextjs'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { LoadingProvider } from '@/components/ui/LoadingProvider'
 
 export function Providers({ children }: { children: React.ReactNode }) {
   // Use a state to track the initial theme from localStorage
@@ -41,12 +42,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
     // Return empty div with same layout to avoid layout shift
     return <div style={{ visibility: 'hidden' }}>{children}</div>
   }
-  
-  // If this is an auth path, don't wrap with ClerkProvider as it's already done in the auth layout
+    // If this is an auth path, don't wrap with ClerkProvider as it's already done in the auth layout
   if (isAuthPath) {
     return (
       <ThemeProvider defaultTheme={theme} storageKey="notesphere-theme">
-        {children}
+        <LoadingProvider>
+          {children}
+        </LoadingProvider>
       </ThemeProvider>
     )
   }
@@ -55,7 +57,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <ClerkProvider>
       <ThemeProvider defaultTheme={theme} storageKey="notesphere-theme">
-        {children}
+        <LoadingProvider>
+          {children}
+        </LoadingProvider>
       </ThemeProvider>
     </ClerkProvider>
   )

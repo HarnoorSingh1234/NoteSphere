@@ -2,12 +2,15 @@
 'use client'
 
 import React from 'react'
-import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'
 import { motion } from '@/lib/motion-utils'
+import { LoadingLink } from '@/components/ui/LoadingLink'
+import { useLoadingNavigation } from '@/components/ui/LoadingProvider'
 
 export default function CTASection() {
+  const { navigateTo } = useLoadingNavigation();
+  
   return (
     <motion.section
       initial={{ opacity: 0, y: 20 }}
@@ -19,12 +22,12 @@ export default function CTASection() {
       <div className="container mx-auto px-4 md:px-6 text-center space-y-4">
         <h2 className="text-3xl font-bold sm:text-5xl">Ready to Elevate Your Studies?</h2>
         <p className="max-w-[900px] mx-auto text-zinc-500 md:text-xl dark:text-zinc-400">
-          Join thousands of students already using StudyShare to excel in their university courses
-        </p>
-        <Button asChild size="lg">
-          <Link href="/register">
-            Get Started Today <ArrowRight className="ml-2 h-4 w-4" />
-          </Link>
+          Join thousands of students already using NotesSphere to excel in their university courses
+        </p>        <Button 
+          size="lg"
+          navigateTo="/register"
+        >
+          Get Started Today <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </div>
     </motion.section>

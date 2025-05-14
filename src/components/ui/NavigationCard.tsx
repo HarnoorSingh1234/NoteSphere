@@ -2,7 +2,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import Link from 'next/link';
+import { LoadingLink } from '@/components/ui/LoadingLink';
 
 interface NavigationCardProps {
   title: string;
@@ -60,16 +60,15 @@ const NavigationCard = ({
               </div>
             ))}
           </div>
-          <div className="card-actions">
-            {price && (
+          <div className="card-actions">            {price && (
               <div className="price">
                 <span className="price-currency">$</span>{price}
                 <span className="price-period">{priceDescription}</span>
               </div>
             )}
-            <Link href={buttonHref}>
+            <LoadingLink href={buttonHref}>
               <button className="card-button">{buttonText}</button>
-            </Link>
+            </LoadingLink>
           </div>
         </div>
         <div className="dots-pattern">

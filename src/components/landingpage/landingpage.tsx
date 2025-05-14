@@ -1,7 +1,7 @@
 // src/components/landing/LandingPage.tsx
 'use client'
-import Header from './header'
 import React from 'react'
+import Header from './header'
 import CTASection from './ctasection'
 import FeaturesSection from './featuresection'
 import HeroSection from './herosection'

@@ -2,7 +2,7 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
-
+import { useLoadingNavigation } from "@/components/ui/LoadingProvider"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
@@ -40,15 +40,31 @@ interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
+  navigateTo?: string
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, navigateTo, onClick, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
+    const { startLoading, navigateTo: navigate } = useLoadingNavigation();    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+      // If navigateTo is provided, use the navigateTo function
+      if (navigateTo) {
+        e.preventDefault();
+        navigate(navigateTo);
+        return;
+      }
+      
+      // Call the original onClick handler if provided
+      if (onClick) {
+        onClick(e);
+      }
+    };
+    
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
+        onClick={handleClick}
         {...props}
       />
     )

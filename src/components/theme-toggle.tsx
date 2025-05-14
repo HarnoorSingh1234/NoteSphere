@@ -13,13 +13,10 @@ export function ThemeToggle() {
   React.useEffect(() => {
     setMounted(true)
   }, [])
-  
-  // If not mounted yet, render a placeholder button with the same dimensions
+    // If not mounted yet, render a plain div placeholder to avoid hydration mismatch
   if (!mounted) {
     return (
-      <StyledToggleButton className="placeholder" aria-hidden="true">
-        <span className="sr-only">Toggle theme</span>
-      </StyledToggleButton>
+      <div style={{ width: 40, height: 40 }} aria-hidden="true" />
     )
   }
   return (

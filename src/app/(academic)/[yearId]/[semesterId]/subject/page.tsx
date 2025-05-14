@@ -1,8 +1,7 @@
 // app/(academic)/[yearId]/[semesterId]/subject/page.tsx
 'use client'
 
-import Link from 'next/link'
-import React, { use } from 'react'
+import React from 'react'
 import { Button } from '@/components/ui/button'
 import { motion } from '@/lib/motion-utils'
 import { FileText } from 'lucide-react'
@@ -10,6 +9,7 @@ import { useRouter } from 'next/navigation'
 import NavigationCard from '@/components/ui/NavigationCard'
 import { SubjectIcon, SectionIcon, NotesIcon } from '@/components/ui/NavigationIcons'
 import { CanvasBackground } from '@/components/ui/CanvasBackground'
+import { useLoadingNavigation } from '@/components/ui/LoadingProvider'
 
 const subjects = [
   { id: '1', semesterId: '1', name: 'Mathematics', code: 'MATH101' },
@@ -38,8 +38,10 @@ const subjectColors: Record<string, { accent: string; secondary: string }> = {
 
 export default function SubjectPage({ params }: { params: { yearId: string, semesterId: string } }) {
   const router = useRouter();
-  const unwrappedParams = use(params);
+  // Unwrap params for Next.js 15+
+  const unwrappedParams = React.use(params);
   const { yearId, semesterId } = unwrappedParams;
+  const { navigateTo } = useLoadingNavigation();
   const filteredSubjects = subjects.filter(s => s.semesterId === semesterId);
   
   return (
@@ -53,9 +55,8 @@ export default function SubjectPage({ params }: { params: { yearId: string, seme
             <p className="text-zinc-500 mt-1">
               Browse subjects for Year {yearId}, Semester {semesterId}
             </p>
-          </div>
-          <div className="mt-4 md:mt-0">
-            <Button onClick={() => router.push('/upload')}>
+          </div>          <div className="mt-4 md:mt-0">
+            <Button navigateTo="/upload">
               <FileText className="mr-2 h-4 w-4" /> Upload Notes
             </Button>
           </div>

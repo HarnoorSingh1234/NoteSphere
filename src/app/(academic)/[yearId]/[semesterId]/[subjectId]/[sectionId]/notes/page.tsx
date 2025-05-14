@@ -1,7 +1,6 @@
 'use client'
 
-import React, { useEffect, use } from 'react'
-import Link from 'next/link'
+import React, { useEffect } from 'react'
 import { motion } from '@/lib/motion-utils'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
@@ -10,6 +9,8 @@ import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useRouter } from 'next/navigation'
 import { CanvasBackground } from '@/components/ui/CanvasBackground'
+import { LoadingLink } from '@/components/ui/LoadingLink'
+import { useLoadingNavigation } from '@/components/ui/LoadingProvider'
 
 const subjects = [
   { id: '1', semesterId: '1', name: 'Mathematics', code: 'MATH101' },
@@ -100,10 +101,17 @@ const notesFiles = [
   }
 ]
 
+function formatDate(date: Date) {
+  // Always outputs YYYY-MM-DD
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
 export default function NotesPage({ params }: { params: { yearId: string, semesterId: string, subjectId: string, sectionId: string } }) {
   const router = useRouter();
-  const unwrappedParams = use(params);
+  // Unwrap params for Next.js 15+
+  const unwrappedParams = React.use(params);
   const { yearId, semesterId, subjectId, sectionId } = unwrappedParams;
+  const { navigateTo } = useLoadingNavigation();
   
   const subject = subjects.find(s => s.id === subjectId);
   const section = sections.find(s => s.id === sectionId) || sections.find(s => s.id === 'AId'); // Fallback to section A if not found
@@ -119,14 +127,17 @@ export default function NotesPage({ params }: { params: { yearId: string, semest
       <CanvasBackground />
       
       <div className="container mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-center mb-8">          <div>
+        <div className="flex flex-col md:flex-row justify-between items-center mb-8">
+          <div>
             <h1 className="text-2xl font-bold">Notes and Materials</h1>
             <p className="text-zinc-500 mt-1">
               {subjectName}
             </p>
-          </div>
-          <div className="mt-4 md:mt-0">
-            <Button variant="secondary" onClick={() => router.push('/upload')}>
+          </div>          <div className="mt-4 md:mt-0">
+            <Button 
+              variant="secondary" 
+              navigateTo="/upload"
+            >
               <FileText className="mr-2 h-4 w-4" /> Upload Notes
             </Button>
           </div>
@@ -173,7 +184,7 @@ export default function NotesPage({ params }: { params: { yearId: string, semest
                         <AvatarFallback>{note.author.name[0]}</AvatarFallback>
                       </Avatar>
                       <span className="text-sm text-zinc-500">{note.author.name}</span>
-                      <span className="text-xs text-zinc-400">• {new Date(note.createdAt).toLocaleDateString()}</span>
+                      <span className="text-xs text-zinc-400">• {formatDate(note.createdAt)}</span>
                     </div>
                     <div className="flex gap-4 text-sm text-zinc-500">
                       <div className="flex items-center">
@@ -188,15 +199,12 @@ export default function NotesPage({ params }: { params: { yearId: string, semest
                   </CardContent>
                   <CardFooter className="border-t pt-4 flex gap-2">
                     <Button 
-                      variant="default" 
-                      size="sm" 
+                      variant="default"                      size="sm" 
                       className="flex-1" 
                       style={{ backgroundColor: colors.accent }}
-                      asChild
+                      navigateTo={`/${yearId}/${semesterId}/${subjectId}/${sectionId}/notes/${note.id}`}
                     >
-                      <Link href={`/${yearId}/${semesterId}/${subjectId}/${sectionId}/notes/${note.id}`}>
-                        <Eye className="mr-2 h-4 w-4" /> View
-                      </Link>
+                      <Eye className="mr-2 h-4 w-4" /> View
                     </Button>
                     <Button 
                       variant="outline" 

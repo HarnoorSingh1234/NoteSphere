@@ -1,13 +1,18 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import Link from 'next/link'
 import { BookOpen } from 'lucide-react'
-import { motion } from '@/lib/motion-utils'
+import { motion } from 'framer-motion'
 import { SignedOut, SignInButton, SignUpButton, SignedIn, UserButton } from '@clerk/nextjs'
 import { ThemeToggle } from '@/components/theme-toggle'
 import styled from 'styled-components'
+import { LoadingLink } from '@/components/ui/LoadingLink'
+import { useLoadingNavigation } from '@/components/ui/LoadingProvider'
 
+// Create a motion header component first
+const MotionHeader = motion.header;
+
+// Define the Header component
 export default function Header() {
   // Add client-side only rendering for auth components
   const [isMounted, setIsMounted] = useState(false);
@@ -15,8 +20,7 @@ export default function Header() {
   useEffect(() => {
     setIsMounted(true);
   }, []);
-  
-  return (
+    return (
     <StyledHeader
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
@@ -30,16 +34,15 @@ export default function Header() {
           <span className="logo-text">NoteSphere</span>
           <div className="logo-accent" />
         </div>
-        
-        <nav className="header-nav">
+          <nav className="header-nav">
           {['home','features', 'how-it-works'].map((id) => (
-            <Link
+            <LoadingLink
               key={id}
               href={`#${id}`}
               className="nav-link"
             >
               <span>{id.replace('-', ' ').replace(/\b\w/g, (c) => c.toUpperCase())}</span>
-            </Link>
+            </LoadingLink>
           ))}
         </nav>
         
@@ -82,7 +85,8 @@ export default function Header() {
   )
 }
 
-const StyledHeader = styled(motion.header)`
+// Then style it
+const StyledHeader = styled(MotionHeader)`
   --primary: #ff3e00;
   --primary-hover: #ff6d43;
   --secondary: #4d61ff;
