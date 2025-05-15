@@ -14,11 +14,17 @@ enum NoteType {
   PDF
 }
 
+enum UserRole {
+  USER
+  ADMIN
+}
+
 model User {
   clerkId    String    @id @unique
   email      String    @unique
   firstName  String
   lastName   String
+  role       UserRole  @default(USER)
   createdAt  DateTime  @default(now())
 
   // Relations
@@ -27,10 +33,20 @@ model User {
   comments   Comment[]
 }
 
+model Year {
+  id        String    @id @default(cuid())
+  number    Int       @unique // e.g., 1, 2, 3, 4 for different years
+  semesters Semester[]
+}
+
 model Semester {
   id        String    @id @default(cuid())
-  number    Int       @unique // e.g., 1, 2, 3, etc.
+  number    Int       // e.g., 1 or 2 for semester number within a year
+  year      Year      @relation(fields: [yearId], references: [id])
+  yearId    String
   subjects  Subject[]
+  
+  @@unique([number, yearId]) // Unique semester number within a year
 }
 
 model Subject {
@@ -50,6 +66,7 @@ model Note {
   content       String
   type          NoteType
   fileUrl       String
+  isPublic      Boolean  @default(false) // Added public visibility flag
   downloadCount Int      @default(0)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -76,18 +93,15 @@ model Like {
 }
 
 model Comment {
-  id        String     @id @default(cuid())
+  id        String   @id @default(cuid())
   content   String
-  createdAt DateTime   @default(now())
+  createdAt DateTime @default(now())
 
   // Relations
-  user      User       @relation(fields: [userId], references: [clerkId])
+  user      User     @relation(fields: [userId], references: [clerkId])
   userId    String
-  note      Note       @relation(fields: [noteId], references: [id])
+  note      Note     @relation(fields: [noteId], references: [id])
   noteId    String
-  replies   Comment[]  @relation("Replies")
-  parent    Comment?   @relation("Replies", fields: [parentId], references: [id])
-  parentId  String?
 }
 
 model Tag {

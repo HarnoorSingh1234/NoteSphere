@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { BookOpen, GraduationCap, Github, Instagram, Moon, Sun } from "lucide-react"
+import { BookOpen, GraduationCap, Github, Instagram, Moon, Sun, Contact } from "lucide-react"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import {
@@ -54,7 +54,7 @@ function Footer() {
             {/* Quick Links */}
             <div>
               <h3 className="mb-4 text-lg font-bold flex items-center gap-2 text-[#264143]">
-                <div className="flex items-center justify-center w-7 h-7 bg-white border-[0.15em] border-[#264143] rounded-[0.3em] shadow-[0.15em_0.15em_0_#DE5499]">
+                <div className="flex items-center justify-center w-7 h-7 bg-white border-[0.15em] border-[#264143] rounded-[0.3em] transition-all duration-200 ease-in-out hover:rotate-[-5deg] hover:scale-105 shadow-[0.15em_0.15em_0_#DE5499]">
                   <GraduationCap className="h-4 w-4 text-[#264143]" />
                 </div>
                 Quick Links
@@ -74,7 +74,12 @@ function Footer() {
             
             {/* Contact */}
             <div>
-              <h3 className="mb-4 text-lg font-bold text-[#264143]">Get In Touch</h3>
+               <h3 className="mb-4 text-lg font-bold flex items-center gap-2 text-[#264143]">
+               <div className="flex items-center justify-center w-7 h-7 bg-white border-[0.15em] border-[#264143] rounded-[0.3em] transition-all duration-200 ease-in-out hover:rotate-[-5deg] hover:scale-105 shadow-[0.15em_0.15em_0_#DE5499]">
+                  <Contact className="h-4 w-4 text-[#264143]" />
+                </div>
+                Get In Touch
+              </h3>
               <address className="space-y-2 text-sm not-italic text-[#264143]/80 border-l-[0.2em] border-[#DE5499] pl-4">
                 <p>Guru Nanak Dev University</p>
                 <p>Amritsar, Punjab 143001</p>
@@ -97,10 +102,12 @@ function Footer() {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <button className="flex items-center justify-center w-10 h-10 bg-white border-[0.15em] border-[#264143] rounded-full shadow-[0.15em_0.15em_0_#DE5499] hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#DE5499] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#DE5499] transition-all duration-200">
-                        <Github className="h-5 w-5 text-[#264143]" />
-                        <span className="sr-only">Github</span>
-                      </button>
+                      <Link href="https://github.com/HarnoorSingh1234/NoteSphere">
+                        <button className="flex items-center cursor-pointer justify-center w-10 h-10 bg-white border-[0.15em] border-[#264143] rounded-full shadow-[0.15em_0.15em_0_#DE5499] hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#DE5499] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#DE5499] transition-all duration-200">
+                          <Github className="h-5 w-5 cursor-pointer text-[#264143]" />
+                          <span className="sr-only">Github</span>
+                        </button>
+                      </Link>
                     </TooltipTrigger>
                     <TooltipContent className="bg-white border-[0.15em] border-[#264143] shadow-[0.2em_0.2em_0_#E99F4C]">
                       <p>Check out the code!</p>
@@ -112,8 +119,8 @@ function Footer() {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Link href="https://www.instagram.com/harnoor_singh124/">
-                        <button className="flex items-center justify-center w-10 h-10 bg-white border-[0.15em] border-[#264143] rounded-full shadow-[0.15em_0.15em_0_#E99F4C] hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#E99F4C] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#E99F4C] transition-all duration-200">
-                          <Instagram className="h-5 w-5 text-[#264143]" />
+                        <button className="flex items-center justify-center cursor-pointer w-10 h-10 bg-white border-[0.15em] border-[#264143] rounded-full shadow-[0.15em_0.15em_0_#E99F4C] hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#E99F4C] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#E99F4C] transition-all duration-200">
+                          <Instagram className="h-5 cursor-pointer w-5 text-[#264143]" />
                           <span className="sr-only">Instagram</span>
                         </button>
                       </Link>
@@ -128,8 +135,8 @@ function Footer() {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Link href="https://www.instagram.com/tdhingra_16/">
-                        <button className="flex items-center justify-center w-10 h-10 bg-white border-[0.15em] border-[#264143] rounded-full shadow-[0.15em_0.15em_0_#E99F4C] hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#E99F4C] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#E99F4C] transition-all duration-200">
-                          <Instagram className="h-5 w-5 text-[#264143]" />
+                        <button className="flex items-center justify-center cursor-pointer w-10 h-10 bg-white border-[0.15em] border-[#264143] rounded-full shadow-[0.15em_0.15em_0_#E99F4C] hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#E99F4C] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#E99F4C] transition-all duration-200">
+                          <Instagram className="h-5 cursor-pointer w-5 text-[#264143]" />
                           <span className="sr-only">Instagram</span>
                         </button>
                       </Link>

@@ -3,7 +3,7 @@ import DashboardPage from "@/components/admin/AdminDashboardPage"
 
 const AdminDashboard = () => {
   return (
-    <ProtectRoute allowedRoles={['admin']}>
+    <ProtectRoute allowedRoles={['ADMIN']}>
       <>
       <DashboardPage />
       </>
