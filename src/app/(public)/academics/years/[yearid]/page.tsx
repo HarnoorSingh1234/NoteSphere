@@ -20,7 +20,9 @@ interface Year {
   number: number;
 }
 
-export default function YearPage({ params }: { params: { id: string } }) {
+export default function YearPage({ params }: { params: { yearid: string } }) {
+  const { yearid } = params; // Access the yearid property directly
+  
   const [year, setYear] = useState<Year | null>(null);
   const [semesters, setSemesters] = useState<Semester[]>([]);
   const [loading, setLoading] = useState(true);
@@ -28,12 +30,12 @@ export default function YearPage({ params }: { params: { id: string } }) {
   useEffect(() => {
     async function fetchYearData() {
       try {
-        // Fetch year details
-        const yearResponse = await fetch(`/api/years/${params.id}`);
+        // Using the destructured yearid
+        const yearResponse = await fetch(`/api/years/${yearid}`);
         const yearData = await yearResponse.json();
         
         // Fetch semesters for this year
-        const semestersResponse = await fetch(`/api/semesters?yearId=${params.id}`);
+        const semestersResponse = await fetch(`/api/semesters?yearId=${yearid}`);
         const semestersData = await semestersResponse.json();
         
         if (yearData.year) {
@@ -51,7 +53,7 @@ export default function YearPage({ params }: { params: { id: string } }) {
     }
     
     fetchYearData();
-  }, [params.id]);
+  }, [yearid]); // Updated dependency array
 
   // Map semesters to AcademicCard format
   const academicSemesters = semesters.map((semester, index) => ({
@@ -63,9 +65,10 @@ export default function YearPage({ params }: { params: { id: string } }) {
     price: semester._count?.subjects.toString() || "6",
     priceDescription: "subjects",
     buttonText: "View Subjects",
-    buttonHref: `/years/${params.id}/semesters/${semester.id}`
+    buttonHref: `/years/${yearid}/semesters/${semester.id}` // Using the destructured yearid
   }));
 
+  // Rest of your component remains the same
   return (
     <div className="relative w-full min-h-screen bg-[#EDDCD9] py-12">
       {/* Pattern grid background */}
@@ -153,7 +156,7 @@ export default function YearPage({ params }: { params: { id: string } }) {
   );
 }
 
-// Helper functions for semester content
+// Helper functions remain the same
 function getSemesterTagText(semesterNumber: number): string {
   return semesterNumber === 1 ? "Fall" : "Spring";
 }
@@ -169,6 +172,7 @@ function getSemesterDescription(yearNumber?: number, semesterNumber?: number): s
 }
 
 function getSemesterFeatures(semesterNumber: number): { icon: JSX.Element; text: string; }[] {
+  // Features function implementation remains unchanged
   const commonFeatures = [
     {
       icon: (

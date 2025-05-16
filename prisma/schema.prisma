@@ -109,3 +109,13 @@ model Tag {
   name  String  @unique
   notes Note[]
 }
+
+model UserAuth {
+  id                String    @id @default(cuid())
+  clerkId           String    @unique
+  googleAccessToken  String?
+  googleRefreshToken String?
+  googleTokenExpiry  DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}

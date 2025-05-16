@@ -36,7 +36,16 @@ export default function YearsPage() {
     fetchYears();
   }, []);
 
-  // Map database years to the AcademicCard format
+  // Color schemes for different cards
+  const colorSchemes = [
+    { accent: "#ff3e00", secondary: "#4d61ff" },   // Orange/Blue
+    { accent: "#E99F4C", secondary: "#DE5499" },   // Gold/Pink
+    { accent: "#4CAF50", secondary: "#9C27B0" },   // Green/Purple
+    { accent: "#2196F3", secondary: "#FF9800" },   // Blue/Orange
+    { accent: "#00BCD4", secondary: "#FF5722" }    // Teal/Deep Orange
+  ];
+
+  // Map database years to the AcademicCard format with different colors
   const academicYears = years.map((year, index) => ({
     id: year.id,
     title: `Year ${year.number}`,
@@ -46,7 +55,10 @@ export default function YearsPage() {
     price: year._count?.semesters.toString() || "2",
     priceDescription: "semesters",
     buttonText: "Select Year",
-    buttonHref: `/years/${year.id}`
+    buttonHref: `/academics/years/${year.id}`,
+    // Assign different colors by rotating through the colorSchemes array
+    accentColor: colorSchemes[index % colorSchemes.length].accent,
+    secondaryColor: colorSchemes[index % colorSchemes.length].secondary
   }));
 
   return (
@@ -56,9 +68,8 @@ export default function YearsPage() {
       
       {/* Overlay dots */}
       <div className="absolute inset-0 bg-[radial-gradient(rgba(0,0,0,0.05)_1px,transparent_1px)] bg-[length:2em_2em] bg-[-1em_-1em] pointer-events-none opacity-10 z-[1]" />
-      
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-6xl mx-auto">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full max-w-full">
+        <div className="w-full">
           <motion.div 
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -66,7 +77,7 @@ export default function YearsPage() {
             className="mb-12 text-center"
           >
             <div className="inline-flex items-center justify-center mb-4">
-              <div className="flex items-center justify-center w-12 h-12 bg-white border-[0.15em] border-[#050505] rounded-full shadow-[0.2em_0.2em_0_#ff3e00] mb-4">
+              <div className="flex items-center transition-all duration-200 ease-in-out hover:rotate-[-5deg] hover:scale-105 justify-center w-12 h-12 bg-white border-[0.15em] border-[#050505] rounded-full shadow-[0.2em_0.2em_0_#ff3e00] mb-4">
                 <BookOpen className="w-6 h-6 text-[#050505]" />
               </div>
             </div>
@@ -83,33 +94,41 @@ export default function YearsPage() {
           {loading ? (
             <div className="flex justify-center items-center h-64">
               <div className="w-12 h-12 border-4 border-[#ff3e00] border-t-transparent rounded-full animate-spin"></div>
-            </div>
-          ) : academicYears.length === 0 ? (
+            </div>          ) : academicYears.length === 0 ? (
             <div className="text-center p-12 bg-white border-[0.15em] border-[#050505] rounded-[0.6em] shadow-[0.4em_0.4em_0_#000]">
               <h3 className="text-2xl font-bold text-[#050505] mb-2">No Years Available</h3>
               <p className="text-[#050505]/70">Academic years will be added by the administrators.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 justify-items-center">
+            // Responsive grid layout that covers the full screen area
+            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6 pb-6">
               {academicYears.map((year, index) => (
-                <AcademicCard
+                <motion.div 
                   key={year.id}
-                  title={year.title}
-                  tagText={year.tagText}
-                  description={year.description}
-                  features={year.features}
-                  price={year.price}
-                  priceDescription={year.priceDescription}
-                  buttonText={year.buttonText}
-                  buttonHref={year.buttonHref}
-                  accentColor={index % 2 === 0 ? "#ff3e00" : "#E99F4C"}
-                  secondaryColor={index % 2 === 0 ? "#4d61ff" : "#DE5499"}
-                />
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                  className="h-full"
+                >
+                  <AcademicCard
+                    title={year.title}
+                    tagText={year.tagText}
+                    description={year.description}
+                    features={year.features}
+                    price={year.price}
+                    priceDescription={year.priceDescription}
+                    buttonText={year.buttonText}
+                    buttonHref={year.buttonHref}
+                    accentColor={year.accentColor}
+                    secondaryColor={year.secondaryColor}
+                    // Alternate between different types for more variation
+                    type={['primary', 'secondary', 'info', 'purple', 'teal'][index % 5] as any}
+                  />
+                </motion.div>
               ))}
             </div>
           )}
-          
-          <div className="mt-12 flex justify-center gap-4">
+            <div className="mt-12 flex justify-center gap-4">
             <Link 
               href="/"
               className="inline-flex items-center justify-center px-5 py-2 text-[#050505] font-bold bg-white border-[0.2em] border-[#050505] rounded-[0.4em] shadow-[0.2em_0.2em_0_#ff3e00] hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#ff3e00] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#ff3e00] transition-all duration-200"
@@ -126,7 +145,7 @@ export default function YearsPage() {
   );
 }
 
-// Helper functions to generate content based on year number
+// Helper functions remain unchanged
 function getYearTagText(yearNumber: number): string {
   const tags = ["Freshman", "Sophomore", "Junior", "Senior", "Post-grad"];
   return tags[yearNumber - 1] || `Year ${yearNumber}`;

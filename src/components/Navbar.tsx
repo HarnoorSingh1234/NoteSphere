@@ -98,7 +98,7 @@ const Navbar = () => {
           
           <SignedOut>
             <nav className="hidden md:flex gap-6">
-              {['academic'].map((item) => {
+              {['academics'].map((item) => {
                 const isActive = pathname === `/${item}`;
                 return (
                   <Link 

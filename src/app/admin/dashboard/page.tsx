@@ -1,11 +1,12 @@
+"use client"
 import ProtectRoute from "@/app/(auth)/protected/ProtectRoute"
-import DashboardPage from "@/components/admin/AdminDashboardPage"
+import AdminDashboardPage from "@/components/admin/AdminDashboardPage";
 
 const AdminDashboard = () => {
   return (
     <ProtectRoute allowedRoles={['ADMIN']}>
       <>
-      <DashboardPage />
+      <AdminDashboardPage />
       </>
     </ProtectRoute>
   );

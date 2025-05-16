@@ -1,0 +1,8 @@
+scope=https://www.googleapis.com/auth/drive.file
+
+steps 1.setup oauth 2 client with client id and client secret and url localhost/oath2callback deployed: vercel.app/oauth2callback
+
+
+      2. /auth route generate auth url function of oauth 2 client 
+      3. oath2 callback route . function of oath2 client used
+	 4. upload route
