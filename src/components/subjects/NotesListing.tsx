@@ -58,24 +58,15 @@ const NoteCard: React.FC<{ note: Note }> = ({ note }) => {
   const handleDownload = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
-    try {
+      try {
       if (!note.id) {
         console.error('Note ID is missing');
         alert('Cannot download this file: Note ID is missing');
         return;
       }
       
-      // Track download on the server
-      const response = await fetch(`/api/notes/${note.id}/download`, {
-        method: 'POST',
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        console.error('Failed to track download', errorData);
-        // Continue with download anyway, just log the tracking error
-      }
+      // Skip download tracking as it's causing errors
+      // We'll proceed directly to the file download
       
       // If we have a Google Drive file ID, use the direct download URL
       if (note.driveFileId) {

@@ -32,16 +32,20 @@ export async function GET(
     
     // Get authenticated user (if any) - we could use this for analytics in the future
     const { userId } = await auth();
-    
-    // Increment download count
-    await prisma.note.update({
-      where: { id: noteId },
-      data: {
-        downloadCount: {
-          increment: 1
+      // Increment download count
+    try {
+      await prisma.note.update({
+        where: { id: noteId },
+        data: {
+          downloadCount: {
+            increment: 1
+          }
         }
-      }
-    });
+      });
+    } catch (countError) {
+      // Continue even if download count update fails
+      console.warn('Failed to update download count, but continuing with download:', countError);
+    }
     
     // Handle download based on file source
     let downloadUrl;

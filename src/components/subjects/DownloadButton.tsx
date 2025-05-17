@@ -23,31 +23,12 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({ noteId }) => {  const [
 
   const handleDownload = async () => {
     try {
-      setIsDownloading(true);
-        // Validate note ID
+      setIsDownloading(true);      // Validate note ID
       if (!noteId) {
         throw new Error('Missing note ID');
       }
-
-      // First, track the download
-      const response = await fetch(`/api/notes/${noteId}/download`, {
-        method: 'POST',
-      });
       
-      if (!response.ok) {
-        // Try to parse error response
-        let errorMessage = 'Failed to track download';
-        try {
-          const errorData = await response.json();
-          errorMessage = errorData.error || errorMessage;
-        } catch (parseError) {
-          console.error('Error parsing error response:', parseError);
-        }
-        
-        // Continue with download even if tracking fails, but log the error
-        console.warn(`Download tracking failed: ${errorMessage}`);
-      }
-        // Then redirect to download-file endpoint
+      // Proceed directly to the file download endpoint
       const downloadWindow = window.open(`/api/notes/${noteId}/download-file`, '_blank');
       
       // Check if the window was blocked by popup blockers
