@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { BookOpen, ArrowLeft, CalendarDays } from 'lucide-react';
 import AcademicCard from '@/components/AcademicCard';
+import { useParams } from 'next/navigation';
 
 interface Semester {
   id: string;
@@ -20,8 +21,10 @@ interface Year {
   number: number;
 }
 
-export default function YearPage({ params }: { params: { yearid: string } }) {
-  const { yearid } = params; // Access the yearid property directly
+export default function YearPage() {
+  // Use the useParams hook to access route parameters
+  const params = useParams();
+  const yearid = params.yearid as string; // Cast to string since params values are string | string[]
   
   const [year, setYear] = useState<Year | null>(null);
   const [semesters, setSemesters] = useState<Semester[]>([]);
@@ -30,7 +33,7 @@ export default function YearPage({ params }: { params: { yearid: string } }) {
   useEffect(() => {
     async function fetchYearData() {
       try {
-        // Using the destructured yearid
+        // Using yearid from useParams
         const yearResponse = await fetch(`/api/years/${yearid}`);
         const yearData = await yearResponse.json();
         
@@ -52,9 +55,10 @@ export default function YearPage({ params }: { params: { yearid: string } }) {
       }
     }
     
-    fetchYearData();
-  }, [yearid]); // Updated dependency array
-
+    if (yearid) {
+      fetchYearData();
+    }
+  }, [yearid]); // Updated dependency array with yearid from useParams
   // Map semesters to AcademicCard format
   const academicSemesters = semesters.map((semester, index) => ({
     id: semester.id,
@@ -65,7 +69,7 @@ export default function YearPage({ params }: { params: { yearid: string } }) {
     price: semester._count?.subjects.toString() || "6",
     priceDescription: "subjects",
     buttonText: "View Subjects",
-    buttonHref: `/years/${yearid}/semesters/${semester.id}` // Using the destructured yearid
+    buttonHref: `/academics/years/${yearid}/semesters/${semester.id}` // Using the destructured yearid
   }));
 
   // Rest of your component remains the same
@@ -156,15 +160,15 @@ export default function YearPage({ params }: { params: { yearid: string } }) {
   );
 }
 
-// Helper functions remain the same
+// Helper functions
 function getSemesterTagText(semesterNumber: number): string {
-  return semesterNumber === 1 ? "Fall" : "Spring";
+  return semesterNumber % 2 !== 0 ? "Fall" : "Spring";
 }
 
 function getSemesterDescription(yearNumber?: number, semesterNumber?: number): string {
   if (!yearNumber || !semesterNumber) return "Semester courses and materials";
   
-  if (semesterNumber === 1) {
+  if (semesterNumber % 2 !== 0) {
     return `First semester courses for Year ${yearNumber} students. Core fundamentals and introductory subjects.`;
   } else {
     return `Second semester courses for Year ${yearNumber} students. Advanced topics and expanded knowledge.`;
@@ -172,7 +176,6 @@ function getSemesterDescription(yearNumber?: number, semesterNumber?: number): s
 }
 
 function getSemesterFeatures(semesterNumber: number): { icon: JSX.Element; text: string; }[] {
-  // Features function implementation remains unchanged
   const commonFeatures = [
     {
       icon: (
@@ -180,7 +183,7 @@ function getSemesterFeatures(semesterNumber: number): { icon: JSX.Element; text:
           <path d="M20,4C21.1,4 22,4.9 22,6V18C22,19.1 21.1,20 20,20H4C2.9,20 2,19.1 2,18V6C2,4.9 2.9,4 4,4H20M4,6V18H20V6H4M6,9H18V11H6V9M6,13H16V15H6V13Z" />
         </svg>
       ),
-      text: semesterNumber === 1 ? "Core Subjects" : "Advanced Subjects",
+      text: semesterNumber % 2 !== 0 ? "Core Subjects" : "Advanced Subjects", // Updated to use modulo
     },
     {
       icon: (
@@ -192,7 +195,8 @@ function getSemesterFeatures(semesterNumber: number): { icon: JSX.Element; text:
     },
   ];
   
-  const semesterSpecificFeatures = semesterNumber === 1 ? [
+  // Updated to use modulo for odd/even semester check
+  const semesterSpecificFeatures = semesterNumber % 2 !== 0 ? [
     {
       icon: (
         <svg className="w-[0.9em] h-[0.9em] fill-white" viewBox="0 0 24 24">

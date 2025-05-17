@@ -66,6 +66,7 @@ model Note {
   content       String
   type          NoteType
   fileUrl       String
+  driveFileId   String?  // Google Drive file ID for direct access
   isPublic      Boolean  @default(false) // Added public visibility flag
   downloadCount Int      @default(0)
   createdAt     DateTime @default(now())

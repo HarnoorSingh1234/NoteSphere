@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createResumableUploadSession } from "@/lib/google-drive";
+import { createResumableUploadSession, generateDownloadUrl } from "@/lib/google-drive";
 import { getCurrentUser } from "@/lib/auth";
-import { isGoogleAccountConnected } from "@/lib/google-auth";
 
 // Set larger body size limit for the upload route
 export const config = {
@@ -16,22 +15,17 @@ export const config = {
  */
 export async function POST(request: NextRequest) {
   try {
+    console.log('Upload API called - creating resumable upload session');
+    
     // Get current user
     const user = await getCurrentUser();
     
     if (!user) {
+      console.log('Authentication required - no user found');
       return NextResponse.json({ error: "Authentication required" }, { status: 401 });
     }
     
-    // Check if user has connected their Google account
-    const googleConnected = await isGoogleAccountConnected(user.id);
-    
-    if (!googleConnected) {
-      return NextResponse.json({ 
-        error: "Google account not connected", 
-        needsAuth: true 
-      }, { status: 403 });
-    }
+    console.log(`User authenticated: ${user.id}`);
     
     // Parse the JSON data from the request
     const data = await request.json();
@@ -42,19 +36,25 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
     
-    // Create a resumable upload session
-    const uploadUrl = await createResumableUploadSession(
-      user.id,
+    // Create a resumable upload session using service account
+    const uploadResult = await createResumableUploadSession(
+      user.id, // Pass user ID for file ownership tracking, not for auth
       {
         name: data.fileName,
         mimeType: data.mimeType
       }
     );
     
-    // Return the upload URL to the client
+    // Generate download URL
+    const downloadUrl = generateDownloadUrl(uploadResult.fileId);
+    
+    // Return the upload URL and file info to the client
     return NextResponse.json({
       success: true,
-      uploadUrl,
+      uploadUrl: uploadResult.uploadUrl,
+      fileId: uploadResult.fileId,
+      downloadUrl,
+      webViewLink: uploadResult.webViewLink,
       message: "Ready for file upload"
     });
   } catch (error) {

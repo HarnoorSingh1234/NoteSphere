@@ -14,7 +14,10 @@ export async function GET(request: Request) {
     const page = searchParams.get('page') ? parseInt(searchParams.get('page')!) : 1;
     const skip = (page - 1) * limit;
     
-    // Build where clause based on query parameters
+
+
+
+
     let whereClause: any = {};
     
     if (subjectId) {
@@ -108,15 +111,39 @@ export async function POST(request: Request) {
       );
     }
     
-    // Use formData to handle file uploads
-    const formData = await request.formData();
+    let title: string;
+    let description: string = '';
+    let subjectId: string;
+    let noteType: string;
+    let fileUrl: string;
+    let driveFileId: string;
     
-    // Extract note metadata from form
-    const title = formData.get('title') as string;
-    const description = formData.get('description') as string;
-    const subjectId = formData.get('subjectId') as string;
-    const noteType = formData.get('noteType') as string;
-    const fileUrl = formData.get('fileUrl') as string; // URL to stored file (from upload endpoint)
+    // Check content type to handle both JSON and FormData
+    const contentType = request.headers.get('content-type') || '';
+    
+    if (contentType.includes('application/json')) {
+      console.log('Processing JSON request for note creation');
+      // Handle JSON data
+      const jsonData = await request.json();
+      title = jsonData.title;
+      description = jsonData.content || '';
+      subjectId = jsonData.subjectId;
+      noteType = jsonData.type || 'PDF';
+      fileUrl = jsonData.fileUrl;
+      driveFileId = jsonData.driveFileId;
+    } else {
+      console.log('Processing FormData request for note creation');
+      // Use formData to handle file uploads
+      const formData = await request.formData();
+      
+      // Extract note metadata from form
+      title = formData.get('title') as string;
+      description = formData.get('description') as string;
+      subjectId = formData.get('subjectId') as string;
+      noteType = formData.get('noteType') as string;
+      fileUrl = formData.get('fileUrl') as string; // URL to stored file (from upload endpoint)
+      driveFileId = formData.get('driveFileId') as string; // Google Drive file ID
+    }
     
     // Validate required fields
     if (!title || !subjectId || !fileUrl) {
@@ -144,16 +171,28 @@ export async function POST(request: Request) {
         { status: 404 }
       );
     }
-    
     // Determine if note should be auto-verified (admins' notes are auto-verified)
     const isUserAdmin = await isAdmin();
     const autoVerified = isUserAdmin;
-      // Create note
+      // Log the data we're about to use to create the note
+    console.log('Creating note with data:', {
+      title,
+      content: description || '',
+      fileUrl,
+      driveFileId,
+      type: noteType || 'LECTURE',
+      isPublic: autoVerified,
+      subjectId,
+      authorId: user.clerkId
+    });
+    
+    // Create note
     const note = await prisma.note.create({
       data: {
         title,
         content: description || '',
         fileUrl,
+        driveFileId, // Add Google Drive file ID
         type: (noteType as any) || 'LECTURE',
         isPublic: autoVerified,
         subjectId,
