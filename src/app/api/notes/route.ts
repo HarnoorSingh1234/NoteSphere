@@ -16,16 +16,16 @@ export async function GET(request: Request) {
     
 
 
-
-
-    let whereClause: any = {};
+    let whereClause: any = {
+      isPublic: true // Default filter to only show public/verified notes
+    };
     
     if (subjectId) {
       whereClause.subjectId = subjectId;
     }
     
     if (authorId) {
-      whereClause.authorId = authorId;
+      whereClause.authorClerkId = authorId;
     }
     
     if (verified !== null) {

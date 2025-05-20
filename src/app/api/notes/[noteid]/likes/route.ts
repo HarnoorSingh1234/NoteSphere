@@ -5,10 +5,10 @@ import { auth } from '@clerk/nextjs/server';
 // GET likes for a specific note
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { noteid: string } }
 ) {
   try {
-    const noteId = params.id;
+    const noteId = params.noteid;
     
     // Check if note exists
     const note = await prisma.note.findUnique({
@@ -58,7 +58,7 @@ export async function GET(
 // Add or remove like on a note (toggle)
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { noteid: string } }
 ) {
   try {
     const { userId } = await auth();
@@ -70,7 +70,7 @@ export async function POST(
       );
     }
     
-    const noteId = params.id;
+    const noteId = params.noteid;
     
     // Check if note exists
     const note = await prisma.note.findUnique({

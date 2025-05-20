@@ -2,9 +2,10 @@
 
 import { useUser } from '@clerk/nextjs';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import PopularSubjects from "./popularsubjects";
 import QuickActions from "./quickactions";
-import RecentActivity from "./recentactivity";
+import PendingNotesPreview from "./PendingNotesPreview";
 import StatsGrid from "./statsgrid";
 
 export default function DashboardPage() {
@@ -15,7 +16,7 @@ export default function DashboardPage() {
   useEffect(() => {
     async function fetchAdminStats() {
       try {
-        const response = await fetch('/api/admin/stats');
+        const response = await fetch('/api/admin/dashboard/stats');
         if (response.ok) {
           const data = await response.json();
           setStats(data);
@@ -50,18 +51,15 @@ export default function DashboardPage() {
               <div className="w-10 h-10 border-4 border-[#E99F4C] rounded-full border-t-transparent animate-spin"></div>
             </div>
           ) : (
-            <>
-              <div className="bg-transparent">
+            <>              <div className="bg-transparent">
                 <StatsGrid />
               </div>
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                <RecentActivity />
+              <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
+                <PendingNotesPreview />
                 <PopularSubjects />
               </div>
             </>
-          )}
-          
-          <div className="bg-white rounded-[0.6em] border-[0.2em] border-[#264143] shadow-[0.2em_0.2em_0_#4CAF50] p-6">
+          )}          <div className="bg-white rounded-[0.6em] border-[0.2em] border-[#264143] shadow-[0.2em_0.2em_0_#4CAF50] p-6">
             <QuickActions />
           </div>
         </div>

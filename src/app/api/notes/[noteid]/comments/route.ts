@@ -5,10 +5,10 @@ import { auth } from '@clerk/nextjs/server';
 // GET comments for a specific note
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { noteid: string } }
 ) {
   try {
-    const noteId = params.id;
+    const noteId = params.noteid;
     
     // Check if note exists
     const note = await prisma.note.findUnique({
@@ -50,7 +50,7 @@ export async function GET(
 // Add a new comment to a note
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { noteid: string } }
 ) {
   try {
     const { userId } = await auth();
@@ -62,7 +62,7 @@ export async function POST(
       );
     }
     
-    const noteId = params.id;
+    const noteId = params.noteid;
     
     // Check if note exists and is public
     const note = await prisma.note.findUnique({

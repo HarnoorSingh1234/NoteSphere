@@ -18,8 +18,8 @@ export async function GET(
           include: { 
             year: true 
           }
-        },
-        notes: {
+        },        notes: {
+          where: { isPublic: true }, // Only include public/verified notes
           orderBy: { createdAt: 'desc' },
           include: {
             author: {

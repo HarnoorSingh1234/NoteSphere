@@ -1,13 +1,13 @@
 'use client';
 
 import Link from "next/link";
-import { Calendar, BookOpen, Book } from "lucide-react";
+import { Calendar, BookOpen, Book, FileText } from "lucide-react";
 
 export default function QuickActions() {
   return (
     <div className="grid gap-4">
       <h3 className="text-xl font-semibold text-[#264143]">Quick Actions</h3>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
         <Link 
           href="/admin/years" 
           className="p-4 bg-white border-[0.2em] border-[#264143] rounded-[0.6em] shadow-[0.2em_0.2em_0_#E99F4C] hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#E99F4C] transition-all duration-200"
@@ -52,7 +52,7 @@ export default function QuickActions() {
           </div>
         </Link>
         
-        <Link 
+      <Link 
           href="/admin/oauth" 
           className="p-4 bg-white border-[0.2em] border-[#264143] rounded-[0.6em] shadow-[0.2em_0.2em_0_#0070f3] hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#0070f3] transition-all duration-200"
         >
@@ -67,6 +67,21 @@ export default function QuickActions() {
             <div>
               <h4 className="font-bold text-[#264143]">Google Drive Setup</h4>
               <p className="text-sm text-[#264143]/70">Manage OAuth tokens</p>
+            </div>
+          </div>
+        </Link>
+        
+        <Link 
+          href="/admin/notes" 
+          className="p-4 bg-white border-[0.2em] border-[#264143] rounded-[0.6em] shadow-[0.2em_0.2em_0_#DE5499] hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#DE5499] transition-all duration-200"
+        >
+          <div className="flex items-center">
+            <div className="p-3 bg-[#EDDCD9] rounded-md mr-3 text-[#264143]">
+              <FileText size={20} />
+            </div>
+            <div>
+              <h4 className="font-bold text-[#264143]">Manage Notes</h4>
+              <p className="text-sm text-[#264143]/70">Review and organize all notes</p>
             </div>
           </div>
         </Link>

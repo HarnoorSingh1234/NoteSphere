@@ -14,9 +14,17 @@ export interface User {
   comments: Comment[]
 }
 
+export interface Year {
+  id: string
+  number: number
+  semesters: Semester[]
+}
+
 export interface Semester {
   id: string
   number: number
+  yearId: string
+  year: Year
   subjects: Subject[]
 }
 
@@ -39,6 +47,8 @@ export interface Note {
   downloadCount: number
   createdAt: Date
   updatedAt: Date
+  isRejected: boolean
+  isPublic: boolean
 
   authorClerkId: string
   author: User

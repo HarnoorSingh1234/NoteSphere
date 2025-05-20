@@ -63,11 +63,11 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({ noteId }) => {  const [
           });
           setIsDownloading(false);
         }
-      }, 10000); // 10 seconds timeout
+      }, 10000); 
     } catch (error) {
       console.error('Error handling download:', error);
       
-      // Determine the most user-friendly error message
+    
       let errorMessage = "Unexpected error occurred";
       if (error instanceof Error) {
         errorMessage = error.message;
@@ -82,7 +82,6 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({ noteId }) => {  const [
         errorMessage = "You don't have permission to access this file.";
       }
       
-      // Show error toast with improved message
       toast({
         title: "Download failed",
         description: errorMessage,
@@ -96,20 +95,21 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({ noteId }) => {  const [
       }
       setIsDownloading(false);
     }
-  };
-  return (
+  };  return (
     <Button 
       onClick={handleDownload}
       disabled={isDownloading}
       aria-busy={isDownloading}
-      className={`w-full px-6 py-3 text-white border-[0.15em] border-[#050505] rounded-[0.4em] transition-all duration-200 ${
+      className={`w-full sm:max-w-[250px] px-4 py-2.5 md:px-6 md:py-3 font-bold bg-white border-[0.15em] border-[#050505] rounded-[0.4em] transition-all duration-200 ${
         isDownloading 
-          ? 'bg-[#4d61ff]/70 cursor-wait shadow-[0.1em_0.1em_0_#050505]' 
-          : 'bg-[#4d61ff] shadow-[0.2em_0.2em_0_#050505] hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#050505] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#050505]'
+          ? 'text-[#4d61ff] cursor-wait shadow-[0.1em_0.1em_0_#4d61ff]/70' 
+          : 'text-[#050505] shadow-[0.15em_0.15em_0_#4d61ff] hover:translate-y-[-0.1em] hover:shadow-[0.25em_0.25em_0_#4d61ff] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#4d61ff]'
       }`}
     >
-      <Download className={`w-5 h-5 mr-2 ${isDownloading ? 'animate-pulse' : ''}`} /> 
-      {isDownloading ? 'Downloading...' : 'Download File'}
+      <Download className={`w-4 h-4 md:w-5 md:h-5 mr-2 ${isDownloading ? 'animate-pulse' : ''}`} /> 
+      <span className="text-sm md:text-base">
+        {isDownloading ? 'Downloading...' : 'Download File'}
+      </span>
     </Button>
   );
 };

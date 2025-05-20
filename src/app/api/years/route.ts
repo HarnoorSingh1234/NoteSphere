@@ -2,11 +2,52 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 
 // GET all years
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const includeAll = searchParams.get('include') === 'all';
+    
+    // Include option to get all nested data (semesters, subjects, notes)
     const years = await prisma.year.findMany({
       orderBy: { number: 'asc' },
-      include: {
+      include: includeAll ? {
+        semesters: {
+          orderBy: { number: 'asc' },
+          include: {
+            subjects: {
+              orderBy: { name: 'asc' },
+              include: {
+                notes: {
+                  include: {
+                    author: {
+                      select: {
+                        firstName: true,
+                        lastName: true,
+                        email: true
+                      }
+                    },
+                    _count: {
+                      select: {
+                        likes: true,
+                        comments: true
+                      }
+                    }
+                  }
+                },
+                _count: {
+                  select: { notes: true }
+                }
+              }
+            },
+            _count: {
+              select: { subjects: true }
+            }
+          }
+        },
+        _count: {
+          select: { semesters: true }
+        }
+      } : {
         _count: {
           select: { semesters: true }
         }
