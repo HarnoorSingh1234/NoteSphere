@@ -1,6 +1,6 @@
-import { getCurrentUser } from '@/lib/auth';
 import { NextResponse } from 'next/server';
 import { google } from 'googleapis';
+import { getCurrentUser } from "@/lib/auth";
 
 /**
  * This endpoint provides the access token for Google Drive uploads.
@@ -10,7 +10,7 @@ export async function GET() {
   try {
     // Check if the user is authenticated
     const user = await getCurrentUser();
-    if (!user) {
+    if (!user || !user.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

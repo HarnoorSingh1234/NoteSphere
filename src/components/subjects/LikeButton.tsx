@@ -101,7 +101,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({
       className={`flex items-center gap-1 border-[0.1em] px-2 py-1 md:px-3 md:py-1.5 rounded-[0.4em] ${
         liked 
           ? 'text-white bg-[#DE5499] border-[#DE5499] shadow-[0.05em_0.05em_0_#050505]' 
-          : 'text-[#050505]/70 border-[#050505]/30 hover:border-[#DE5499] hover:text-[#DE5499] shadow-[0.05em_0.05em_0_#050505]/30 hover:shadow-[0.1em_0.1em_0_#DE5499]/30'
+          : 'text-[#050505]/70 border-[#050505]/30 hover:bg-[#DE5499]  hover:text-[#DE5499] shadow-[0.05em_0.05em_0_#050505]/30 hover:shadow-[0.1em_0.1em_0_#DE5499]/30'
       } transition-all disabled:opacity-50 transform hover:-translate-y-[0.05em] active:translate-y-[0.025em]`}
     >
       <ThumbsUp className={`w-3 h-3 md:w-3.5 md:h-3.5 ${isLoading ? 'animate-pulse' : ''}`} />

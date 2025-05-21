@@ -7,6 +7,122 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  clerkId   String    @id @unique
+  email     String    @unique
+  firstName String
+  lastName  String
+  createdAt DateTime  @default(now())
+  role      UserRole  @default(USER)
+  comments  Comment[]
+  likes     Like[]
+  notes     Note[]
+}
+
+model Year {
+  id        String     @id @default(cuid())
+  number    Int        @unique
+  semesters Semester[]
+}
+
+model Semester {
+  id       String    @id @default(cuid())
+  number   Int
+  yearId   String
+  year     Year      @relation(fields: [yearId], references: [id])
+  subjects Subject[]
+
+  @@unique([number, yearId])
+}
+
+model Subject {
+  id         String   @id @default(cuid())
+  name       String
+  code       String
+  semesterId String
+  notes      Note[]
+  semester   Semester @relation(fields: [semesterId], references: [id])
+
+  @@unique([code, semesterId])
+}
+
+model Note {
+  id            String    @id @default(cuid())
+  title         String
+  content       String
+  type          NoteType
+  fileUrl       String
+  downloadCount Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  authorClerkId String
+  subjectId     String
+  driveFileId   String?
+  isPublic      Boolean   @default(false)
+  isRejected    Boolean   @default(false)
+  rejectedAt    DateTime?
+  comments      Comment[]
+  likes         Like[]
+  author        User      @relation(fields: [authorClerkId], references: [clerkId])
+  subject       Subject   @relation(fields: [subjectId], references: [id])
+  tags          Tag[]     @relation("NoteToTag")
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  userId    String
+  noteId    String
+  createdAt DateTime @default(now())
+  note      Note     @relation(fields: [noteId], references: [id])
+  user      User     @relation(fields: [userId], references: [clerkId])
+
+  @@unique([userId, noteId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+  userId    String
+  noteId    String
+  note      Note     @relation(fields: [noteId], references: [id])
+  user      User     @relation(fields: [userId], references: [clerkId])
+}
+
+model Tag {
+  id    String @id @default(cuid())
+  name  String @unique
+  notes Note[] @relation("NoteToTag")
+}
+
+model UserAuth {
+  id                 String    @id @default(cuid())
+  clerkId            String    @unique
+  googleAccessToken  String?
+  googleRefreshToken String?
+  googleTokenExpiry  DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+}
+
+model RejectedNote {
+  id              String   @id
+  originalNoteId  String
+  title           String
+  authorClerkId   String
+  authorName      String
+  subjectId       String?
+  subjectName     String?
+  rejectedAt      DateTime
+  deletedAt       DateTime @default(now())
+  rejectionReason String?
+  driveFileId     String?
+
+  @@index([authorClerkId])
+  @@index([rejectedAt])
+  @@index([subjectId])
+}
+
 enum NoteType {
   PPT
   LECTURE
@@ -17,107 +133,4 @@ enum NoteType {
 enum UserRole {
   USER
   ADMIN
-}
-
-model User {
-  clerkId    String    @id @unique
-  email      String    @unique
-  firstName  String
-  lastName   String
-  role       UserRole  @default(USER)
-  createdAt  DateTime  @default(now())
-
-  // Relations
-  notes      Note[]
-  likes      Like[]
-  comments   Comment[]
-}
-
-model Year {
-  id        String    @id @default(cuid())
-  number    Int       @unique // e.g., 1, 2, 3, 4 for different years
-  semesters Semester[]
-}
-
-model Semester {
-  id        String    @id @default(cuid())
-  number    Int       // e.g., 1 or 2 for semester number within a year
-  year      Year      @relation(fields: [yearId], references: [id])
-  yearId    String
-  subjects  Subject[]
-  
-  @@unique([number, yearId]) // Unique semester number within a year
-}
-
-model Subject {
-  id         String   @id @default(cuid())
-  name       String   // e.g., "Data Structures"
-  code       String   // e.g., "CS201"
-  semester   Semester @relation(fields: [semesterId], references: [id])
-  semesterId String
-  notes      Note[]
-
-  @@unique([code, semesterId]) // Unique subject code within a semester
-}
-
-model Note {
-  id            String   @id @default(cuid())
-  title         String
-  content       String
-  type          NoteType
-  fileUrl       String
-  driveFileId   String?  // Google Drive file ID for direct access
-  isPublic      Boolean  @default(false)
-  isRejected    Boolean  @default(false) // Added public visibility flag
-  downloadCount Int      @default(0)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  // Relations
-  author        User     @relation(fields: [authorClerkId], references: [clerkId])
-  authorClerkId String
-  subject       Subject  @relation(fields: [subjectId], references: [id])
-  subjectId     String
-  likes         Like[]
-  comments      Comment[]
-  tags          Tag[]
-}
-
-model Like {
-  id        String   @id @default(cuid())
-  user      User     @relation(fields: [userId], references: [clerkId])
-  userId    String
-  note      Note     @relation(fields: [noteId], references: [id])
-  noteId    String
-  createdAt DateTime @default(now())
-
-  @@unique([userId, noteId]) // Prevent duplicate likes
-}
-
-model Comment {
-  id        String   @id @default(cuid())
-  content   String
-  createdAt DateTime @default(now())
-
-  // Relations
-  user      User     @relation(fields: [userId], references: [clerkId])
-  userId    String
-  note      Note     @relation(fields: [noteId], references: [id])
-  noteId    String
-}
-
-model Tag {
-  id    String  @id @default(cuid())
-  name  String  @unique
-  notes Note[]
-}
-
-model UserAuth {
-  id                String    @id @default(cuid())
-  clerkId           String    @unique
-  googleAccessToken  String?
-  googleRefreshToken String?
-  googleTokenExpiry  DateTime?
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
 }

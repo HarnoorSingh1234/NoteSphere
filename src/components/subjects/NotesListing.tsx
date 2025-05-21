@@ -22,36 +22,38 @@ const NotesListing: React.FC<NotesListingProps> = ({ notes = [], subjectName = '
   }, [safeNotes, activeTab]);
 
   return (
-    <div className="bg-white border-[0.15em] border-[#050505] rounded-[0.6em] shadow-[0.4em_0.4em_0_#E99F4C] overflow-hidden">
-      <div className="p-6 border-b-[0.15em] border-[#050505]">
-        <h2 className="text-2xl font-bold text-[#050505]">Study Materials</h2>
-        <p className="text-[#050505]/70">Notes, lectures, and resources for {subjectName}</p>
+    <div className="bg-[#F8F5F2] border-[0.15em] border-[#264143] rounded-[0.6em] shadow-[0.4em_0.4em_0_#E99F4C] overflow-hidden">
+      <div className="p-6 border-b-[0.15em] border-[#264143] bg-white">
+        <h2 className="text-2xl font-bold text-[#264143]">Study Materials</h2>
+        <p className="text-[#264143]/80">Notes, lectures, and resources for {subjectName}</p>
       </div>
       
       <div className="p-6">
-        <div className="border-[0.15em] border-[#050505] rounded-[0.4em] shadow-[0.1em_0.1em_0_#050505] bg-[#EDDCD9]/30 p-1 mb-6 grid grid-cols-4 overflow-hidden">
+        {/* Filter tabs */}
+        <div className="border-[0.15em] border-[#264143] rounded-[0.4em] shadow-[0.1em_0.1em_0_#264143] bg-white p-1 mb-6 flex flex-wrap overflow-x-auto">
           {['all', 'pdf', 'lecture', 'handwritten', 'ppt'].map((tab) => (
             <button
               key={tab}
-              className={`py-2 px-4 transition-all rounded-[0.3em] ${
+              className={`py-2 px-4 transition-all rounded-[0.3em] flex-shrink-0 ${
                 activeTab === tab 
-                  ? 'bg-white text-[#050505] font-bold shadow-[0.1em_0.1em_0_#050505]' 
-                  : 'text-[#050505]/70 hover:bg-white/50'
+                  ? 'bg-[#DE5499] text-white font-medium shadow-[0.1em_0.1em_0_#264143]' 
+                  : 'text-[#264143] hover:bg-[#EDDCD9]/50'
               }`}
               onClick={() => setActiveTab(tab)}
             >
               {tab === 'all' ? 'All' : tab.charAt(0).toUpperCase() + tab.slice(1)}
             </button>
-          ))}
-        </div>
-        
-        <div className="space-y-4">
+          ))}        </div>
+          {/* Notes grid layout */}
+        <div className="flex flex-wrap gap-4">
           {filteredNotes && filteredNotes.length > 0 ? (
             filteredNotes.map((note) => (
               <NoteCard key={note.id} note={note} />
             ))
           ) : (
-            <EmptyNotesState type={activeTab} />
+            <div className="col-span-full">
+              <EmptyNotesState type={activeTab} />
+            </div>
           )}
         </div>
       </div>

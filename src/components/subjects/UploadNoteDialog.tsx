@@ -1,10 +1,9 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { Upload, FileText, X, Loader2, CheckCircle } from 'lucide-react';
+import { Upload, FileText, X, Loader2, CheckCircle, Tag, Plus, AlignLeft } from 'lucide-react';
 import { NoteType } from '@prisma/client';
-import GoogleDriveConnect from '@/components/GoogleDriveConnect';
-import { uploadFileToDrive } from '@/lib/uploadtoDrive';
+import { uploadFileToDrive } from '@/lib/client/uploadToDrive';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 
@@ -21,17 +20,41 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
   const [uploadProgress, setUploadProgress] = useState(0);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [noteTitle, setNoteTitle] = useState('');
+  const [noteContent, setNoteContent] = useState('');
   const [noteType, setNoteType] = useState<NoteType>(NoteType.PDF);
   const [isOpen, setIsOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [tags, setTags] = useState<string[]>([]);
+  const [newTag, setNewTag] = useState('');
 
   // Handle file selection
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setSelectedFile(e.target.files[0]);
+      const file = e.target.files[0];
+      setSelectedFile(file);
       setError(null); // Clear any error when a new file is selected
+      
+      // Auto-detect note type based on file extension
+      const extension = file.name.split('.').pop()?.toLowerCase();
+      if (extension === 'pdf') {
+        setNoteType(NoteType.PDF);
+      } else if (extension === 'ppt' || extension === 'pptx') {
+        setNoteType(NoteType.PPT);
+      }
     }
+  };
+  
+  // Handle adding and removing tags
+  const handleAddTag = () => {
+    if (newTag.trim() && !tags.includes(newTag.trim())) {
+      setTags([...tags, newTag.trim()]);
+      setNewTag('');
+    }
+  };
+
+  const handleRemoveTag = (tagToRemove: string) => {
+    setTags(tags.filter(tag => tag !== tagToRemove));
   };
   
   // Connect to Google account when user clicks the connect button
@@ -49,6 +72,9 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
       setTimeout(() => {
         setError(null);
         setSuccess(false);
+        setTags([]);
+        setNewTag('');
+        setNoteContent('');
       }, 300);
     }
   };
@@ -95,7 +121,8 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
       }
       
       setUploadProgress(30);
-        // Step 2: Upload file using the URL
+      
+      // Step 2: Upload file using the URL
       const { uploadUrl, fileId, downloadUrl } = data;
       const uploadResult = await uploadFileToDrive(selectedFile, uploadUrl, fileId);
       
@@ -104,22 +131,24 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
       }
       
       setUploadProgress(70);
-        // Step 3: Create note record in our database
-      console.log('Creating note record in database...');
+      
+      // Step 3: Create note record in our database
       const noteResponse = await fetch('/api/notes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           title: noteTitle,
-          content: '', // Empty content for PDF uploads
+          content: noteContent, // Include content field
           type: noteType,
           fileUrl: uploadResult.downloadUrl || downloadUrl, // Store the download URL
           driveFileId: uploadResult.fileId || fileId, // Also store the fileId for future reference
           subjectId: subjectId,
-          isPublic: true
+          isPublic: true,
+          tags: tags // Add tags to the request
         })
       });
-        if (!noteResponse.ok) {
+      
+      if (!noteResponse.ok) {
         // Try to get more detailed error information
         const errorData = await noteResponse.json().catch(() => ({}));
         console.error('Note creation failed:', noteResponse.status, errorData);
@@ -138,9 +167,12 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
         setTimeout(() => {
           setSelectedFile(null);
           setNoteTitle('');
+          setNoteContent('');
           setUploadingFile(false);
           setSuccess(false);
           setUploadProgress(0);
+          setTags([]);
+          setNewTag('');
         }, 300);
       }, 1500);
       
@@ -157,7 +189,7 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
       {/* Trigger Button */}
       <button
         onClick={openDialog}
-        className="w-full px-5 py-3 text-white font-bold bg-[#DE5499] border-[0.15em] border-[#050505] rounded-[0.4em] shadow-[0.2em_0.2em_0_#050505] hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#050505] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#050505] transition-all duration-200 flex items-center justify-center"
+        className="w-full px-5 py-3 text-white font-bold bg-[#DE5499] border-[0.15em] border-[#264143] rounded-[0.4em] shadow-[0.2em_0.2em_0_#264143] hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#264143] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#264143] transition-all duration-200 flex items-center justify-center"
       >
         <Upload className="w-5 h-5 mr-2" /> Upload Notes
       </button>
@@ -168,7 +200,7 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+          className="inset-0 bg-black/50 z-100 flex items-center justify-center p-4"
           onClick={handleBackdropClick}
         >
           {/* Modal Content */}
@@ -178,16 +210,16 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ type: "spring", duration: 0.4 }}
-            className="bg-[#EDDCD9] border-[0.2em] border-[#050505] rounded-[0.6em] shadow-[0.4em_0.4em_0_#050505] w-full max-w-md mx-auto overflow-hidden"
+            className="bg-[#F8F5F2] border-[0.2em] border-[#264143] rounded-[0.6em] shadow-[0.4em_0.4em_0_#DE5499] w-full max-w-xl mx-auto overflow-hidden"
             onClick={e => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="border-b-[0.15em] border-[#050505] p-4 flex justify-between items-center">
-              <h2 className="text-xl font-bold text-[#050505]">Upload Notes</h2>
+            <div className="border-b-[0.15em] border-[#264143] p-4 flex justify-between items-center bg-[#264143] text-white">
+              <h2 className="text-xl font-bold">Share Your Knowledge</h2>
               {!uploadingFile && (
                 <button 
                   onClick={closeDialog}
-                  className="text-[#050505] hover:text-[#ff3e00] transition-colors"
+                  className="text-white hover:text-[#DE5499] transition-colors"
                 >
                   <X size={20} />
                 </button>
@@ -195,32 +227,30 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
             </div>
 
             {/* Body */}
-            <div className="p-6 space-y-5">
-              {/* Google Drive connection status */}
-              {googleAuthUrl ? (
-                <div className="p-4 bg-white border-[0.15em] border-[#050505] rounded-[0.4em] shadow-[0.2em_0.2em_0_#4d61ff] mb-4">
-                  <h3 className="font-bold text-[#050505] mb-2">Connect Google Drive</h3>
-                  <p className="text-[#050505]/80 text-sm mb-3">
+            <div className="p-6 space-y-5 max-h-[70vh] overflow-y-auto">
+              {/* Connection error message - only show when needed */}
+              {googleAuthUrl && (
+                <div className="p-4 bg-white border-[0.15em] border-[#4d61ff] rounded-[0.4em] shadow-[0.2em_0.2em_0_#4d61ff] mb-4">
+                  <h3 className="font-bold text-[#264143] mb-2">Connect Google Drive</h3>
+                  <p className="text-[#264143]/80 text-sm mb-3">
                     Please connect your Google Drive account to upload files.
                   </p>
                   <button 
                     onClick={connectGoogleAccount} 
-                    className="px-4 py-2 text-white font-bold bg-[#4d61ff] border-[0.15em] border-[#050505] rounded-[0.4em] shadow-[0.2em_0.2em_0_#050505] hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#050505] transition-all duration-200"
+                    className="px-4 py-2 text-white font-bold bg-[#4d61ff] border-[0.15em] border-[#264143] rounded-[0.4em] shadow-[0.2em_0.2em_0_#264143] hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#264143] transition-all duration-200"
                   >
                     Connect Google Drive
                   </button>
                 </div>
-              ) : (
-                <GoogleDriveConnect onConnected={() => setGoogleAuthUrl(null)} />
               )}
               
               {/* Success Message */}
               {success && (
-                <div className="p-4 bg-white border-[0.15em] border-green-600 rounded-[0.4em] shadow-[0.2em_0.2em_0_green-700] flex items-start">
+                <div className="p-4 bg-white border-[0.15em] border-green-600 rounded-[0.4em] shadow-[0.2em_0.2em_0_green-600] flex items-start">
                   <CheckCircle className="text-green-600 mr-3 mt-0.5" size={20} />
                   <div>
                     <h4 className="font-bold text-green-700">Upload Successful!</h4>
-                    <p className="text-sm text-green-600">Your note has been uploaded successfully</p>
+                    <p className="text-sm text-green-600">Your note has been uploaded and will be reviewed shortly</p>
                   </div>
                 </div>
               )}
@@ -231,65 +261,120 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
                   <X className="text-[#ff3e00] mr-3 mt-0.5" size={20} />
                   <div>
                     <h4 className="font-bold text-[#ff3e00]">Upload Failed</h4>
-                    <p className="text-sm text-[#050505]/80">{error}</p>
+                    <p className="text-sm text-[#264143]/80">{error}</p>
                   </div>
                 </div>
               )}
 
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {/* Title Input */}
                 <div className="space-y-2">
-                  <label className="block text-[#050505] font-medium">Note Title</label>
+                  <label className="block text-[#264143] font-medium">Note Title <span className="text-[#ff3e00]">*</span></label>
                   <input
                     type="text"
                     value={noteTitle}
                     onChange={(e) => setNoteTitle(e.target.value)}
                     disabled={uploadingFile}
-                    className="w-full p-3 bg-white border-[0.15em] border-[#050505] rounded-[0.4em] focus:outline-none focus:ring-2 focus:ring-[#DE5499] shadow-[0.1em_0.1em_0_#050505]"
-                    placeholder="Enter note title"
+                    className="w-full p-3 bg-white border-[0.15em] border-[#264143] rounded-[0.4em] focus:outline-none focus:ring-2 focus:ring-[#DE5499] shadow-[0.1em_0.1em_0_#264143]"
+                    placeholder="Enter a descriptive title for your notes"
                   />
+                </div>
+                
+                {/* Note Content */}
+                <div className="space-y-2">
+                  <label className=" text-[#264143] font-medium flex items-center">
+                    <AlignLeft className="w-4 h-4 mr-1" /> 
+                    Description
+                  </label>
+                  <textarea
+                    value={noteContent}
+                    onChange={(e) => setNoteContent(e.target.value)}
+                    disabled={uploadingFile}
+                    className="w-full p-3 bg-white border-[0.15em] border-[#264143] rounded-[0.4em] focus:outline-none focus:ring-2 focus:ring-[#DE5499] shadow-[0.1em_0.1em_0_#264143] min-h-[100px]"
+                    placeholder="Add a brief description or summary of these notes"
+                  />
+                </div>
+                
+                {/* Tags */}
+                <div className="space-y-2">
+                  <label className="text-[#264143] font-medium flex items-center">
+                    <Tag className="w-4 h-4 mr-1" />
+                    Tags
+                  </label>
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {tags.map((tag) => (
+                      <div 
+                        key={tag} 
+                        className="bg-[#4d61ff]/10 text-[#4d61ff] px-3 py-1 rounded-full flex items-center"
+                      >
+                        <span>{tag}</span>
+                        <button 
+                          type="button" 
+                          className="ml-1 text-[#4d61ff] hover:text-[#264143]"
+                          onClick={() => handleRemoveTag(tag)}
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex">
+                    <input
+                      type="text"
+                      className="flex-grow p-3 border-[0.15em] border-[#264143] border-r-0 rounded-l-[0.4em] bg-white focus:outline-none focus:ring-2 focus:ring-[#DE5499] shadow-[0.1em_0.1em_0_#264143]"
+                      placeholder="Add tags (e.g., midterm, chapter1)"
+                      value={newTag}
+                      onChange={(e) => setNewTag(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
+                    />
+                    <button
+                      type="button"
+                      className="bg-[#4d61ff] text-white px-4 py-3 border-[0.15em] border-[#264143] rounded-r-[0.4em] shadow-[0.1em_0.1em_0_#264143] flex items-center"
+                      onClick={handleAddTag}
+                    >
+                      <Plus size={18} />
+                    </button>
+                  </div>
                 </div>
                 
                 {/* Note Type Selector */}
                 <div className="space-y-2">
-                  <label className="block text-[#050505] font-medium">Note Type</label>
-                  <select
-                    value={noteType}
-                    onChange={(e) => setNoteType(e.target.value as NoteType)}
-                    disabled={uploadingFile}
-                    className="w-full p-3 bg-white border-[0.15em] border-[#050505] rounded-[0.4em] focus:outline-none focus:ring-2 focus:ring-[#DE5499] shadow-[0.1em_0.1em_0_#050505] appearance-none"
-                    style={{ 
-                      backgroundImage: "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23050505' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e\")",
-                      backgroundPosition: "right 0.5rem center",
-                      backgroundRepeat: "no-repeat",
-                      backgroundSize: "1.5em 1.5em",
-                      paddingRight: "2.5rem"
-                    }}
-                  >
-                    <option value="PDF">PDF Document</option>
-                    <option value="LECTURE">Lecture Notes</option>
-                    <option value="HANDWRITTEN">Handwritten Notes</option>
-                    <option value="PPT">Presentation</option>
-                  </select>
+                  <label className="block text-[#264143] font-medium">Note Type <span className="text-[#ff3e00]">*</span></label>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    {Object.values(NoteType).map((type) => (
+                      <button
+                        key={type}
+                        type="button"
+                        onClick={() => setNoteType(type as NoteType)}
+                        className={`px-3 py-3 rounded-[0.4em] border-[0.15em] font-medium transition-all ${
+                          noteType === type 
+                            ? 'bg-[#264143] text-white border-[#264143]' 
+                            : 'bg-white text-[#264143] border-[#264143]/30 hover:border-[#264143]'
+                        }`}
+                      >
+                        {type}
+                      </button>
+                    ))}
+                  </div>
                 </div>
                 
                 {/* File Upload */}
                 <div className="space-y-2">
-                  <label className="block text-[#050505] font-medium">File</label>
-                  <div className={`border-[0.15em] border-dashed ${selectedFile ? 'border-[#DE5499]' : 'border-[#050505]'} rounded-[0.4em] p-6 text-center bg-white relative cursor-pointer ${uploadingFile ? 'opacity-70 cursor-not-allowed' : 'hover:bg-white/80'}`}>
+                  <label className="block text-[#264143] font-medium">File <span className="text-[#ff3e00]">*</span></label>
+                  <div className={`border-[0.15em] border-dashed ${selectedFile ? 'border-[#DE5499]' : 'border-[#264143]'} rounded-[0.4em] p-6 text-center bg-white relative cursor-pointer ${uploadingFile ? 'opacity-70 cursor-not-allowed' : 'hover:bg-white/80'}`}>
                     {selectedFile ? (
                       <div>
                         <FileText className="w-8 h-8 mx-auto text-[#DE5499] mb-2" />
-                        <p className="text-[#050505] font-medium">{selectedFile.name}</p>
-                        <p className="text-[#050505]/70 text-sm">
+                        <p className="text-[#264143] font-medium">{selectedFile.name}</p>
+                        <p className="text-[#264143]/70 text-sm">
                           {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
                         </p>
                       </div>
                     ) : (
                       <div>
-                        <Upload className="w-8 h-8 mx-auto text-[#050505]/70 mb-2" />
-                        <p className="text-[#050505]/80 font-medium">Click or drag file to upload</p>
-                        <p className="text-[#050505]/60 text-sm">PDF, DOCX, PPTX (Max: 50MB)</p>
+                        <Upload className="w-8 h-8 mx-auto text-[#264143]/70 mb-2" />
+                        <p className="text-[#264143]/80 font-medium">Click or drag file to upload</p>
+                        <p className="text-[#264143]/60 text-sm">PDF, DOCX, PPTX (Max: 50MB)</p>
                       </div>
                     )}
                     <input
@@ -306,10 +391,10 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
                 {uploadingFile && (
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span className="text-[#050505]/80">Uploading...</span>
-                      <span className="text-[#050505] font-medium">{uploadProgress}%</span>
+                      <span className="text-[#264143]/80">Uploading...</span>
+                      <span className="text-[#264143] font-medium">{uploadProgress}%</span>
                     </div>
-                    <div className="w-full bg-[#050505]/10 rounded-full h-2.5">
+                    <div className="w-full bg-[#264143]/10 rounded-full h-2.5">
                       <div 
                         className="bg-[#DE5499] h-2.5 rounded-full transition-all duration-300" 
                         style={{ width: `${uploadProgress}%` }}
@@ -321,11 +406,11 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
             </div>
 
             {/* Footer */}
-            <div className="border-t-[0.15em] border-[#050505] p-4 flex justify-end gap-2 bg-white/20">
+            <div className="border-t-[0.15em] border-[#264143] p-4 flex justify-end gap-2 bg-white/20">
               {!uploadingFile && !success && (
                 <button 
                   onClick={closeDialog}
-                  className="px-4 py-2 text-[#050505] font-bold bg-white border-[0.15em] border-[#050505] rounded-[0.4em] shadow-[0.2em_0.2em_0_#050505] hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#050505] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#050505] transition-all duration-200"
+                  className="px-4 py-2 text-[#264143] font-bold bg-white border-[0.15em] border-[#264143] rounded-[0.4em] shadow-[0.2em_0.2em_0_#264143] hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#264143] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#264143] transition-all duration-200"
                 >
                   Cancel
                 </button>
@@ -334,10 +419,10 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
               <button
                 onClick={handleUploadClick}
                 disabled={!selectedFile || !noteTitle || uploadingFile || success}
-                className={`px-5 py-2 text-white font-bold bg-[#DE5499] border-[0.15em] border-[#050505] rounded-[0.4em] shadow-[0.2em_0.2em_0_#050505] flex items-center ${
+                className={`px-5 py-2 text-white font-bold bg-[#DE5499] border-[0.15em] border-[#264143] rounded-[0.4em] shadow-[0.2em_0.2em_0_#264143] flex items-center ${
                   !selectedFile || !noteTitle || uploadingFile || success
                     ? 'opacity-70 cursor-not-allowed'
-                    : 'hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#050505] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#050505]'
+                    : 'hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#264143] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#264143]'
                 } transition-all duration-200`}
               >
                 {uploadingFile ? (

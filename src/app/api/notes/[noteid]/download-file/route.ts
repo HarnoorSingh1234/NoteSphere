@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
-import { generateDownloadUrl } from '@/lib/google-drive';
-import { auth } from '@clerk/nextjs/server';
+import { generateDownloadUrl } from '@/lib/server/google-drive';
+import { getCurrentUser } from '@/lib/auth';
 
 // Handle file downloads from Google Drive
 export async function GET(
@@ -29,9 +29,8 @@ export async function GET(
         { status: 400 }
       );
     }
-    
-    // Get authenticated user (if any) - we could use this for analytics in the future
-    const { userId } = await auth();
+      // Get authenticated user (if any) - we could use this for analytics in the future
+    const user = await getCurrentUser();
       // Increment download count
     try {
       await prisma.note.update({
@@ -49,11 +48,10 @@ export async function GET(
     
     // Handle download based on file source
     let downloadUrl;
-    
-    if (note.driveFileId) {
+      if (note.driveFileId) {
       // For Google Drive files, generate a direct download URL
       // Files are already shared publicly via the service account
-      downloadUrl = generateDownloadUrl(note.driveFileId);
+      downloadUrl = await generateDownloadUrl(note.driveFileId);
     } else {
       // For regular files, use the stored URL
       downloadUrl = note.fileUrl;

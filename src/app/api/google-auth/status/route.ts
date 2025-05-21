@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
-import { isGoogleAccountConnected } from "@/lib/google-auth";
 import { google } from 'googleapis';
 
 /**

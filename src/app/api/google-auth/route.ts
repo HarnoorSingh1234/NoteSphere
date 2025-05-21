@@ -6,12 +6,10 @@ import { google } from 'googleapis';
  * GET route - generates OAuth authorization URL for Google Drive access
  * This will be used by administrators to set up the application-wide Google Drive access
  */
-export async function GET() {
-  try {
-    // Get the current authenticated user
+export async function GET() {  try {    // Get the current authenticated user
     const user = await getCurrentUser();
     
-    if (!user) {
+    if (!user || !user.id) {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
     

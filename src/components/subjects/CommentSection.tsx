@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useAuth, useUser } from '@clerk/nextjs';
 import { Send } from 'lucide-react';
 import { formatDistance } from 'date-fns';
+import Link from 'next/link';
 
 interface Comment {
   id: string;
@@ -88,29 +89,40 @@ export default function CommentSection({ noteId, className = '' }: CommentSectio
       setIsSubmitting(false);
     }
   };  return (
-    <div className={`bg-white rounded-[0.4em] md:rounded-[0.6em] border-[0.15em] border-[#050505] shadow-[0.1em_0.1em_0_#4d61ff] md:shadow-[0.2em_0.2em_0_#4d61ff] p-4 md:p-5 ${className}`} id="comments">
-      <h3 className="font-bold text-lg md:text-xl text-[#050505] mb-4">Comments</h3>
+    <div className={`bg-white rounded-[0.6em] border-[0.15em] border-[#264143] p-5 ${className}`} id="comments">
+      <h3 className="font-bold text-lg md:text-xl text-[#264143] mb-4">Comments</h3>
       
-      <form onSubmit={handleSubmitComment} className="mb-6">
-        <div className="flex gap-2 md:gap-3">
-         
-          <input
-            type="text"
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            placeholder={isSignedIn ? "Write a comment..." : "Sign in to comment"}
-            disabled={!isSignedIn || isSubmitting}
-            className="flex-1 px-3 py-2 md:px-4 md:py-3 text-sm md:text-base border-[0.15em] border-[#050505] rounded-[0.4em] focus:outline-none focus:ring-1 focus:ring-[#4d61ff] focus:border-[#4d61ff] shadow-[0.1em_0.1em_0_#050505]"
-          />
-          <button
-            type="submit"
-            disabled={!isSignedIn || isSubmitting || !newComment.trim()}
-            className="inline-flex items-center justify-center px-3 py-2 md:px-4 md:py-3 font-bold bg-white border-[0.15em] border-[#050505] rounded-[0.4em] shadow-[0.1em_0.1em_0_#4d61ff] md:shadow-[0.15em_0.15em_0_#4d61ff] hover:translate-y-[-0.1em] hover:shadow-[0.15em_0.15em_0_#4d61ff] md:hover:shadow-[0.25em_0.25em_0_#4d61ff] active:translate-y-[0.05em] active:shadow-[0.05em_0.05em_0_#4d61ff] md:active:shadow-[0.1em_0.1em_0_#4d61ff] transition-all duration-200 disabled:opacity-50 disabled:translate-y-0 disabled:shadow-[0.1em_0.1em_0_#878787] disabled:border-[#878787]"
+      {isSignedIn ? (
+        <form onSubmit={handleSubmitComment} className="mb-6">
+          <div className="flex gap-3">
+            <input
+              type="text"
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              placeholder="Share your thoughts..."
+              disabled={isSubmitting}
+              className="flex-1 px-4 py-3 text-sm md:text-base border-[0.15em] border-[#264143] rounded-[0.4em] text-black focus:outline-none focus:ring-1 focus:ring-[#4d61ff] focus:border-[#4d61ff] shadow-[0.1em_0.1em_0_#264143] bg-[#F8F5F2]"
+            />
+            <button
+              type="submit"
+              disabled={isSubmitting || !newComment.trim()}
+              className="inline-flex items-center justify-center px-4 py-3 font-medium bg-[#4d61ff] text-white border-[0.15em] border-[#264143] rounded-[0.4em] shadow-[0.1em_0.1em_0_#264143] hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#264143] transition-all duration-200 disabled:opacity-50 disabled:translate-y-0 disabled:shadow-[0.1em_0.1em_0_#264143]"
+            >
+              <Send className="w-4 h-4" />
+            </button>
+          </div>
+        </form>
+      ) : (
+        <div className="mb-6 p-4 border-[0.15em] border-[#264143] border-dashed rounded-[0.4em] bg-[#F8F5F2] text-center">
+          <p className="text-[#264143] mb-2">You need to sign in to join the discussion</p>
+          <Link
+            href={`/sign-in?redirect=${encodeURIComponent(window.location.pathname)}`}
+            className="inline-block px-4 py-2 bg-[#DE5499] text-white font-medium rounded-[0.3em] border-[0.1em] border-[#264143] hover:bg-[#c64a86] transition-colors"
           >
-            <Send className="w-3.5 h-3.5 md:w-4 md:h-4" />
-          </button>
+            Sign in to comment
+          </Link>
         </div>
-      </form>      {isLoading ? (
+      )}{isLoading ? (
         <div className="flex justify-center py-4 md:py-6">
           <div className="w-8 h-8 md:w-10 md:h-10 border-3 md:border-4 border-[#4d61ff] rounded-full border-t-transparent animate-spin"></div>
         </div>

@@ -100,15 +100,15 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({ noteId }) => {  const [
       onClick={handleDownload}
       disabled={isDownloading}
       aria-busy={isDownloading}
-      className={`w-full sm:max-w-[250px] px-4 py-2.5 md:px-6 md:py-3 font-bold bg-white border-[0.15em] border-[#050505] rounded-[0.4em] transition-all duration-200 ${
+      className={`w-full sm:max-w-[300px] px-5 py-3 font-medium transition-all duration-200 rounded-[0.4em] border-[0.15em] ${
         isDownloading 
-          ? 'text-[#4d61ff] cursor-wait shadow-[0.1em_0.1em_0_#4d61ff]/70' 
-          : 'text-[#050505] shadow-[0.15em_0.15em_0_#4d61ff] hover:translate-y-[-0.1em] hover:shadow-[0.25em_0.25em_0_#4d61ff] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#4d61ff]'
+          ? 'bg-[#EDDCD9] text-[#264143] border-[#264143] cursor-wait shadow-[0.1em_0.1em_0_#264143]' 
+          : 'bg-[#4CAF50] text-white border-[#264143] shadow-[0.2em_0.2em_0_#264143] hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#264143] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#264143]'
       }`}
     >
-      <Download className={`w-4 h-4 md:w-5 md:h-5 mr-2 ${isDownloading ? 'animate-pulse' : ''}`} /> 
-      <span className="text-sm md:text-base">
-        {isDownloading ? 'Downloading...' : 'Download File'}
+      <Download className={`w-5 h-5 mr-3 ${isDownloading ? 'animate-pulse' : ''}`} /> 
+      <span className="text-base">
+        {isDownloading ? 'Downloading...' : 'Download Study Material'}
       </span>
     </Button>
   );

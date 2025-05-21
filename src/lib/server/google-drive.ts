@@ -1,14 +1,17 @@
+'use server';
+
 /**
  * Google Drive API integration for file operations using OAuth client
+ * SERVER SIDE ONLY - This file should never be imported by client components
  */
 import { google, drive_v3 } from 'googleapis';
-import { prisma } from './db';
+import { prisma } from '../db';
 
 // Configure OAuth client
 const getDriveClient = async (): Promise<drive_v3.Drive> => {
   try {
     console.log('Initializing Google Drive client...');
-      // Check if OAuth credentials exist
+    // Check if OAuth credentials exist
     if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
       console.error('Missing Google OAuth client credentials in environment variables');
       throw new Error('Missing Google OAuth client credentials');
@@ -107,7 +110,7 @@ export async function createResumableUploadSession(
 }> {
   try {
     console.log(`Creating resumable upload session for file: ${metadata.name} (${metadata.mimeType})`);
-      // Get Drive client using OAuth
+    // Get Drive client using OAuth
     const driveClient = await getDriveClient();
     console.log('Drive client initialized successfully');
     
@@ -142,7 +145,9 @@ export async function createResumableUploadSession(
         role: 'reader',
         type: 'anyone',
       },
-    });    // Return the file details for direct client-side upload
+    });
+    
+    // Return the file details for direct client-side upload
     return {
       // Just return the file ID - the client will handle the upload directly
       uploadUrl: `https://www.googleapis.com/upload/drive/v3/files/${fileResponse.data.id}?uploadType=media`,
@@ -172,7 +177,8 @@ export async function getGoogleDriveFile(
   webContentLink?: string;
   mimeType: string;
 }> {
-  try {    // Get Drive client with OAuth
+  try {
+    // Get Drive client with OAuth
     const driveClient = await getDriveClient();
     
     // Get file metadata
@@ -204,7 +210,9 @@ export async function getGoogleDriveFile(
  * @returns Direct download URL
  */
 export async function generateDownloadUrl(fileId: string): Promise<string> {
-  return `https://drive.google.com/uc?export=download&id=${fileId}`;
+  // This needs to be an async function since we're using 'use server' at the top level
+  // In the future, we might want to generate signed URLs or do other async operations here
+  return Promise.resolve(`https://drive.google.com/uc?export=download&id=${fileId}`);
 }
 
 /**

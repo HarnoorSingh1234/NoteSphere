@@ -25,8 +25,9 @@ export async function isAdmin(): Promise<boolean> {
   const userId = authResult.userId;
   
   if (!userId) return false;
-    try {
-    // Check from your database only
+  
+  try {
+    // Method 1: Check from your database
     const user = await prisma.user.findUnique({
       where: { clerkId: userId },
       select: { role: true }
@@ -35,6 +36,8 @@ export async function isAdmin(): Promise<boolean> {
     if (user && user.role === 'ADMIN') {
       return true;
     }
+   
+   
     
     return false;
   } catch (error) {

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createResumableUploadSession, generateDownloadUrl } from "@/lib/google-drive";
+import { createResumableUploadSession, generateDownloadUrl } from "@/lib/server/google-drive";
 import { getCurrentUser } from "@/lib/auth";
 
 // Set larger body size limit for the upload route
@@ -13,19 +13,18 @@ export const config = {
 /**
  * POST route to create a resumable upload session for Google Drive
  */
-export async function POST(request: NextRequest) {
-  try {
+export async function POST(request: NextRequest) {  try {
     console.log('Upload API called - creating resumable upload session');
-    
-    // Get current user
+      // Get current user
     const user = await getCurrentUser();
     
-    if (!user) {
+    if (!user || !user.id) {
       console.log('Authentication required - no user found');
       return NextResponse.json({ error: "Authentication required" }, { status: 401 });
     }
+    const userId = user.id;
     
-    console.log(`User authenticated: ${user.id}`);
+    console.log(`User authenticated: ${userId}`);
     
     // Parse the JSON data from the request
     const data = await request.json();
@@ -35,18 +34,16 @@ export async function POST(request: NextRequest) {
         error: "File name and MIME type are required" 
       }, { status: 400 });
     }
-    
-    // Create a resumable upload session using service account
+      // Create a resumable upload session using service account
     const uploadResult = await createResumableUploadSession(
-      user.id, // Pass user ID for file ownership tracking, not for auth
+      userId, // Pass user ID for file ownership tracking, not for auth
       {
         name: data.fileName,
         mimeType: data.mimeType
       }
     );
-    
-    // Generate download URL
-    const downloadUrl = generateDownloadUrl(uploadResult.fileId);
+      // Generate download URL
+    const downloadUrl = await generateDownloadUrl(uploadResult.fileId);
     
     // Return the upload URL and file info to the client
     return NextResponse.json({
