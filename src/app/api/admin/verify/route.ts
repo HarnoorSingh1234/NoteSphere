@@ -153,18 +153,22 @@ export async function POST(request: Request) {
         success: true,
         message: 'Note approved successfully',
         note: updatedNote
-      });
-    } else {
-      // Reject the note by deleting it
-      await prisma.note.delete({
-        where: { id: noteId }
+      });    } else {
+      // Reject the note (mark as rejected instead of deleting)
+      const updatedNote = await prisma.note.update({
+        where: { id: noteId },
+        data: { 
+          isRejected: true,
+          rejectedAt: new Date()
+        }
       });
       
       // TODO: Notify author of rejection via email or in-app notification
       
       return NextResponse.json({
         success: true,
-        message: 'Note rejected successfully'
+        message: 'Note rejected successfully',
+        note: updatedNote
       });
     }
   } catch (error: unknown) {

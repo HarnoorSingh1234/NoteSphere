@@ -11,16 +11,20 @@ interface AdminNoteCardProps {
   note: Note;
   onApprove?: (noteId: string) => void;
   onReject?: (noteId: string) => void;
+  onUnreject?: (noteId: string, action: 'restore' | 'publish') => void;
   showActions?: boolean;
   isProcessing?: boolean;
+  showUnrejectActions?: boolean;
 }
 
 const AdminNoteCard: React.FC<AdminNoteCardProps> = ({ 
   note, 
   onApprove, 
-  onReject, 
+  onReject,
+  onUnreject,
   showActions = false,
-  isProcessing = false
+  isProcessing = false,
+  showUnrejectActions = false
 }) => {
   const { color, bgColor } = getNoteTypeDetails(note.type);
   
@@ -125,8 +129,7 @@ const AdminNoteCard: React.FC<AdminNoteCardProps> = ({
               Preview
             </Link>
           </div>
-          
-          {!note.isPublic && !note.isRejected && (
+            {!note.isPublic && !note.isRejected && (
             <div className="flex gap-2">
               <button
                 onClick={() => onApprove && onApprove(note.id)}
@@ -151,6 +154,36 @@ const AdminNoteCard: React.FC<AdminNoteCardProps> = ({
               >
                 <XCircle className="w-3.5 h-3.5 mr-1" />
                 Reject
+              </button>
+            </div>
+          )}
+          
+          {/* Unreject actions for rejected notes */}
+          {showUnrejectActions && note.isRejected && onUnreject && (
+            <div className="flex gap-2">
+              <button
+                onClick={() => onUnreject(note.id, 'restore')}
+                disabled={isProcessing}
+                className={`inline-flex items-center px-3 py-1 rounded text-xs font-medium ${
+                  isProcessing
+                    ? 'bg-yellow-100 text-yellow-700 cursor-wait'
+                    : 'bg-yellow-500 text-white hover:bg-yellow-600'
+                }`}
+              >
+                <AlertCircle className="w-3.5 h-3.5 mr-1" />
+                Restore to Pending
+              </button>
+              <button
+                onClick={() => onUnreject(note.id, 'publish')}
+                disabled={isProcessing}
+                className={`inline-flex items-center px-3 py-1 rounded text-xs font-medium ${
+                  isProcessing
+                    ? 'bg-green-100 text-green-700 cursor-wait'
+                    : 'bg-green-500 text-white hover:bg-green-600'
+                }`}
+              >
+                <CheckCircle className="w-3.5 h-3.5 mr-1" />
+                Publish Now
               </button>
             </div>
           )}

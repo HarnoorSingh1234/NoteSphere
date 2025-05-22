@@ -20,6 +20,7 @@ export interface Note {
   downloadCount: number;
   isPublic: boolean;
   isRejected: boolean;
+  rejectedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
   authorId: string;

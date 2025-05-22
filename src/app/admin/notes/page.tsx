@@ -57,7 +57,7 @@ const AdminNotesPage = () => {
   
   if (loading) {
     return (
-      <div className="h-full flex items-center justify-center p-8">
+      <div className="h-full flex items-center bg-white justify-center p-8">
         <div className="text-center">
           <div className="w-16 h-16 mx-auto border-4 border-t-[#4d61ff] border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
           <p className="mt-4 text-lg font-medium text-[#050505]">Loading academic structure...</p>
@@ -68,7 +68,7 @@ const AdminNotesPage = () => {
 
   if (error) {
     return (
-      <div className="h-full flex items-center justify-center p-8">
+      <div className="h-full flex items-center bg-white justify-center p-8">
         <div className="text-center max-w-md">
           <div className="w-16 h-16 mx-auto flex items-center justify-center bg-red-100 rounded-full">
             <XCircle className="w-8 h-8 text-red-600" />
@@ -88,7 +88,7 @@ const AdminNotesPage = () => {
 
   return (
     <ProtectRoute allowedRoles={['ADMIN']}>
-      <div className="container mx-auto p-4 md:p-8">
+      <div className="container mx-auto bg-white p-4 md:p-8">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold text-[#050505] mb-2">All Notes (Admin View)</h1>

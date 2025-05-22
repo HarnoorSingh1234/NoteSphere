@@ -7,16 +7,9 @@ import Link from 'next/link';
 import NoteDetailsClient from '@/components/subjects/NoteDetailsClient';
 import BackButton from '@/components/Backbutton'; // We'll create this component
 
-// Correct type definition for the page props
-interface PageProps {
-  params: {
-    noteid: string;
-  };
-  searchParams?: Record<string, string | string[] | undefined>;
-}
+
 export default async function NotePage({
   params,
-  searchParams,
 }: {
   params: { noteid: string };
   searchParams?: Record<string, string | string[] | undefined>;

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Upload, FileText, X, Loader2, CheckCircle, Tag, Plus, AlignLeft } from 'lucide-react';
 import { NoteType } from '@prisma/client';
 import { uploadFileToDrive } from '@/lib/client/uploadToDrive';
@@ -63,12 +63,18 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
       window.location.href = googleAuthUrl;
     }
   };
-  
   // Handle dialog open/close
-  const openDialog = () => setIsOpen(true);
+  const openDialog = () => {
+    setIsOpen(true);
+    // Prevent scrolling on the body when dialog is open
+    document.body.style.overflow = 'hidden';
+  };
+  
   const closeDialog = () => {
     if (!uploadingFile) {
       setIsOpen(false);
+      // Re-enable scrolling when dialog closes
+      document.body.style.overflow = 'auto';
       setTimeout(() => {
         setError(null);
         setSuccess(false);
@@ -78,6 +84,23 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
       }, 300);
     }
   };
+  
+  // Clean up body overflow style when component unmounts or dialog closes
+  useEffect(() => {
+    // When component unmounts, ensure we reset the body overflow
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, []);
+  
+  // Effect to manage body overflow based on dialog state
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [isOpen]);
 
   // Handle click outside to close dialog
   const handleBackdropClick = (e: React.MouseEvent) => {
@@ -192,29 +215,26 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
         className="w-full px-5 py-3 text-white font-bold bg-[#DE5499] border-[0.15em] border-[#264143] rounded-[0.4em] shadow-[0.2em_0.2em_0_#264143] hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#264143] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#264143] transition-all duration-200 flex items-center justify-center"
       >
         <Upload className="w-5 h-5 mr-2" /> Upload Notes
-      </button>
-
-      {/* Modal Backdrop */}
+      </button>      {/* Modal Backdrop */}
       {isOpen && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="inset-0 bg-black/50 z-100 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4 overflow-hidden"
           onClick={handleBackdropClick}
         >
-          {/* Modal Content */}
-          <motion.div
+          {/* Modal Content */}          <motion.div
             ref={dialogRef}
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ type: "spring", duration: 0.4 }}
-            className="bg-[#F8F5F2] border-[0.2em] border-[#264143] rounded-[0.6em] shadow-[0.4em_0.4em_0_#DE5499] w-full max-w-xl mx-auto overflow-hidden"
+            className="bg-[#F8F5F2] border-[0.2em] border-[#264143] rounded-[0.6em] shadow-[0.4em_0.4em_0_#DE5499] w-full max-w-xl mx-auto overflow-hidden relative z-[101]"
             onClick={e => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="border-b-[0.15em] border-[#264143] p-4 flex justify-between items-center bg-[#264143] text-white">
+            <div className="border-b-[0.15em] border-[#264143] p-4 flex justify-between items-center bg-[#e34282] text-white">
               <h2 className="text-xl font-bold">Share Your Knowledge</h2>
               {!uploadingFile && (
                 <button 
@@ -224,10 +244,8 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
                   <X size={20} />
                 </button>
               )}
-            </div>
-
-            {/* Body */}
-            <div className="p-6 space-y-5 max-h-[70vh] overflow-y-auto">
+            </div>            {/* Body */}
+            <div className="p-6 space-y-5 max-h-[calc(80vh-120px)] overflow-y-auto">
               {/* Connection error message - only show when needed */}
               {googleAuthUrl && (
                 <div className="p-4 bg-white border-[0.15em] border-[#4d61ff] rounded-[0.4em] shadow-[0.2em_0.2em_0_#4d61ff] mb-4">
@@ -275,7 +293,7 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
                     value={noteTitle}
                     onChange={(e) => setNoteTitle(e.target.value)}
                     disabled={uploadingFile}
-                    className="w-full p-3 bg-white border-[0.15em] border-[#264143] rounded-[0.4em] focus:outline-none focus:ring-2 focus:ring-[#DE5499] shadow-[0.1em_0.1em_0_#264143]"
+                    className="w-full p-3 text-black bg-white border-[0.15em] border-[#264143] rounded-[0.4em] focus:outline-none focus:ring-2 focus:ring-[#DE5499] shadow-[0.1em_0.1em_0_#264143]"
                     placeholder="Enter a descriptive title for your notes"
                   />
                 </div>
@@ -290,7 +308,7 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
                     value={noteContent}
                     onChange={(e) => setNoteContent(e.target.value)}
                     disabled={uploadingFile}
-                    className="w-full p-3 bg-white border-[0.15em] border-[#264143] rounded-[0.4em] focus:outline-none focus:ring-2 focus:ring-[#DE5499] shadow-[0.1em_0.1em_0_#264143] min-h-[100px]"
+                    className="w-full p-3 text-black bg-white border-[0.15em] border-[#264143] rounded-[0.4em] focus:outline-none focus:ring-2 focus:ring-[#DE5499] shadow-[0.1em_0.1em_0_#264143] min-h-[100px]"
                     placeholder="Add a brief description or summary of these notes"
                   />
                 </div>
@@ -321,7 +339,7 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
                   <div className="flex">
                     <input
                       type="text"
-                      className="flex-grow p-3 border-[0.15em] border-[#264143] border-r-0 rounded-l-[0.4em] bg-white focus:outline-none focus:ring-2 focus:ring-[#DE5499] shadow-[0.1em_0.1em_0_#264143]"
+                      className="flex-grow p-3 text-black border-[0.15em] border-[#264143] border-r-0 rounded-l-[0.4em] bg-white focus:outline-none focus:ring-2 focus:ring-[#DE5499] shadow-[0.1em_0.1em_0_#264143]"
                       placeholder="Add tags (e.g., midterm, chapter1)"
                       value={newTag}
                       onChange={(e) => setNewTag(e.target.value)}
@@ -338,18 +356,18 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
                 </div>
                 
                 {/* Note Type Selector */}
-                <div className="space-y-2">
+                <div className="space-y-2 ">
                   <label className="block text-[#264143] font-medium">Note Type <span className="text-[#ff3e00]">*</span></label>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  <div className="flex gap-2 flex-wrap">
                     {Object.values(NoteType).map((type) => (
                       <button
                         key={type}
                         type="button"
                         onClick={() => setNoteType(type as NoteType)}
-                        className={`px-3 py-3 rounded-[0.4em] border-[0.15em] font-medium transition-all ${
+                        className={`px-3 py-3 rounded-[0.4em] border-[0.15em] flex-1 font-medium transition-all ${
                           noteType === type 
-                            ? 'bg-[#264143] text-white border-[#264143]' 
-                            : 'bg-white text-[#264143] border-[#264143]/30 hover:border-[#264143]'
+                            ? 'bg-pink-500 text-white border-pink-400' 
+                            : 'bg-white text-[#264143] border-pink-500 hover:border-pink-400'
                         }`}
                       >
                         {type}

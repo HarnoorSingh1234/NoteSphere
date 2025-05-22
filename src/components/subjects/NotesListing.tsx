@@ -45,17 +45,19 @@ const NotesListing: React.FC<NotesListingProps> = ({ notes = [], subjectName = '
             </button>
           ))}        </div>
           {/* Notes grid layout */}
-        <div className="flex flex-wrap gap-4">
-          {filteredNotes && filteredNotes.length > 0 ? (
-            filteredNotes.map((note) => (
-              <NoteCard key={note.id} note={note} />
-            ))
-          ) : (
-            <div className="col-span-full">
-              <EmptyNotesState type={activeTab} />
+      <div className="flex flex-wrap justify-start gap-4 py-4 px-4">
+        {filteredNotes && filteredNotes.length > 0 ? (
+          filteredNotes.map((note) => (
+            <div key={note.id} className="flex-grow-0 flex-shrink-0 basis-full sm:basis-[calc(50%-0.5rem)] md:basis-[calc(33.33%-0.67rem)] lg:basis-[calc(25%-0.75rem)]">
+              <NoteCard note={note} />
             </div>
-          )}
-        </div>
+          ))
+        ) : (
+          <div className="w-full flex justify-center items-center py-10">
+            <EmptyNotesState type={activeTab} />
+          </div>
+        )}
+      </div>
       </div>
     </div>
   );

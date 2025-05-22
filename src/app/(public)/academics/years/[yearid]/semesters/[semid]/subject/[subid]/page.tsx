@@ -188,10 +188,9 @@ export default function SubjectPage() {
           
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Upload Card */}
-            <div className="bg-white border-[0.15em] border-[#050505] rounded-[0.6em] shadow-[0.3em_0.3em_0_#DE5499] p-6">
-              <h3 className="text-xl font-bold text-[#050505] mb-2">Share Your Knowledge</h3>
-              <p className="text-[#050505]/70 mb-5">Help your peers by sharing your notes and materials for {subject.name}!</p>
+            {/* Upload Card */}              <div className="bg-white border-[0.15em] border-[#264143] rounded-[0.6em] shadow-[0.3em_0.3em_0_#DE5499] p-6">
+              <h3 className="text-xl font-bold text-[#264143] mb-2">Share Your Knowledge</h3>
+              <p className="text-[#264143]/70 mb-5">Help your peers by sharing your notes and materials for {subject.name}!</p>
               
               {isSignedIn ? (
                 /* Upload Notes Button that opens dialog if user is signed in */

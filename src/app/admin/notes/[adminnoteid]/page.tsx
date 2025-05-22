@@ -1,7 +1,6 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/db';
-import { NoteType } from '@prisma/client';
 import AdminNoteClient from '@/components/admin/AdminNoteClient';
 
 export default async function AdminNotePage({ params }: { params: { adminnoteid: string } }) {
@@ -48,6 +47,6 @@ export default async function AdminNotePage({ params }: { params: { adminnoteid:
     }
   };
     // Pass the data to a client component
-  return <AdminNoteClient note={noteWithNames} />;
+  return <div className='bg-white'><AdminNoteClient note={noteWithNames} /></div>;
 
 }

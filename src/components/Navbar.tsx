@@ -24,7 +24,7 @@ const Navbar = () => {
   }, [isLoaded, user]);
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-[#EDDCD9] border-[0.35em] border-t-0 border-[#264143] rounded-b-[0.6em] shadow-[0.5em_0.5em_0_#E99F4C] py-2 font-sans overflow-hidden transition-all duration-300 ease-in-out origin-top-center hover:translate-y-[0.1em] hover:shadow-[0.7em_0.7em_0_#E99F4C] group">
+    <header className="sticky top-0 z-20 w-full bg-[#EDDCD9] border-[0.35em] border-t-0 border-[#264143] rounded-b-[0.6em] shadow-[0.5em_0.5em_0_#E99F4C] py-2 font-sans overflow-hidden transition-all duration-300 ease-in-out origin-top-center hover:translate-y-[0.1em] hover:shadow-[0.7em_0.7em_0_#E99F4C] group">
       {/* Pattern grid background */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,0,0,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.05)_1px,transparent_1px)] bg-[length:0.5em_0.5em] pointer-events-none opacity-30 transition-opacity duration-300 ease-in-out z-[1] group-hover:opacity-50" />
       

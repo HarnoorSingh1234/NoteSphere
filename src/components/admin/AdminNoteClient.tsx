@@ -82,7 +82,7 @@ export default function AdminNoteClient({ note }: AdminNoteClientProps) {
       : { label: 'Pending Review', color: 'text-yellow-600', bg: 'bg-yellow-100', icon: <AlertCircle className="w-4 h-4" /> };
   
   return (
-    <div className="container mx-auto py-12 px-4 max-w-5xl">
+    <div className="container mx-auto bg-white py-12 px-4 max-w-5xl">
       {/* Breadcrumb */}
       <div className="mb-6">
         <div className="flex items-center text-sm text-[#050505]/70">

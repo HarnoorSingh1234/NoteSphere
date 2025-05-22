@@ -110,7 +110,7 @@ export default function AdminCommentSection({ noteId, className = '', readOnly =
               onChange={(e) => setNewComment(e.target.value)}
               placeholder="Add an admin comment..."
               disabled={isSubmitting}
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="flex-1 px-3 py-2 border text-black border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
             <button
               type="submit"
