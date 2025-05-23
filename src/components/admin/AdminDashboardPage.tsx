@@ -70,13 +70,16 @@ export default function DashboardPage() {
               )}
             </div>
           </div>
-          
+            <div className="bg-white rounded-[0.6em] border-[0.2em] border-[#264143] shadow-[0.2em_0.2em_0_#4CAF50] p-6">
+            <QuickActions />
+          </div>
           {loading ? (
             <div className="flex justify-center items-center h-32 bg-white rounded-[0.6em] border-[0.2em] border-[#264143] shadow-[0.2em_0.2em_0_#DE5499]">
               <div className="w-10 h-10 border-4 border-[#E99F4C] rounded-full border-t-transparent animate-spin"></div>
             </div>
           ) : (
-            <>              <div className="bg-transparent">
+            <>             
+              <div className="bg-transparent">
                 <StatsGrid />
               </div>
               <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
@@ -84,9 +87,7 @@ export default function DashboardPage() {
                 <PopularSubjects />
               </div>
             </>          )}
-          <div className="bg-white rounded-[0.6em] border-[0.2em] border-[#264143] shadow-[0.2em_0.2em_0_#4CAF50] p-6">
-            <QuickActions />
-          </div>
+        
         </div>
       </main>
     </div>

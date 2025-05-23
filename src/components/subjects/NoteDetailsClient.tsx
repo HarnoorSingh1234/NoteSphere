@@ -5,6 +5,7 @@ import { ThumbsUp, Clock, User as UserIcon, Download, MessageCircle } from 'luci
 import dynamic from 'next/dynamic';
 import { Note as PrismaNote, User as PrismaUser, Subject as PrismaSubject, Semester as PrismaSemester, Year as PrismaYear, NoteType } from '@prisma/client';
 import DownloadButton from '@/components/subjects/DownloadButton';
+import DocumentViewer from '@/components/notes/DocumentViewer';
 
 const LikeButton = dynamic(() => import('@/components/subjects/LikeButton'), { ssr: false });
 const CommentSection = dynamic(() => import('@/components/subjects/CommentSection'), { ssr: false });
@@ -58,8 +59,7 @@ export default function NoteDetails({ note, color, bgColor }: NoteDetailsProps) 
             </div>
           </div>
         </div>
-        
-        {/* Content */}
+          {/* Content */}
         <div className="p-5 md:p-6 border-b-[0.15em] border-[#264143] bg-[#F8F5F2]/30">
           {note.content ? (
             <div className="prose prose-sm md:prose-base max-w-none break-words">
@@ -69,6 +69,18 @@ export default function NoteDetails({ note, color, bgColor }: NoteDetailsProps) 
             <div className="text-[#264143]/70 text-center py-6">No additional content for these notes.</div>
           )}
         </div>
+          {/* Document Viewer for all document types */}
+        {(note.fileUrl || note.driveFileId) && (
+          <div className="px-5 md:px-6 py-6 border-b-[0.15em] border-[#264143] bg-[#F8F5F2]/30">
+            <h3 className="text-lg font-bold text-[#264143] mb-4">Document Preview</h3>
+            <DocumentViewer 
+              fileUrl={note.fileUrl} 
+              driveFileId={note.driveFileId} 
+              title={note.title}
+              type={note.type}
+            />
+          </div>
+        )}
           {/* Stats and Actions */}
         <div className="p-5 md:p-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 mb-6">

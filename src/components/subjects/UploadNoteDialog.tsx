@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Upload, FileText, X, Loader2, CheckCircle, Tag, Plus, AlignLeft } from 'lucide-react';
 import { NoteType } from '@prisma/client';
 import { uploadFileToDrive } from '@/lib/client/uploadToDrive';
+import { preprocessFileForUpload } from '@/lib/client/file-processing';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 
@@ -115,19 +116,40 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
       setError("Please provide both a title and a file");
       return;
     }
-    
-    try {
+      try {
       setError(null);
       setUploadingFile(true);
-      setUploadProgress(10);
+      setUploadProgress(5);
+      
+      // Preprocess the file (compress if it's a PDF)
+      let fileToUpload = selectedFile;
+      if (selectedFile.type === 'application/pdf') {
+        setUploadProgress(10);
+        console.log('Processing PDF file before upload...');
+        try {
+          fileToUpload = await preprocessFileForUpload(selectedFile);
+          console.log(`PDF processed: Original size: ${selectedFile.size} bytes, New size: ${fileToUpload.size} bytes`);
+          
+          // Show compression details
+          const compressionRatio = ((1 - (fileToUpload.size / selectedFile.size)) * 100).toFixed(1);
+          console.log(`Compression ratio: ${compressionRatio}% reduction`);
+          
+        } catch (compressionError) {
+          console.error('PDF compression failed:', compressionError);
+          // Continue with original file if compression fails
+          console.log('Continuing with original uncompressed file');
+        }
+      }
+      
+      setUploadProgress(20);
       
       // Step 1: Request upload URL from our backend
       const response = await fetch('/api/upload', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          fileName: selectedFile.name,
-          mimeType: selectedFile.type
+          fileName: fileToUpload.name,
+          mimeType: fileToUpload.type
         })
       });
       
@@ -147,7 +169,7 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
       
       // Step 2: Upload file using the URL
       const { uploadUrl, fileId, downloadUrl } = data;
-      const uploadResult = await uploadFileToDrive(selectedFile, uploadUrl, fileId);
+      const uploadResult = await uploadFileToDrive(fileToUpload, uploadUrl, fileId);
       
       if (!uploadResult.success) {
         throw new Error('File upload to Google Drive failed');

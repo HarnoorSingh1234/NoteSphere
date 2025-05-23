@@ -8,15 +8,16 @@ datasource db {
 }
 
 model User {
-  clerkId   String    @id @unique
-  email     String    @unique
+  clerkId   String     @id @unique
+  email     String     @unique
   firstName String
   lastName  String
-  createdAt DateTime  @default(now())
-  role      UserRole  @default(USER)
+  createdAt DateTime   @default(now())
+  role      UserRole   @default(USER)
   comments  Comment[]
   likes     Like[]
   notes     Note[]
+  feedback  Feedback[]
 }
 
 model Year {
@@ -121,6 +122,15 @@ model RejectedNote {
   @@index([authorClerkId])
   @@index([rejectedAt])
   @@index([subjectId])
+}
+
+model Feedback {
+  id            String   @id @default(cuid())
+  content       String
+  createdAt     DateTime @default(now())
+  viewed        Boolean  @default(false)
+  authorClerkId String?
+  author        User?    @relation(fields: [authorClerkId], references: [clerkId], onDelete: SetNull)
 }
 
 enum NoteType {

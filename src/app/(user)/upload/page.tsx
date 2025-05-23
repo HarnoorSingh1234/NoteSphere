@@ -18,6 +18,7 @@ import {
   FileChartLine
 } from 'lucide-react';
 import Link from 'next/link';
+import { preprocessFileForUpload } from '@/lib/client/file-processing';
 
 // Define types based on your Prisma schema
 type NoteType = 'PPT' | 'LECTURE' | 'HANDWRITTEN' | 'PDF';
@@ -205,11 +206,29 @@ export default function UploadNotePage() {
     
     setError(null);
     setUploading(true);
-    
-    try {
+      try {
+      // Preprocess the file (compress if it's a PDF)
+      let fileToUpload = file;
+      if (file.type === 'application/pdf') {
+        console.log('Processing PDF file before upload...');
+        try {
+          fileToUpload = await preprocessFileForUpload(file);
+          console.log(`PDF processed: Original size: ${file.size} bytes, New size: ${fileToUpload.size} bytes`);
+          
+          // Show compression info
+          const compressionRatio = ((1 - (fileToUpload.size / file.size)) * 100).toFixed(1);
+          console.log(`Compression ratio: ${compressionRatio}% reduction`);
+          
+        } catch (compressionError) {
+          console.error('PDF compression failed:', compressionError);
+          // Continue with original file if compression fails
+          console.log('Continuing with original uncompressed file');
+        }
+      }
+      
       // Step 1: Upload file to obtain URL
       const fileFormData = new FormData();
-      fileFormData.append('file', file);
+      fileFormData.append('file', fileToUpload);
       
       const uploadResponse = await fetch('/api/upload', {
         method: 'POST',

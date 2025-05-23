@@ -5,16 +5,18 @@ import { NoteType } from '@prisma/client';
 import { FileSymlink } from 'lucide-react';
 import Link from 'next/link';
 import NoteDetailsClient from '@/components/subjects/NoteDetailsClient';
-import BackButton from '@/components/Backbutton'; // We'll create this component
+import BackButton from '@/components/Backbutton';
 
+// Define the params type for Next.js dynamic route
+interface NotePageParams {
+  params: {
+    noteid: string;
+  };
+}
 
-export default async function NotePage({
-  params,
-}: {
-  params: { noteid: string };
-  searchParams?: Record<string, string | string[] | undefined>;
-}) {
+export default async function NotePage({ params }: NotePageParams) {
   if (!params.noteid) notFound();
+  
   // Fetch note with related data
   const note = await prisma.note.findUnique({
     where: { 
@@ -115,7 +117,6 @@ export default async function NotePage({
           </div>
         )}
       
-        {/* Rest of your component... */}
         {/* Recommended Related Materials */}
         {note.subject && (
           <div className="mt-8 bg-white border-[0.15em] border-[#264143] rounded-[0.6em] p-6 shadow-[0.3em_0.3em_0_#4CAF50]">

@@ -5,6 +5,7 @@ import { FileText, Clock, User, Download, CheckCircle, XCircle, AlertCircle } fr
 import { NoteType } from '@prisma/client';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
+import DocumentViewer from '@/components/notes/DocumentViewer';
 
 // Import with dynamic for client-side rendering
 const AdminLikeButton = dynamic(() => import('@/components/admin/AdminLikeButton'), { ssr: false });
@@ -194,8 +195,7 @@ export default function AdminNoteClient({ note }: AdminNoteClientProps) {
             </div>
           </div>
         )}
-        
-        <div>
+          <div>
           <h3 className="font-medium text-[#264143] mb-2">File</h3>
           <a 
             href={note.fileUrl} 
@@ -204,19 +204,24 @@ export default function AdminNoteClient({ note }: AdminNoteClientProps) {
             className="flex items-center gap-3 p-4 bg-[#4d61ff]/5 rounded-[0.4em] border border-[#4d61ff]/20 text-[#4d61ff] font-medium hover:bg-[#4d61ff]/10 transition-colors"
           >
             <FileText className="w-5 h-5" />
-            View Document
+            Download Document
           </a>
         </div>
       </div>
       
-      {/* User Engagement Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div className="bg-white border-[0.15em] border-[#264143] rounded-[0.6em] shadow-[0.3em_0.3em_0_#E99F4C] p-6">
-          <h2 className="text-xl font-bold text-[#264143] mb-4">User Engagement</h2>
-          <AdminLikeButton noteId={note.id} initialLikes={note._count.likes} />
+      {/* Document Viewer */}
+      {(note.fileUrl || note.driveFileId) && (
+        <div className="bg-white border-[0.15em] border-[#264143] rounded-[0.6em] shadow-[0.3em_0.3em_0_#DE5499] p-6 mb-8">
+          <h2 className="text-xl font-bold text-[#264143] mb-4">Document Preview</h2>
+          <DocumentViewer
+            fileUrl={note.fileUrl}
+            driveFileId={note.driveFileId || undefined}
+            title={note.title}
+            type={note.type}
+          />
         </div>
-      </div>
-      
+      )}
+     
       {/* Comments Section */}
       <AdminCommentSection noteId={note.id} />
     </div>
