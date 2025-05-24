@@ -96,15 +96,15 @@ function Footer() {
                 Get In Touch
               </h3>
               <address className="space-y-2 text-sm not-italic text-[#264143]/80 border-l-[0.2em] border-[#DE5499] pl-4">
-                <p>Guru Nanak Dev University</p>
-                <p>Amritsar, Punjab 143001</p>
+                <p>Hesh Media</p>
+                <p>Prem Complex, Circular Rd, Medical Enclave, Amritsar, Punjab 143001</p>
                 <p className="flex items-center">
                   Email: 
                   <a 
-                    href="mailto:gnducoders@gmail.com" 
+                    href="mailto:heshmedia21@gmail.com" 
                     className="ml-1 text-[#DE5499] hover:underline"
                   >
-                    gnducoders@gmail.com
+                    heshmedia21@gmail.com
                   </a>
                 </p>
               </address>
@@ -112,7 +112,7 @@ function Footer() {
             
             {/* Social Links */}
             <div className="relative">
-              <h3 className="mb-4 text-lg font-bold text-[#264143]">Connect With Us</h3>
+              <h3 className="mb-4 text-lg font-bold text-[#264143]">Connect with the Devs</h3>
               <div className="mb-6 flex space-x-4">
                 <TooltipProvider>
                   <Tooltip>
@@ -168,9 +168,13 @@ function Footer() {
           </div>
           
           {/* Copyright */}
-          <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-[#264143]/20 pt-8 text-center md:flex-row">
+          <div className="mt-5 flex flex-col items-center justify-center gap-4 border-t border-[#264143]/20 pt-4 text-center md:flex-row">
             <p className="text-sm text-[#264143]/70">
-              © 2025 NoteSphere. Academic resources for students, by students.
+              © 2025 NoteSphere 
+              <br />
+              All rights reserved by <a href="https://www.instagram.com/node.hesh?igsh=M3JxYzBoNHJ3OHlj" target="_blank"><span className="text-blue-700 hover:underline" >Node</span></a>
+              <br />
+              Powered by <a href="heshmedia.in" target="_blank"><span className="text-blue-700 hover:underline" >Hesh Media</span></a>
             </p>
             
             {/* Corner decorative element */}
