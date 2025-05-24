@@ -168,7 +168,7 @@ const AcademicCard: React.FC<AcademicCardProps> = ({
               <div
                 className="relative text-[1.5em] sm:text-[1.8em] font-extrabold text-[#050505] bg-white"
               >
-                <span className="text-[0.5em] sm:text-[0.6em] font-bold align-top mr-[0.1em]">$</span>{price}
+                <span className="text-[0.5em] sm:text-[0.6em] font-bold align-top mr-[0.1em]"></span>{price}
                 <span className="block text-[0.35em] sm:text-[0.4em] font-semibold text-[rgba(0,0,0,0.6)] mt-[0.2em]">{priceDescription}</span>
                 {/* Accent line under price */}
                 <div 
