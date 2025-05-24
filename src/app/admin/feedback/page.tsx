@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from '@/components/ui/use-toast';
-import { formatDistanceToNow } from 'date-fns';
+import { formatTimeAgo } from '@/components/admin/utils';
 import { CheckCircle, XCircle, RefreshCw, Filter } from 'lucide-react';
 
 type Feedback = {
@@ -174,7 +174,7 @@ export default function FeedbackManagement() {
                   </Badge>
                 </div>
                 <p className="text-xs text-[#264143]/60 mt-1">
-                  Submitted {formatDistanceToNow(new Date(item.createdAt), { addSuffix: true })}
+                  Submitted {formatTimeAgo(item.createdAt)}
                 </p>
               </CardHeader>
               <CardContent>

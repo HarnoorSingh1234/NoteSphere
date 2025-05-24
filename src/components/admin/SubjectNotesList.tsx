@@ -12,7 +12,6 @@ import {
   Eye
 } from 'lucide-react';
 import Link from 'next/link';
-import { formatDistanceToNow } from 'date-fns';
 import { deleteNote } from '@/lib/admin-notes-actions';
 import { toast } from '@/components/ui/use-toast';
 import {
@@ -27,6 +26,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
+import { formatTimeAgo } from '@/lib/date-utils';
 
 // Type for a note with all the information we need
 interface NoteWithDetails {
@@ -205,7 +205,7 @@ export default function SubjectNotesList({ notes, subjectId, subjectName, onNote
                   </div>
                   
                   <div className="text-sm text-gray-500 mb-4">
-                    <p>Uploaded {formatDistanceToNow(new Date(note.createdAt), { addSuffix: true })} by {note.authorName || 'Unknown'}</p>
+                    <p>Uploaded {formatTimeAgo(note.createdAt)} by {note.authorName || 'Unknown'}</p>
                     <p className="mt-1 flex items-center gap-3">
                       <span className="flex items-center">
                         <Eye className="w-4 h-4 mr-1" /> {note.downloadCount} views

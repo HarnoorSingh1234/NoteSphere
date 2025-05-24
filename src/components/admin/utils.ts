@@ -1,14 +1,11 @@
-import { formatDistanceToNow } from 'date-fns';
 import { NoteType } from '@/types';
+import { formatTimeAgo } from '@/lib/date-utils';
 
-/**
- * Format a date to a relative time string (e.g., "2 hours ago")
- */
-export const formatDate = (date: Date | string) => {
-  if (!date) return '';
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
-  return formatDistanceToNow(dateObj, { addSuffix: true });
-};
+// Export for backward compatibility
+export { formatTimeAgo };
+
+// Maintain backward compatibility
+export const formatDate = formatTimeAgo;
 
 /**
  * Get color and background color for a note type

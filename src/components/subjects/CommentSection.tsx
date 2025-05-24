@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useAuth, useUser } from '@clerk/nextjs';
 import { Send } from 'lucide-react';
-import { formatDistance } from 'date-fns';
 import Link from 'next/link';
+import { formatTimeAgo } from '@/lib/date-utils';
 
 interface Comment {
   id: string;
@@ -140,7 +140,7 @@ export default function CommentSection({ noteId, className = '' }: CommentSectio
                   </div>
                 </div>
                 <div className="text-[10px] md:text-xs font-medium text-[#050505]/50">
-                  {formatDistance(new Date(comment.createdAt), new Date(), { addSuffix: true })}
+                  {formatTimeAgo(comment.createdAt)}
                 </div>
               </div>
               <p className="text-sm md:text-base text-[#050505]/80 break-words">{comment.content}</p>

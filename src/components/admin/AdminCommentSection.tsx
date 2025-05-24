@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { formatDistance } from 'date-fns';
 import { MessageSquare, Send } from 'lucide-react';
 import { useAuth } from '@clerk/nextjs';
+import { formatTimeAgo } from '@/lib/date-utils';
 
 interface Comment {
   id: string;
@@ -136,7 +136,7 @@ export default function AdminCommentSection({ noteId, className = '', readOnly =
                   {comment.user.firstName} {comment.user.lastName}
                 </div>
                 <div className="text-xs text-[#050505]/50">
-                  {formatDistance(new Date(comment.createdAt), new Date(), { addSuffix: true })}
+                  {formatTimeAgo(comment.createdAt)}
                 </div>
               </div>
               <p className="mt-1 text-[#050505]/70">{comment.content}</p>
