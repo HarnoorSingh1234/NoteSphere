@@ -1,6 +1,17 @@
-import { NoteType } from '@prisma/client'
+import { NoteType, Prisma } from '@prisma/client'
 
 export type { NoteType }
+
+// Define type for Subject with Prisma aggregations
+type SubjectWithCount = Prisma.SubjectGetPayload<{
+  include: {
+    _count: {
+      select: {
+        notes: true
+      }
+    }
+  }
+}>
 
 export interface User {
   clerkId: string
@@ -28,13 +39,14 @@ export interface Semester {
   subjects: Subject[]
 }
 
-export interface Subject {
+export interface Subject extends Omit<SubjectWithCount, '_count'> {
   id: string
   name: string
   code: string
   semesterId: string
   semester: Semester
   notes: Note[]
+  _count?: SubjectWithCount['_count']
 }
 
 

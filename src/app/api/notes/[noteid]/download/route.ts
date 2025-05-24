@@ -5,9 +5,10 @@ import { auth } from '@clerk/nextjs/server';
 // Track note download
 export async function POST(
   request: Request,
-  { params }: { params: { noteid: string } }
+  context: { params: Promise<{ noteid: string }> }
 ) {
   try {
+    const params = await context.params;
     const noteId = params.noteid;
     
     // Check if note exists and is verified

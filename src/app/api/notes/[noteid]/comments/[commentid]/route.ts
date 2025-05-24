@@ -5,9 +5,10 @@ import { auth } from '@clerk/nextjs/server';
 // Get a specific comment
 export async function GET(
   request: Request,
-  { params }: { params: { noteid: string, commentid: string } }
+  context: { params: Promise<{ noteid: string, commentid: string }> }
 ) {
   try {
+    const params = await context.params;
     const noteId = params.noteid;
     const commentId = params.commentid;
     
@@ -56,9 +57,10 @@ export async function GET(
 // Delete a comment
 export async function DELETE(
   request: Request,
-  { params }: { params: { noteid: string, commentid: string } }
+  context: { params: Promise<{ noteid: string, commentid: string }> }
 ) {
   try {
+    const params = await context.params;
     const { userId } = await auth();
     
     if (!userId) {

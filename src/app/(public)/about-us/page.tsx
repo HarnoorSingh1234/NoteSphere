@@ -32,7 +32,7 @@ function AboutUsPage() {
       socials: [
         { icon: <Github className="w-5 h-5" />, url: "https://github.com/TDHINGRA16" },
         { icon: <Linkedin className="w-5 h-5" />, url: "https://www.linkedin.com/in/tushar-dhingra-2b1975298/" },
-        { icon: <Mail className="w-5 h-5" />, url: "mailto:tushadhingrar@gmail.com" },
+        { icon: <Mail className="w-5 h-5" />, url: "mailto:tushadhingra20@gmail.com" },
         { icon: <Instagram className="w-5 h-5" />, url: "https://www.instagram.com/tdhingra_16/" },
       ],
       skills: ["UI/UX Design", "React", "TailwindCSS", "Next.js"],

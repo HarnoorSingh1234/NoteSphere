@@ -6,9 +6,10 @@ import { isAdmin } from '@/lib/auth';
 // GET a specific semester by ID
 export async function GET(
   request: Request,
-  { params }: { params: { semid: string } }
+  context: { params: Promise<{ semid: string }> }
 ) {
   try {
+    const params = await context.params;
     const semesterId = params.semid;
     
     const semester = await prisma.semester.findUnique({
@@ -44,7 +45,7 @@ export async function GET(
 // Update a semester
 export async function PUT(
   request: Request,
-  { params }: { params: { semid: string } }
+  context: { params: Promise<{ semid: string }> }
 ) {
   try {
     const { userId } = await auth();
@@ -65,6 +66,7 @@ export async function PUT(
       );
     }
     
+    const params = await context.params;
     const semesterId = params.semid;
     const { number, yearId } = await request.json();
     
@@ -170,7 +172,7 @@ export async function PUT(
 // Delete a semester
 export async function DELETE(
   request: Request,
-  { params }: { params: { semid: string } }
+  context: { params: Promise<{ semid: string }> }
 ) {
   try {
     const { userId } = await auth();
@@ -191,6 +193,7 @@ export async function DELETE(
       );
     }
     
+    const params = await context.params;
     const semesterId = params.semid;
     
     // Check if semester has associated subjects

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { XCircle } from 'lucide-react';
-import { Year } from '@/types/index';
+import { Year } from '@/types'; // Import from root types file to match what admin-notes-actions uses
 import ProtectRoute from "@/app/(auth)/protected/ProtectRoute";
 import StatsCards from '@/components/admin/StatsCards';
 import ActionButtons from '@/components/admin/ActionButtons';

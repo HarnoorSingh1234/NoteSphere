@@ -4,7 +4,7 @@ import { getCurrentUser } from "@/lib/auth";
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { feedbackId: string } }
+  context: { params: Promise<{ feedbackId: string }> }
 ) {
   try {
     const user = await getCurrentUser();
@@ -17,6 +17,7 @@ export async function PATCH(
       );
     }
 
+    const params = await context.params;
     const feedbackId = params.feedbackId;
 
     // Find the feedback first

@@ -6,8 +6,9 @@ import { getCurrentUser } from '@/lib/auth';
 // Handle file downloads from Google Drive
 export async function GET(
   request: Request,
-  { params }: { params: { noteid: string } }
+  context: { params: Promise<{ noteid: string }> }
 ) {  try {
+    const params = await context.params;
     const noteId = params.noteid;
     
     // Check if note exists

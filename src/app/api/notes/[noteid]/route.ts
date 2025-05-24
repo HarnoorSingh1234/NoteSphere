@@ -6,9 +6,10 @@ import { isAdmin } from '@/lib/auth';
 // GET a specific note by ID
 export async function GET(
   request: Request,
-  { params }: { params: { noteid: string } }
+  context: { params: Promise<{ noteid: string }> }
 ) {
   try {
+    const params = await context.params;
     const noteId = params.noteid;
     
     const note = await prisma.note.findUnique({
@@ -70,7 +71,7 @@ export async function GET(
         { status: 404 }
       );
     }
-      // Check if authenticated user has liked this note
+    // Check if authenticated user has liked this note
     let userLiked = false;
     
     const { userId } = await auth();
@@ -111,7 +112,7 @@ export async function GET(
 // Update a note
 export async function PUT(
   request: Request,
-  { params }: { params: { noteid: string } }
+  context: { params: Promise<{ noteid: string }> }
 ) {
   try {
     const { userId } = await auth();
@@ -123,8 +124,9 @@ export async function PUT(
       );
     }
     
+    const params = await context.params;
     const noteId = params.noteid;
-      // Get the existing note
+    // Get the existing note
     const existingNote = await prisma.note.findUnique({
       where: { id: noteId },
       include: {
@@ -184,7 +186,7 @@ export async function PUT(
         where: { name: tagName },
         create: { name: tagName }
       }));
-        tagUpdateOperation = {
+      tagUpdateOperation = {
         tags: {
           disconnect: existingNote.tags.map((tag: { id: string }) => ({ id: tag.id })), // Remove existing tags
           connectOrCreate: tagData // Add new tags
@@ -241,7 +243,7 @@ export async function PUT(
 // Delete a note
 export async function DELETE(
   request: Request,
-  { params }: { params: { noteid: string } }
+  context: { params: Promise<{ noteid: string }> }
 ) {
   try {
     const { userId } = await auth();
@@ -253,6 +255,7 @@ export async function DELETE(
       );
     }
     
+    const params = await context.params;
     const noteId = params.noteid;
     
     // Get the existing note

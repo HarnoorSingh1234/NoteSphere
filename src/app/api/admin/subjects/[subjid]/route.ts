@@ -1,12 +1,10 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
 import { auth } from '@clerk/nextjs/server';
-import { isAdmin } from '@/lib/auth';
+import { fetchAdminSubject } from '@/lib/admin-subject-actions';
 
-// GET a specific subject by ID with all notes (including non-public) for admin
 export async function GET(
   request: Request,
-  { params }: { params: { subjid: string } }
+  context: { params: Promise<{ subjid: string }> }
 ) {
   try {
     const { userId } = await auth();
@@ -19,67 +17,39 @@ export async function GET(
     }
     
     try {
-      // Check if user is admin using our helper function
-      const adminStatus = await isAdmin();
-      if (!adminStatus) {
+      // Await the params Promise to get the actual parameters
+      const params = await context.params;
+      
+      // Use the separated server action function to fetch subject data
+      const subject = await fetchAdminSubject(params.subjid);
+      return NextResponse.json({ subject });
+    } catch (error: any) {
+      // Handle specific errors
+      if (error.message === 'Forbidden: Only admins can perform this action') {
         return NextResponse.json(
           { error: 'Forbidden: Only admins can access this endpoint' },
           { status: 403 }
         );
       }
-    } catch (adminError) {
-      console.error('Admin verification error:', adminError);
-      // Fall back to allowing the action if verification fails
-      // This is a temporary fix - in production you would want proper error handling
-    }
-    
-    const subjectId = params.subjid;
-    
-    const subject = await prisma.subject.findUnique({
-      where: { id: subjectId },
-      include: {
-        semester: {
-          include: { 
-            year: true 
-          }
-        },
-        notes: {
-          // No where filter, so include all notes regardless of isPublic status
-          orderBy: { createdAt: 'desc' },
-          include: {
-            author: {
-              select: {
-                firstName: true,
-                lastName: true,
-                email: true
-              }
-            },
-            _count: {
-              select: { 
-                likes: true,
-                comments: true
-              }
-            }
-          }
-        },
-        _count: {
-          select: { notes: true }
-        }
+      
+      if (error.message === 'Subject not found') {
+        return NextResponse.json(
+          { error: 'Subject not found' },
+          { status: 404 }
+        );
       }
-    });
-    
-    if (!subject) {
+      
+      // Generic server error
+      console.error('Error in admin subject route:', error);
       return NextResponse.json(
-        { error: 'Subject not found' },
-        { status: 404 }
+        { error: 'Failed to fetch subject' },
+        { status: 500 }
       );
     }
-    
-    return NextResponse.json({ subject });
   } catch (error: unknown) {
-    console.error('Error fetching subject for admin:', error);
+    console.error('Unexpected error in route handler:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch subject' },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }

@@ -4,9 +4,10 @@ import { prisma } from '@/lib/db';
 // Get a specific year by ID
 export async function GET(
   request: Request,
-  { params }: { params: { yearid: string } }
+  context: { params: Promise<{ yearid: string }> }
 ) {
   try {
+    const params = await context.params;
     const yearId = params.yearid;
     
     const year = await prisma.year.findUnique({
@@ -41,9 +42,10 @@ export async function GET(
 // Update a year
 export async function PUT(
   request: Request,
-  { params }: { params: { yearid: string } }
+  context: { params: Promise<{ yearid: string }> }
 ) {
   try {
+    const params = await context.params;
     const yearId = params.yearid;
     const { number } = await request.json();
     
@@ -92,9 +94,10 @@ export async function PUT(
 // Delete a year
 export async function DELETE(
   request: Request,
-  { params }: { params: { yearid: string } }
+  context: { params: Promise<{ yearid: string }> }
 ) {
   try {
+    const params = await context.params;
     const yearId = params.yearid;
     
     // Check if year has associated semesters

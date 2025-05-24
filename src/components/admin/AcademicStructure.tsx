@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { ChevronDown, ChevronRight, Book, Notebook, FileText, Edit, Trash2 } from 'lucide-react';
-import { Year, Semester, Subject } from '@/types/index';
+import { Year, Semester, Subject } from '@/types'; // Import from root types file for consistency
 
 interface AcademicStructureProps {
   years: Year[];

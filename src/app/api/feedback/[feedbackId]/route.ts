@@ -4,13 +4,15 @@ import { getCurrentUser } from "@/lib/auth";
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { feedbackId: string } }
+  context: { params: Promise<{ feedbackId: string }> }
 ) {
   try {
+    // Await the params Promise to get the actual parameters
+    const params = await context.params;
     const { feedbackId } = params;
+    
     const user = await getCurrentUser();
     
-  
     // Parse the request body to get the new viewed status
     const body = await request.json();
     const { viewed } = body;

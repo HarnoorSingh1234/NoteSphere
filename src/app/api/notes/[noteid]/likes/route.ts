@@ -5,9 +5,10 @@ import { auth } from '@clerk/nextjs/server';
 // GET likes for a specific note
 export async function GET(
   request: Request,
-  { params }: { params: { noteid: string } }
+  context: { params: Promise<{ noteid: string }> }
 ) {
   try {
+    const params = await context.params;
     const noteId = params.noteid;
     
     // Check if note exists
@@ -58,7 +59,7 @@ export async function GET(
 // Add or remove like on a note (toggle)
 export async function POST(
   request: Request,
-  { params }: { params: { noteid: string } }
+  context: { params: Promise<{ noteid: string }> }
 ) {
   try {
     const { userId } = await auth();
@@ -69,7 +70,7 @@ export async function POST(
         { status: 401 }
       );
     }
-    
+    const params = await context.params;
     const noteId = params.noteid;
     
     // Check if note exists

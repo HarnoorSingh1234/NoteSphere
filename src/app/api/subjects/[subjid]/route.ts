@@ -6,9 +6,10 @@ import { isAdmin } from '@/lib/auth';
 // GET a specific subject by ID
 export async function GET(
   request: Request,
-  { params }: { params: { subjid: string } }
+  context: { params: Promise<{ subjid: string }> }
 ) {
   try {
+    const params = await context.params;
     const subjectId = params.subjid;
     
     const subject = await prisma.subject.findUnique({
@@ -18,7 +19,8 @@ export async function GET(
           include: { 
             year: true 
           }
-        },        notes: {
+        },
+        notes: {
           where: { isPublic: true }, // Only include public/verified notes
           orderBy: { createdAt: 'desc' },
           include: {
@@ -63,7 +65,7 @@ export async function GET(
 // Update a subject
 export async function PUT(
   request: Request,
-  { params }: { params: { subjid: string } }
+  context: { params: Promise<{ subjid: string }> }
 ) {
   try {
     const { userId } = await auth();
@@ -84,6 +86,7 @@ export async function PUT(
       );
     }
     
+    const params = await context.params;
     const subjectId = params.subjid;
     const { name, code, semesterId } = await request.json();
     
@@ -201,7 +204,7 @@ export async function PUT(
 // Delete a subject
 export async function DELETE(
   request: Request,
-  { params }: { params: { subjid: string } }
+  context: { params: Promise<{ subjid: string }> }
 ) {
   try {
     const { userId } = await auth();
@@ -222,6 +225,7 @@ export async function DELETE(
       );
     }
     
+    const params = await context.params;
     const subjectId = params.subjid;
     
     // Check if subject has associated notes
