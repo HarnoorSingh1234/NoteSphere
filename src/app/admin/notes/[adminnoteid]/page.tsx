@@ -1,52 +1,55 @@
-import React from 'react';
-import { notFound } from 'next/navigation';
-import { prisma } from '@/lib/db';
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation';
 import AdminNoteClient from '@/components/admin/AdminNoteClient';
+import { getAdminNoteById } from '@/lib/admin-note-actions';
 
-export default async function AdminNotePage({ params }: { params: { adminnoteid: string } }) {
-  // Fetch note with related data
-  const note = await prisma.note.findUnique({
-    where: { id: params.adminnoteid },
-    include: {
-      author: true,
-      subject: {
-        include: {
-          semester: {
-            include: {
-              year: true,
-            },
-          },
-        },
-      },
-      _count: {
-        select: { 
-          likes: true,
-          comments: true,
-        },
-      },
-    },
-  });
-
-  if (!note) {
-    notFound();
-  }
+export default function AdminNotePage() {
+  const params = useParams();
+  const noteId = params.adminnoteid as string;
   
-  // Add missing name property to semester
-  const noteWithNames = {
-    ...note,
-    subject: {
-      ...note.subject,
-      semester: {
-        ...note.subject.semester,
-        name: `Semester ${note.subject.semester.number}`, // Add name property
-        year: {
-          ...note.subject.semester.year,
-          name: `Year ${note.subject.semester.year.number}` // Add name property
-        }
+  const [note, setNote] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  
+  useEffect(() => {
+    async function loadNoteData() {
+      try {
+        setLoading(true);
+        const noteData = await getAdminNoteById(noteId);
+        setNote(noteData);
+      } catch (err) {
+        console.error("Failed to load note:", err);
+        setError(true);
+      } finally {
+        setLoading(false);
       }
     }
-  };
-    // Pass the data to a client component
-  return <div className='bg-white'><AdminNoteClient note={noteWithNames} /></div>;
+    
+    if (noteId) {
+      loadNoteData();
+    }
+  }, [noteId]);
+  
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#264143]"></div>
+      </div>
+    );
+  }
+  
+  if (error || !note) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-white">
+        <h2 className="text-2xl font-bold text-[#264143]">Note not found</h2>
+        <p className="text-[#264143]/70">The note you're looking for doesn't exist or has been removed.</p>
+      </div>
+    );
+  }
+    
+  // Pass the data to the client component
+  return <div className='bg-white'><AdminNoteClient note={note} /></div>;
 
 }

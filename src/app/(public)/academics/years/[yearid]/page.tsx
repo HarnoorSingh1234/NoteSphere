@@ -6,50 +6,25 @@ import { motion } from 'framer-motion';
 import { BookOpen, ArrowLeft, CalendarDays } from 'lucide-react';
 import AcademicCard from '@/components/AcademicCard';
 import { useParams } from 'next/navigation';
-
-interface Semester {
-  id: string;
-  number: number;
-  yearId: string;
-  _count?: {
-    subjects: number;
-  };
-}
-
-interface Year {
-  id: string;
-  number: number;
-}
+import { getYearPageData, type YearPageData } from '@/lib/year-actions';
 
 export default function YearPage() {
   // Use the useParams hook to access route parameters
   const params = useParams();
   const yearid = params.yearid as string; // Cast to string since params values are string | string[]
   
-  const [year, setYear] = useState<Year | null>(null);
-  const [semesters, setSemesters] = useState<Semester[]>([]);
+  const [data, setData] = useState<YearPageData | null>(null);
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
     async function fetchYearData() {
       try {
-        // Using yearid from useParams
-        const yearResponse = await fetch(`/api/years/${yearid}`);
-        const yearData = await yearResponse.json();
-        
-        // Fetch semesters for this year
-        const semestersResponse = await fetch(`/api/semesters?yearId=${yearid}`);
-        const semestersData = await semestersResponse.json();
-        
-        if (yearData.year) {
-          setYear(yearData.year);
-        }
-        
-        if (semestersData.semesters) {
-          setSemesters(semestersData.semesters);
-        }
+        // Using the server action
+        const yearPageData = await getYearPageData(yearid);
+        setData(yearPageData);
       } catch (error) {
         console.error('Error fetching year data:', error);
+        setData({ year: null, semesters: [] });
       } finally {
         setLoading(false);
       }
@@ -58,19 +33,18 @@ export default function YearPage() {
     if (yearid) {
       fetchYearData();
     }
-  }, [yearid]); // Updated dependency array with yearid from useParams
-  // Map semesters to AcademicCard format
-  const academicSemesters = semesters.map((semester, index) => ({
+  }, [yearid]); // Updated dependency array with yearid from useParams  // Map semesters to AcademicCard format
+  const academicSemesters = data?.semesters.map((semester, index) => ({
     id: semester.id,
     title: `Semester ${semester.number}`,
     tagText: getSemesterTagText(semester.number),
-    description: getSemesterDescription(year?.number, semester.number),
+    description: getSemesterDescription(data.year?.number, semester.number),
     features: getSemesterFeatures(semester.number),
     price: semester._count?.subjects.toString() || "6",
     priceDescription: "subjects",
     buttonText: "View Subjects",
     buttonHref: `/academics/years/${yearid}/semesters/${semester.id}` // Using the destructured yearid
-  }));
+  })) || [];
 
   // Rest of your component remains the same
   return (
@@ -98,11 +72,10 @@ export default function YearPage() {
             {loading ? (
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#050505] mb-2">
                 Loading...
-              </h1>
-            ) : (
+              </h1>            ) : (
               <>
                 <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#050505] mb-2">
-                  Year <span className="text-[#ff3e00]">{year?.number}</span>
+                  Year <span className="text-[#ff3e00]">{data?.year?.number}</span>
                 </h1>
                 
                 <p className="max-w-[600px] mx-auto text-[#050505]/80 text-lg mb-4">

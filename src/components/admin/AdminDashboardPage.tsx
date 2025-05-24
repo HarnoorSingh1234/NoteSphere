@@ -52,7 +52,8 @@ export default function DashboardPage() {
   return (
     <div className="flex flex-col bg-[#F8F5F2] min-h-screen">
       <main className="flex-1 p-4 md:p-6 max-w-7xl mx-auto w-full">
-        <div className="grid gap-8">          <div className="bg-white rounded-[0.6em] border-[0.2em] border-[#264143] shadow-[0.2em_0.2em_0_#E99F4C] p-6">
+        <div className="grid gap-8">          
+          <div className="bg-white rounded-[0.6em] border-[0.2em] border-[#264143] shadow-[0.2em_0.2em_0_#E99F4C] p-6">
             <div className="flex justify-between items-start">
               <div>
                 <h2 className="text-3xl font-bold text-[#264143]">
@@ -62,12 +63,6 @@ export default function DashboardPage() {
                   Manage your academic structure and review content on NoteSphere
                 </p>
               </div>
-              {processingNotes && (
-                <div className="flex items-center gap-2 px-3 py-1 bg-[#4CAF50]/10 text-[#4CAF50] rounded-md">
-                  <div className="w-4 h-4 border-2 border-[#4CAF50] rounded-full border-t-transparent animate-spin"></div>
-                  <span className="text-sm font-medium">Processing rejected notes...</span>
-                </div>
-              )}
             </div>
           </div>
             <div className="bg-white rounded-[0.6em] border-[0.2em] border-[#264143] shadow-[0.2em_0.2em_0_#4CAF50] p-6">

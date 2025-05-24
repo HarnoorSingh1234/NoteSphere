@@ -1,104 +1,78 @@
-import React from 'react';
-import { notFound } from 'next/navigation';
-import { prisma } from '@/lib/db';
-import { NoteType } from '@prisma/client';
+'use client';
+
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 import { FileSymlink } from 'lucide-react';
 import Link from 'next/link';
 import NoteDetailsClient from '@/components/subjects/NoteDetailsClient';
 import BackButton from '@/components/Backbutton';
+import { fetchNotePageData, incrementNoteViews } from '@/lib/note-actions';
 
-// Define the params type for Next.js dynamic route
-interface NotePageParams {
-  params: {
-    noteid: string;
-  };
-}
-
-export default async function NotePage({ params }: NotePageParams) {
-  if (!params.noteid) notFound();
+export default function NotePage() {
+  // Use the useParams hook to get the noteid from the URL
+  const params = useParams();
+  const noteid = params.noteid as string;
   
-  // Fetch note with related data
-  const note = await prisma.note.findUnique({
-    where: { 
-      id: params.noteid,
-      isPublic: true,    // Ensure note is public
-      isRejected: false, // Ensure note is not rejected
-    },
-    include: {
-      author: true,
-      subject: {
-        include: {
-          semester: {
-            include: {
-              year: true,
-            },
-          },
-        },
-      },
-      tags: true,
-      _count: {
-        select: { 
-          likes: true,
-          comments: true,
-        },
-      },
-    },
-  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [pageData, setPageData] = useState<{
+    note: any;
+    similarNotes: any[];
+    styling: { color: string; bgColor: string };
+  } | null>(null);
 
-  if (!note) {
-    notFound();
+  useEffect(() => {
+    async function loadNoteData() {
+      try {
+        setLoading(true);
+        const data = await fetchNotePageData(noteid);
+        setPageData(data);
+      } catch (err) {
+        console.error("Failed to load note:", err);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    }
+    
+    if (noteid) {
+      loadNoteData();
+    }
+  }, [noteid]);
+  
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#F8F5F2]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#264143]"></div>
+      </div>
+    );
   }
   
-  // Function to determine note icon and color based on type
-  const getNoteTypeDetails = (type: NoteType) => {
-    switch(type) {
-      case 'PDF':
-        return { color: '#ff3e00', bgColor: '#ff3e00/10' };
-      case 'PPT':
-        return { color: '#E99F4C', bgColor: '#E99F4C/10' };
-      case 'LECTURE':
-        return { color: '#4d61ff', bgColor: '#4d61ff/10' };
-      case 'HANDWRITTEN':
-        return { color: '#DE5499', bgColor: '#DE5499/10' };
-      default:
-        return { color: '#264143', bgColor: '#F8F5F2' };
-    }
-  };
+  if (error || !pageData) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#F8F5F2]">
+        <h2 className="text-2xl font-bold text-[#264143]">Note not found</h2>
+        <p className="text-[#264143]/70">The note you're looking for doesn't exist or has been removed.</p>
+        <Link 
+          href="/"
+          className="mt-4 px-4 py-2 bg-[#264143] text-white rounded-md hover:bg-[#264143]/90"
+        >
+          Return Home
+        </Link>
+      </div>
+    );
+  }
   
-  // Fetch similar notes from the same subject (limited to 3)
-  const similarNotes = await prisma.note.findMany({
-    where: {
-      subjectId: note.subjectId,
-      id: { not: note.id },
-      isPublic: true,
-      isRejected: false,
-    },
-    include: {
-      author: true,
-      _count: {
-        select: { likes: true, comments: true }
-      }
-    },
-    orderBy: { downloadCount: 'desc' },
-    take: 3,
-  });
-  
-  const { color, bgColor } = getNoteTypeDetails(note.type);
-  
-  // Add the authorId property to match the Note type expected by NoteDetailsClient
-  const noteWithAuthorId = {
-    ...note,
-    authorId: note.author?.clerkId || '' // Use author's clerk ID if available, otherwise empty string
-  };
+  const { note, similarNotes, styling } = pageData;
+  const { color, bgColor } = styling;
   
   return (
     <div className="min-h-screen bg-[#F8F5F2] py-6 px-4">
-      <div className="container mx-auto max-w-5xl">
-        <div className="mb-6">
+      <div className="container mx-auto max-w-5xl">        <div className="mb-6">
           <BackButton subjectName={note.subject?.name || 'Subject'} />
         </div>
         
-        <NoteDetailsClient note={noteWithAuthorId} color={color} bgColor={bgColor} />
+        <NoteDetailsClient note={note} color={color} bgColor={bgColor} />
         
         {/* Display tags if available */}
         {note.tags && note.tags.length > 0 && (
@@ -117,6 +91,7 @@ export default async function NotePage({ params }: NotePageParams) {
           </div>
         )}
       
+        {/* Rest of your component... */}
         {/* Recommended Related Materials */}
         {note.subject && (
           <div className="mt-8 bg-white border-[0.15em] border-[#264143] rounded-[0.6em] p-6 shadow-[0.3em_0.3em_0_#4CAF50]">

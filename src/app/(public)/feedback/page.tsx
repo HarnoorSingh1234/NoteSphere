@@ -84,7 +84,7 @@ export default function FeedbackPage() {
               </div>
             ) : (
               <form onSubmit={handleSubmit}>
-                <div className="mb-6">
+                <div className="mb-6 text-black">
                   <label htmlFor="feedback" className="block text-[#264143] font-medium mb-2">
                     Your Feedback
                   </label>
@@ -93,7 +93,7 @@ export default function FeedbackPage() {
                     value={feedbackContent}
                     onChange={(e) => setFeedbackContent(e.target.value)}
                     placeholder="Share your thoughts, suggestions, or report an issue..."
-                    className="w-full p-4 border-[0.15em] border-[#264143] rounded-[0.4em] min-h-[200px] focus:outline-none focus:ring-2 focus:ring-[#DE5499]"
+                    className="w-full p-4 border-[0.15em] text-black border-[#264143] rounded-[0.4em] min-h-[200px] focus:outline-none focus:ring-2 focus:ring-[#DE5499]"
                     disabled={isSubmitting}
                   />
                 </div>
@@ -105,7 +105,7 @@ export default function FeedbackPage() {
                         type="checkbox"
                         checked={isAnonymous}
                         onChange={() => setIsAnonymous(!isAnonymous)}
-                        className="w-5 h-5 rounded border-[#264143]"
+                        className="w-5 h-5 rounded text-black border-[#264143]"
                       />
                       <span className="ml-2 text-[#264143]">
                         Submit anonymously (your name will not be attached)
