@@ -218,22 +218,13 @@ function getSubjectFeatures(subjectName: string): { icon: JSX.Element; text: str
       ),
       text: "Study Materials",
     },
-  ];
-  
-  // Random selection of additional features based on subject name
-  const hash = subjectName.split('').reduce((a, b) => {
-    a = (a << 5) - a + b.charCodeAt(0);
-    return a & a;
-  }, 0);
-  
-  const additionalFeatures = [
     {
       icon: (
         <svg className="w-[0.9em] h-[0.9em] fill-white" viewBox="0 0 24 24">
           <path d="M18,2A2,2 0 0,1 20,4V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V4A2,2 0 0,1 6,2H18M18,4H6V20H18V4M16,12V14H6V12H16M16,8V10H6V8H16Z" />
         </svg>
       ),
-      text: "Practice Quizzes",
+      text: "PYQ's",
     },
     {
       icon: (
@@ -243,27 +234,7 @@ function getSubjectFeatures(subjectName: string): { icon: JSX.Element; text: str
       ),
       text: "Exam Prep",
     },
-    {
-      icon: (
-        <svg className="w-[0.9em] h-[0.9em] fill-white" viewBox="0 0 24 24">
-          <path d="M14,2L20,8V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V4A2,2 0 0,1 6,2H14M18,20V9H13V4H6V20H18M12,11L15,14H13V18H11V14H9L12,11Z" />
-        </svg>
-      ),
-      text: "Downloadable Resources",
-    },
-    {
-      icon: (
-        <svg className="w-[0.9em] h-[0.9em] fill-white" viewBox="0 0 24 24">
-          <path d="M9,5V9H21V5M9,19H21V15H9M9,14H21V10H9M4,9H8V5H4M4,19H8V15H4M4,14H8V10H4V14Z" />
-        </svg>
-      ),
-      text: "Solutions",
-    }
   ];
   
-  // Select two additional features deterministically based on subject name hash
-  const feature1 = additionalFeatures[Math.abs(hash) % additionalFeatures.length];
-  const feature2 = additionalFeatures[Math.abs(hash >> 4) % additionalFeatures.length];
-  
-  return [...standardFeatures, feature1, feature2];
+  return standardFeatures;
 }

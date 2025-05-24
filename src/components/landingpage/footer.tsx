@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { BookOpen, GraduationCap, Github, Instagram, Moon, Sun, Contact } from "lucide-react"
+import { BookOpen, GraduationCap, Github, Instagram, Contact } from "lucide-react"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import {
@@ -124,7 +124,7 @@ function Footer() {
                         </button>
                       </Link>
                     </TooltipTrigger>
-                    <TooltipContent className="bg-white border-[0.15em] border-[#264143] shadow-[0.2em_0.2em_0_#E99F4C]">
+                    <TooltipContent className="text-black bg-white border-[0.15em] border-[#264143] shadow-[0.2em_0.2em_0_#E99F4C]">
                       <p>Check out the code!</p>
                     </TooltipContent>
                   </Tooltip>
@@ -141,7 +141,7 @@ function Footer() {
                       </Link>
                     </TooltipTrigger>
                     <TooltipContent className="bg-white border-[0.15em] border-[#264143] shadow-[0.2em_0.2em_0_#E99F4C]">
-                      <p>Harnoor Singh</p>
+                      <p className="text-black">Harnoor Singh</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -157,7 +157,7 @@ function Footer() {
                       </Link>
                     </TooltipTrigger>
                     <TooltipContent className="bg-white border-[0.15em] border-[#264143] shadow-[0.2em_0.2em_0_#E99F4C]">
-                      <p>Tushar Dhingra</p>
+                      <p className="text-black">Tushar Dhingra</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>

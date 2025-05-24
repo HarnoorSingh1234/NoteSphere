@@ -118,16 +118,18 @@ const AcademicCard: React.FC<AcademicCardProps> = ({
         
         {/* Card title area */}
         <div 
-          className="relative p-[1.1em] sm:p-[1.4em] text-white font-extrabold text-[1em] sm:text-[1.2em] flex justify-between items-center border-b-[0.25em] sm:border-b-[0.35em] border-b-[#050505] uppercase tracking-[0.05em] z-20 overflow-hidden"
+          className="relative p-[1.1em] sm:p-[1.4em] text-white font-extrabold text-[1em] sm:text-[1.2em] flex flex-col gap-1 items-start border-b-[0.25em] sm:border-b-[0.35em] border-b-[#050505] uppercase tracking-[0.05em] z-20 min-w-[300px] sm:min-w-[350px] overflow-visible"
           style={{ backgroundColor: primaryColor }}
         >
-          <span className="line-clamp-1" title={title}>{title}</span>
-          <span className="bg-white text-[#050505] text-[0.5em] sm:text-[0.6em] font-extrabold py-[0.3em] sm:py-[0.4em] px-[0.6em] sm:px-[0.8em] border-[0.12em] sm:border-[0.15em] border-[#050505] rounded-[0.3em] shadow-[0.15em_0.15em_0_#000] sm:shadow-[0.2em_0.2em_0_#000] uppercase tracking-[0.1em] rotate-3 transition-all duration-300 whitespace-nowrap ml-1">
+          <span className="bg-white text-[#050505] text-[0.5em] sm:text-[0.6em] font-extrabold py-[0.3em] sm:py-[0.4em] px-[0.6em] sm:px-[0.8em] border-[0.12em] sm:border-[0.15em] border-[#050505] rounded-[0.3em] shadow-[0.15em_0.15em_0_#000] sm:shadow-[0.2em_0.2em_0_#000] uppercase tracking-[0.1em] rotate-3 transition-all duration-300 shrink-0 relative z-10">
             {tagText}
           </span>
+          <div className="min-w-0">
+            <span className="block break-words" title={title}>{title}</span>
+          </div>
           <div 
             className="absolute inset-0 bg-[repeating-linear-gradient(45deg,rgba(0,0,0,0.1),rgba(0,0,0,0.1)_0.5em,transparent_0.5em,transparent_1em)] pointer-events-none opacity-30 z-[-1]" 
-            aria-hidden="true"
+          aria-hidden="true"
           />
         </div>
         
