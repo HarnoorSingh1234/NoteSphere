@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { auth } from '@clerk/nextjs/server';
-import { isAdmin } from '@/lib/auth';
+
 
 // GET all notes (including non-public) for admin users
 export async function GET(request: Request) {

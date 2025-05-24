@@ -1,13 +1,13 @@
 'use client';
 
 import Link from "next/link";
-import { Calendar, BookOpen, Book, FileText, MessageCircle } from "lucide-react";
+import { Calendar, BookOpen, Book, FileText, MessageCircle, Bell } from "lucide-react";
 
 export default function QuickActions() {
   return (
     <div className="grid gap-4">
       <h3 className="text-xl font-semibold text-[#264143]">Quick Actions</h3>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
         <Link 
           href="/admin/years" 
           className="p-4 bg-white border-[0.2em] border-[#264143] rounded-[0.6em] shadow-[0.2em_0.2em_0_#E99F4C] hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#E99F4C] transition-all duration-200"
@@ -85,8 +85,7 @@ export default function QuickActions() {
             </div>
           </div>
         </Link>
-        
-        <Link 
+          <Link 
           href="/admin/feedback" 
           className="p-4 bg-white border-[0.2em] border-[#264143] rounded-[0.6em] shadow-[0.2em_0.2em_0_#8B5CF6] hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#8B5CF6] transition-all duration-200"
         >
@@ -97,6 +96,21 @@ export default function QuickActions() {
             <div>
               <h4 className="font-bold text-[#264143]">User Feedback</h4>
               <p className="text-sm text-[#264143]/70">Review and manage feedback</p>
+            </div>
+          </div>
+        </Link>
+
+        <Link 
+          href="/admin/notices" 
+          className="p-4 bg-white border-[0.2em] border-[#264143] rounded-[0.6em] shadow-[0.2em_0.2em_0_#7BB4B1] hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#7BB4B1] transition-all duration-200"
+        >
+          <div className="flex items-center">
+            <div className="p-3 bg-[#EDDCD9] rounded-md mr-3 text-[#264143]">
+              <Bell size={20} />
+            </div>
+            <div>
+              <h4 className="font-bold text-[#264143]">Manage Notices</h4>
+              <p className="text-sm text-[#264143]/70">Create and manage notices</p>
             </div>
           </div>
         </Link>

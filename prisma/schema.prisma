@@ -8,16 +8,17 @@ datasource db {
 }
 
 model User {
-  clerkId   String     @id @unique
-  email     String     @unique
-  firstName String
-  lastName  String
-  createdAt DateTime   @default(now())
-  role      UserRole   @default(USER)
-  comments  Comment[]
-  likes     Like[]
-  notes     Note[]
-  feedback  Feedback[]
+  clerkId        String          @id @unique
+  email          String          @unique
+  firstName      String
+  lastName       String
+  createdAt      DateTime        @default(now())
+  role           UserRole        @default(USER)
+  comments       Comment[]
+  likes          Like[]
+  notes          Note[]
+  feedback       Feedback[]
+  notices        Notice[]
 }
 
 model Year {
@@ -72,12 +73,15 @@ model Note {
 model Like {
   id        String   @id @default(cuid())
   userId    String
-  noteId    String
+  noteId    String?
+  noticeId  String?
   createdAt DateTime @default(now())
-  note      Note     @relation(fields: [noteId], references: [id])
+  note      Note?    @relation(fields: [noteId], references: [id])
+  notice    Notice?  @relation(fields: [noticeId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [clerkId])
 
   @@unique([userId, noteId])
+  @@unique([userId, noticeId])
 }
 
 model Comment {
@@ -85,8 +89,10 @@ model Comment {
   content   String
   createdAt DateTime @default(now())
   userId    String
-  noteId    String
-  note      Note     @relation(fields: [noteId], references: [id])
+  noteId    String?
+  noticeId  String?
+  note      Note?    @relation(fields: [noteId], references: [id])
+  notice    Notice?  @relation(fields: [noticeId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [clerkId])
 }
 
@@ -131,6 +137,23 @@ model Feedback {
   viewed        Boolean  @default(false)
   authorClerkId String?
   author        User?    @relation(fields: [authorClerkId], references: [clerkId], onDelete: SetNull)
+}
+
+model Notice {
+  id          String    @id @default(cuid())
+  title       String
+  description String
+  driveLink   String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  authorId    String
+  isPublished Boolean   @default(true)
+  author      User      @relation(fields: [authorId], references: [clerkId])
+  likes       Like[]
+  comments    Comment[]
+
+  @@index([createdAt])
+  @@index([isPublished])
 }
 
 enum NoteType {
