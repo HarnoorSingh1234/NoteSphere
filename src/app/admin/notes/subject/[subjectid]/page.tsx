@@ -8,6 +8,7 @@ import { Subject, Note } from '@/types';
 import { getNoteTypeDetails, formatDate, formatAuthorName } from '@/components/subjects/utils';
 import NoteCard from '@/components/subjects/NoteCard';
 import { Note as NoteCardNote } from '@/components/subjects/types';
+import SubjectNotesList from '@/components/admin/SubjectNotesList';
 
 // Helper function to convert Note to NoteCardNote
 const convertToNoteCardType = (note: Note): NoteCardNote => {
@@ -260,24 +261,33 @@ const AdminSubjectNotesPage = () => {
           </div>
         </div>
       </div>
-      
-      {/* Notes List */}
-      {filteredNotes.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredNotes.map((note) => (
-            <div 
-              key={note.id}
-              className={`relative ${!note.isPublic ? 'border-2 border-amber-500 rounded-[0.8em]' : ''}`}
-            >
-              {!note.isPublic && (
-                <div className="absolute top-2 right-2 z-10 bg-amber-500 text-white px-2 py-0.5 rounded-full text-xs font-bold">
-                  Pending
-                </div>
-              )}
-              <NoteCard note={convertToNoteCardType(note)} />
-            </div>
-          ))}
-        </div>
+        {/* Notes List */}
+      {filteredNotes.length > 0 ? (          <SubjectNotesList 
+          notes={filteredNotes.map(note => ({
+            id: note.id,
+            title: note.title,
+            type: note.type,
+            fileUrl: note.fileUrl || '',
+            isPublic: note.isPublic, // This property is required by NoteWithDetails
+            isRejected: note.isRejected,
+            downloadCount: note.downloadCount,
+            createdAt: typeof note.createdAt === 'string' ? note.createdAt : 
+                      note.createdAt instanceof Date ? note.createdAt.toISOString() : 
+                      String(note.createdAt),
+            updatedAt: typeof note.updatedAt === 'string' ? note.updatedAt : 
+                      note.updatedAt instanceof Date ? note.updatedAt.toISOString() : 
+                      String(note.updatedAt),
+            authorName: note.author ? `${note.author.firstName} ${note.author.lastName}` : 'Unknown',
+            author: note.author,
+            _count: {
+              likes: note.likes?.length || 0,
+              comments: note.comments?.length || 0
+            }
+          }))}
+          subjectId={subjectId as string}
+          subjectName={subject.name}
+          onNoteDeleted={fetchSubjectWithNotes}
+        />
       ) : (
         <div className="bg-white border-[0.15em] border-dashed border-[#050505] rounded-[0.6em] text-center p-12">
           <FileText className="w-16 h-16 mx-auto text-[#050505]/40 mb-4" />

@@ -8,8 +8,7 @@ import ProtectRoute from "@/app/(auth)/protected/ProtectRoute";
 import StatsCards from '@/components/admin/StatsCards';
 import ActionButtons from '@/components/admin/ActionButtons';
 import AcademicStructure from '@/components/admin/AcademicStructure';
-
-
+import { fetchAdminAcademicStructure, fetchAdminNotesStats } from '@/lib/admin-notes-actions';
 
 const AdminNotesPage = () => {
   const [years, setYears] = useState<Year[]>([]);
@@ -24,26 +23,18 @@ const AdminNotesPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const fetchAcademicStructure = async () => {
+    const loadData = async () => {
       try {
         setLoading(true);
         
-        // Fetch years with semesters, subjects, and notes
-        const yearsResponse = await fetch('/api/years?include=all');
+        // Use server actions to fetch data
+        const [academicStructure, notesStats] = await Promise.all([
+          fetchAdminAcademicStructure(),
+          fetchAdminNotesStats()
+        ]);
         
-        if (!yearsResponse.ok) {
-          throw new Error('Failed to fetch academic years');
-        }
-        
-        const { years: yearsData } = await yearsResponse.json();
-        setYears(yearsData);
-        
-        // Fetch notes stats
-        const statsResponse = await fetch('/api/admin/notes/stats');
-        if (statsResponse.ok) {
-          const statsData = await statsResponse.json();
-          setStats(statsData);
-        }
+        setYears(academicStructure);
+        setStats(notesStats);
       } catch (err: any) {
         console.error('Error fetching data:', err);
         setError(err.message || 'Failed to load academic data');
@@ -52,7 +43,7 @@ const AdminNotesPage = () => {
       }
     };
     
-    fetchAcademicStructure();
+    loadData();
   }, []);
   
   if (loading) {

@@ -149,8 +149,7 @@ const AcademicStructure: React.FC<AcademicStructureProps> = ({ years }) => {
                                           </span>
                                         </div>
                                         
-                                        <div className="flex items-center space-x-2">
-                                          <Link href={`/admin/subjects/${subject.id}`} className="text-xs px-2 py-1 bg-gray-100 rounded hover:bg-gray-200">
+                                        <div className="flex items-center space-x-2">                                          <Link href={`/admin/notes/subject/${subject.id}`} className="text-xs px-2 py-1 bg-blue-50 text-blue-600 rounded hover:bg-blue-100">
                                             View Notes
                                           </Link>
                                           <Link href={`/admin/subjects/${subject.id}/edit`} className="p-1 hover:bg-gray-200 rounded">

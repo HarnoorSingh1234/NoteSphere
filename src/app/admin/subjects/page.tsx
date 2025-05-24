@@ -197,8 +197,17 @@ export default function ManageSubjects() {
                               {subject._count?.notes || 0} {subject._count?.notes === 1 ? 'Note' : 'Notes'}
                             </span>
                           </td>
-                          <td className="py-4 px-4 text-right">
-                            <div className="flex items-center justify-end space-x-3">
+                          <td className="py-4 px-4 text-right">                            <div className="flex items-center justify-end space-x-3">
+                              <Link
+                                href={`/admin/notes/subject/${subject.id}`}
+                                className="p-2 bg-[#4d61ff]/20 border-[0.1em] border-[#4d61ff]/30 text-[#4d61ff] rounded-md hover:bg-[#4d61ff]/30 hover:border-[#4d61ff]/50 transition-all duration-200"
+                                title="View Notes"
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                  <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                              </Link>
                               <Link 
                                 href={`/admin/subjects/edit/${subject.id}`}
                                 className="p-2 bg-[#EDDCD9] border-[0.1em] border-[#264143]/30 text-[#264143] rounded-md hover:bg-[#4CAF50]/30 hover:border-[#264143]/50 transition-all duration-200"
