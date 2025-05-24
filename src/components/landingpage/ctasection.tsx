@@ -1,4 +1,4 @@
-'use client'
+\'use client'
 
 import React from 'react'
 import Link from 'next/link'
@@ -47,7 +47,7 @@ export default function CTASection() {
           </p>
           
           <Link 
-            href="/register"
+            href="/sign-up"
             className="inline-flex items-center justify-center px-6 py-3 text-white font-bold bg-[#DE5499] border-[0.2em] border-[#264143] rounded-[0.4em] shadow-[0.3em_0.3em_0_#E99F4C] hover:translate-x-[-0.1em] hover:translate-y-[-0.1em] hover:bg-[#E66BA7] hover:shadow-[0.4em_0.4em_0_#E99F4C] active:translate-x-[0.1em] active:translate-y-[0.1em] active:shadow-[0.15em_0.15em_0_#E99F4C] transition-all duration-200"
           >
             Get Started Today <ArrowRight className="ml-2 h-4 w-4" />
