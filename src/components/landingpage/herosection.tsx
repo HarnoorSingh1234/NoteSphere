@@ -96,7 +96,7 @@ export default function HeroSection() {
                     // User is not logged in - show Get Started and Sign Up buttons
                     <>
                       <Link 
-                        href="/notes"
+                        href="/academics"
                         className="inline-flex items-center justify-center px-5 py-2 text-[#264143] font-bold bg-[#E99F4C] border-[0.2em] border-[#264143] rounded-[0.4em] shadow-[0.25em_0.25em_0_#DE5499] hover:translate-x-[-0.1em] hover:translate-y-[-0.1em] hover:shadow-[0.35em_0.35em_0_#DE5499] active:translate-x-[0.1em] active:translate-y-[0.1em] active:shadow-[0.15em_0.15em_0_#DE5499] transition-all duration-200"
                       >
                         Get Started <ArrowRight className="ml-2 h-3 w-3" />
