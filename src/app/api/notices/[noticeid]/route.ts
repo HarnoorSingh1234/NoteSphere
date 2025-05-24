@@ -4,12 +4,13 @@ import { prisma } from '@/lib/db';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ noticeid: string }> }
 ) {
   try {
+    const params = await context.params;
     const notice = await prisma.notice.findUnique({
       where: { 
-        id: params.id,
+        id: params.noticeid,
         isPublished: true,
       },
       include: {
@@ -58,11 +59,11 @@ export async function GET(
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ noticeid: string }> }
 ) {
   try {
     const { userId } = await auth();
-    
+    const params = await context.params;
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -77,7 +78,7 @@ export async function POST(
       data: {
         content,
         userId,
-        noticeId: params.id,
+        noticeId: params.noticeid,
       },
       include: {
         user: {
