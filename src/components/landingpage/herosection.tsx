@@ -87,7 +87,7 @@ export default function HeroSection() {
                   ) : user ? (
                     // User is logged in - show Go To Notes button
                     <Link 
-                      href="/notes"
+                      href="/academics"
                       className="inline-flex items-center justify-center px-5 py-2 text-white font-bold bg-[#DE5499] border-[0.2em] border-[#264143] rounded-[0.4em] shadow-[0.25em_0.25em_0_#E99F4C] hover:translate-x-[-0.1em] hover:translate-y-[-0.1em] hover:bg-[#E66BA7] hover:shadow-[0.35em_0.35em_0_#E99F4C] active:translate-x-[0.1em] active:translate-y-[0.1em] active:shadow-[0.15em_0.15em_0_#E99F4C] transition-all duration-200"
                     >
                       Go To Notes <NotebookPen className="ml-2 h-4 w-4" />
