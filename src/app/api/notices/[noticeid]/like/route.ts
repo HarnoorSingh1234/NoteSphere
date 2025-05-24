@@ -4,20 +4,20 @@ import { prisma } from '@/lib/db';
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ noticeid: string }> }
 ) {
   try {
     const { userId } = await auth();
+    const params = await context.params;
     
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-
     // Check if user already liked this notice
     const existingLike = await prisma.like.findFirst({
       where: {
         userId,
-        noticeId: params.id,
+        noticeId: params.noticeid,
       },
     });
 
@@ -33,7 +33,7 @@ export async function POST(
       await prisma.like.create({
         data: {
           userId,
-          noticeId: params.id,
+          noticeId: params.noticeid,
         },
       });
       
