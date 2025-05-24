@@ -50,11 +50,11 @@ export async function PATCH(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ noticeid: string }> }
 ) {
   try {
     const { userId } = await auth();
-    
+    const params = await context.params;
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -62,7 +62,7 @@ export async function DELETE(
     
 
     await prisma.notice.delete({
-      where: { id: params.id },
+      where: { id: params.noticeid },
     });
 
     return NextResponse.json({ message: 'Notice deleted successfully' });
