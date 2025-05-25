@@ -14,7 +14,7 @@ export async function PATCH(
     }
 
    
-    const { title, description, driveLink, isPublished } = await req.json();
+    const { title, description, driveLink, driveFileId, isPublished } = await req.json();
 
     const notice = await prisma.notice.update({
       where: { id: params.noticeid },
@@ -22,6 +22,7 @@ export async function PATCH(
         ...(title && { title }),
         ...(description && { description }),
         ...(driveLink && { driveLink }),
+        ...(driveFileId && { driveFileId }),
         ...(typeof isPublished === 'boolean' && { isPublished }),
       },
       include: {

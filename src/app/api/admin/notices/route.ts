@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
 
    
 
-    const { title, description, driveLink } = await req.json();
+    const { title, description, driveLink, driveFileId } = await req.json();
 
     if (!title || !description || !driveLink) {
       return NextResponse.json(
@@ -64,6 +64,7 @@ export async function POST(req: NextRequest) {
         title,
         description,
         driveLink,
+        driveFileId,
         authorId: userId,
       },
       include: {

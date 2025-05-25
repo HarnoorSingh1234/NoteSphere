@@ -3,8 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { useUser } from '@clerk/nextjs';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import {
   Dialog,
@@ -23,6 +21,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import Link from 'next/link';
+import PageHeader from '@/components/academics/PageHeader';
 
 interface Notice {
   id: string;
@@ -92,7 +91,6 @@ export default function NoticesPage() {
       setLoading(false);
     }
   };
-
   const fetchNoticeDetails = async (noticeId: string) => {
     try {
       const response = await fetch(`/api/notices/${noticeId}`);
@@ -104,7 +102,6 @@ export default function NoticesPage() {
       console.error(error);
     }
   };
-
   const toggleLike = async (noticeId: string) => {
     if (!user) {
       toast.error('Please sign in to like notices');
@@ -150,7 +147,6 @@ export default function NoticesPage() {
       console.error(error);
     }
   };
-
   const submitComment = async (noticeId: string) => {
     if (!user) {
       toast.error('Please sign in to comment');
@@ -199,68 +195,62 @@ export default function NoticesPage() {
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-[#264143]"></div>
       </div>
     );
-  }
-
-  return (
+  }  return (
     <div className="space-y-6">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-[#264143] mb-2">Latest Notices</h1>
-        <p className="text-gray-600">Stay updated with the latest releases and announcements</p>
-      </div>
+      {/* Page Header Component */}
+      <PageHeader 
+        title="Latest Notices" 
+        description="Stay updated with the latest releases and announcements" 
+      />
 
       {notices.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center h-64">
-            <MessageCircle className="h-16 w-16 text-gray-400 mb-4" />
-            <p className="text-gray-500 text-lg">No notices available</p>
-            <p className="text-gray-400 text-sm">Check back later for updates</p>
-          </CardContent>
-        </Card>
+        <div className="bg-white border-[0.25em] border-[#264143] rounded-[0.5em] shadow-[0.4em_0.4em_0_#E99F4C] overflow-hidden p-8 flex flex-col items-center justify-center h-64">
+          <MessageCircle className="h-16 w-16 text-[#7BB4B1] mb-4" />
+          <p className="text-[#264143] text-lg font-medium">No notices available</p>
+          <p className="text-[#264143]/60 text-sm">Check back later for updates</p>
+        </div>
       ) : (
         <div className="grid gap-6">
           {notices.map((notice) => (
-            <Card key={notice.id} className="border-[#264143] hover:shadow-lg transition-shadow">
-              <CardHeader>
+            <div key={notice.id} className="bg-white border-[0.25em] border-[#264143] rounded-[0.5em] shadow-[0.35em_0.35em_0_#E99F4C] overflow-hidden hover:translate-y-[-0.2em] hover:shadow-[0.4em_0.4em_0_#E99F4C] transition-all duration-300 relative">
+              <div className="p-6">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <CardTitle className="text-xl text-[#264143] mb-2">
+                    <h3 className="text-xl font-bold text-[#264143] mb-2">
                       {notice.title}
-                    </CardTitle>
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                    </h3>
+                    <div className="flex items-center gap-2 text-sm text-[#264143]/70">
                       <span>By {notice.author.firstName} {notice.author.lastName}</span>
-                      <span>•</span>                      <span className="flex items-center gap-1">
+                      <span>•</span>
+                      <span className="flex items-center gap-1">
                         <Calendar className="h-4 w-4" />
                         {formatDate(notice.createdAt)}
                       </span>
                     </div>
                   </div>
-                  <Badge className="bg-[#E99F4C] text-[#264143]">
+                  <div className="bg-[#7BB4B1] text-white font-medium text-sm py-1 px-3 rounded-md shadow-[0.1em_0.1em_0_#264143]">
                     Latest Release
-                  </Badge>
+                  </div>
                 </div>
-              </CardHeader>
               
-              <CardContent>
-                <p className="text-gray-700 mb-4 leading-relaxed">{notice.description}</p>
+                <p className="text-[#264143]/80 my-4 leading-relaxed">{notice.description}</p>
                 
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mt-4">
                   <div className="flex items-center gap-4">
-                    <Button
-                      variant="ghost"
-                      size="sm"
+                    <button
                       onClick={() => toggleLike(notice.id)}
-                      className={`transition-colors ${
+                      className={`flex items-center gap-2 py-1.5 px-3 rounded-md transition-colors ${
                         isUserLiked(notice) 
-                          ? 'text-red-500 hover:text-red-600' 
-                          : 'text-gray-500 hover:text-red-500'
+                          ? 'bg-[#EDDCD9] text-[#DE5499]' 
+                          : 'hover:bg-[#EDDCD9]/50 text-[#264143]/70'
                       }`}
                       disabled={!isLoaded}
                     >
                       <Heart 
-                        className={`h-4 w-4 mr-1 ${isUserLiked(notice) ? 'fill-current' : ''}`}
+                        className={`h-4 w-4 ${isUserLiked(notice) ? 'fill-current' : ''}`}
                       />
-                      {notice._count.likes}
-                    </Button>
+                      <span className="text-sm font-medium">{notice._count.likes}</span>
+                    </button>
                     
                     <Dialog>
                       <DialogTrigger asChild>
@@ -282,8 +272,9 @@ export default function NoticesPage() {
                         </DialogHeader>
                         
                         {selectedNotice && (
-                          <div className="space-y-4">                            <div className="text-sm text-gray-500">
-                              By {selectedNotice.author.firstName} {selectedNotice.author.lastName} • 
+                          <div className="space-y-4">
+                            <div className="text-sm text-gray-500">
+                              By {selectedNotice.author.firstName} {selectedNotice.author.lastName} • {" "}
                               {formatDate(selectedNotice.createdAt)}
                             </div>
                             
@@ -341,7 +332,8 @@ export default function NoticesPage() {
                                       <div className="flex justify-between items-start mb-2">
                                         <span className="font-medium text-[#264143]">
                                           {comment.user.firstName} {comment.user.lastName}
-                                        </span>                                        <span className="text-xs text-gray-500">
+                                        </span>
+                                        <span className="text-xs text-gray-500">
                                           {formatDate(comment.createdAt)}
                                         </span>
                                       </div>
@@ -365,8 +357,8 @@ export default function NoticesPage() {
                     View File
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           ))}
         </div>
       )}
