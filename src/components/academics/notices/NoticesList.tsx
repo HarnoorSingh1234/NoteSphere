@@ -168,10 +168,8 @@ export default function NoticesList({ notices, onRefresh }: NoticesListProps) {
                 </h3>
                 <div className="flex items-center gap-2 text-sm text-[#264143]/70">
                   <span>By {notice.author.firstName} {notice.author.lastName}</span>
-                  <span>•</span>
-                  <span className="flex items-center gap-1">
-                    <Calendar className="h-4 w-4" />
-                    {formatDate(notice.createdAt.toDateString())}
+                  <span>•</span>                  <span className="flex items-center gap-1">                      <Calendar className="h-4 w-4" />
+                    {formatDate(notice.createdAt.toString())}
                   </span>
                 </div>
               </div>
@@ -219,10 +217,8 @@ export default function NoticesList({ notices, onRefresh }: NoticesListProps) {
                     </DialogHeader>
                     
                     {selectedNotice && (
-                      <div className="space-y-4">
-                        <div className="text-sm text-gray-500">
-                          By {selectedNotice.author.firstName} {selectedNotice.author.lastName} • {" "}
-                          {formatDate(selectedNotice.createdAt.toDateString())}
+                      <div className="space-y-4">                        <div className="text-sm text-gray-500">                          By {selectedNotice.author.firstName} {selectedNotice.author.lastName} • {" "}
+                          {formatDate(selectedNotice.createdAt.toString())}
                         </div>
                         
                         <p className="text-gray-700">{selectedNotice.description}</p>
