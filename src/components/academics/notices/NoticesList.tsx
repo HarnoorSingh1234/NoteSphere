@@ -22,7 +22,28 @@ import {
 import { toast } from 'sonner';
 import Link from 'next/link';
 
-import { Notice } from './types';
+import { Notice as PrismaNotice } from '@prisma/client';
+
+interface Notice extends PrismaNotice {
+  likes: { userId: string }[];
+  author: {
+    firstName: string;
+    lastName: string;
+  };
+  comments: {
+    id: string;
+    content: string;
+    createdAt: string;
+    user: {
+      firstName: string;
+      lastName: string;
+    };
+  }[];
+  _count: {
+    likes: number;
+    comments: number;
+  };
+}
 
 interface NoticesListProps {
   notices: Notice[];
@@ -150,7 +171,7 @@ export default function NoticesList({ notices, onRefresh }: NoticesListProps) {
                   <span>•</span>
                   <span className="flex items-center gap-1">
                     <Calendar className="h-4 w-4" />
-                    {formatDate(notice.createdAt)}
+                    {formatDate(notice.createdAt.toDateString())}
                   </span>
                 </div>
               </div>
@@ -201,7 +222,7 @@ export default function NoticesList({ notices, onRefresh }: NoticesListProps) {
                       <div className="space-y-4">
                         <div className="text-sm text-gray-500">
                           By {selectedNotice.author.firstName} {selectedNotice.author.lastName} • {" "}
-                          {formatDate(selectedNotice.createdAt)}
+                          {formatDate(selectedNotice.createdAt.toDateString())}
                         </div>
                         
                         <p className="text-gray-700">{selectedNotice.description}</p>
