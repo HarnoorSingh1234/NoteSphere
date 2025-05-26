@@ -4,63 +4,91 @@ import { Bell, ChevronRight, FileText, Calendar, School } from 'lucide-react';
 
 const NoticesCard = () => {
   return (
-    <div className="h-full bg-white border-[0.25em] sm:border-[0.3em] md:border-[0.35em] border-[#264143] rounded-[0.4em] sm:rounded-[0.5em] md:rounded-[0.6em] shadow-[0.3em_0.3em_0_#E99F4C] sm:shadow-[0.35em_0.35em_0_#E99F4C] md:shadow-[0.4em_0.4em_0_#E99F4C] overflow-hidden group hover:translate-y-[-0.2em] sm:hover:translate-y-[-0.25em] md:hover:translate-y-[-0.3em] hover:shadow-[0.35em_0.35em_0_#E99F4C] sm:hover:shadow-[0.4em_0.4em_0_#E99F4C] md:hover:shadow-[0.5em_0.5em_0_#E99F4C] transition-all duration-300 relative flex flex-col">
-      {/* Pattern background */}
-      <div className="absolute inset-0 bg-[radial-gradient(rgba(0,0,0,0.05)_1px,transparent_1px)] bg-[length:0.8em_0.8em] sm:bg-[length:0.9em_0.9em] md:bg-[length:1em_1em] bg-[-0.4em_-0.4em] sm:bg-[-0.45em_-0.45em] md:bg-[-0.5em_-0.5em] pointer-events-none opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
+    <div className="h-full bg-white border-[0.35em] border-[#264143] rounded-[0.6em] shadow-[0.4em_0.4em_0_#E99F4C] overflow-hidden group hover:translate-y-[-0.3em] hover:translate-x-[-0.1em] hover:shadow-[0.5em_0.5em_0_#E99F4C] transition-all duration-300 relative flex flex-col">
+      {/* Card pattern grid */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,0,0,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.05)_1px,transparent_1px)] bg-[length:0.5em_0.5em] pointer-events-none opacity-0 group-hover:opacity-30 transition-opacity duration-300 z-10"></div>
+      
+      {/* Card overlay dots */}
+      <div className="absolute inset-0 bg-[radial-gradient(rgba(0,0,0,0.05)_1px,transparent_1px)] bg-[length:1em_1em] bg-[-0.5em_-0.5em] pointer-events-none opacity-0 group-hover:opacity-40 transition-opacity duration-300 z-10"></div>
+      
+      {/* Decorative accent shape */}
+      <div className="absolute top-[-1.2em] right-[-1.2em] w-10 h-10 bg-[#7BB4B1] border-[0.15em] border-[#264143] rounded-[0.3em] rotate-45 z-0 transition-transform duration-300 group-hover:rotate-[55deg] group-hover:scale-110"></div>
       
       {/* Colored header */}
-      <div className="bg-[#7BB4B1] py-3 sm:py-4 md:py-5 px-4 sm:px-5 md:px-6 relative">
+      <div className="bg-[#7BB4B1] py-4 md:py-5 px-5 md:px-6 relative">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[length:0.5em_0.5em] pointer-events-none opacity-30"></div>
-        <div className="flex items-center gap-2 sm:gap-2.5 md:gap-3 relative z-10">
-          <div className="flex items-center justify-center w-[2.2rem] h-[2.2rem] bg-white border-[0.2em] border-[#264143] rounded-[0.4em] shadow-[0.2em_0.2em_0_#E99F4C] transition-all duration-200 ease-in-out hover:rotate-[-5deg] hover:scale-105">
-             <Bell className="w-[1.3rem] h-[1.3rem] text-[#264143]" />
-            </div>
-          <h2 className="text-xl sm:text-xl md:text-2xl font-bold text-white">Notices</h2>
+        <div className="flex items-center gap-3 relative z-10">
+          <div className="flex items-center justify-center w-[2.5rem] h-[2.5rem] bg-white border-[0.2em] border-[#264143] rounded-[0.4em] shadow-[0.2em_0.2em_0_#E99F4C] transition-all duration-200 ease-in-out hover:rotate-[-5deg] hover:scale-105">
+            <Bell className="w-5 h-5 text-[#264143]" />
+          </div>
+          <h2 className="text-xl md:text-2xl font-bold text-white">Notices</h2>
         </div>
       </div>
       
       {/* Card content */}
-      <div className="p-4 sm:p-5 md:p-6 flex flex-col flex-grow">
-        <p className="text-sm sm:text-base md:text-base text-[#264143] mb-4 sm:mb-5 md:mb-6">
+      <div className="p-5 md:p-6 flex flex-col flex-grow relative z-20">
+        <p className="text-base text-[#264143] mb-5 md:mb-6">
           Stay updated with the latest announcements, events, and important notifications from your institution.
         </p>
         
-        <div className="space-y-3 sm:space-y-3.5 md:space-y-4 mb-4 sm:mb-5 md:mb-6">
-          <div className="flex items-center gap-2 sm:gap-2.5 md:gap-3">
-            <div className="w-7 h-7 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full transition-all duration-200 ease-in-out hover:rotate-[-5deg] hover:scale-105 bg-[#EDDCD9] flex items-center justify-center flex-shrink-0">
-              <FileText className="w-3.5 h-3.5 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 text-[#264143]" />
+        <div className="space-y-4 mb-5 md:mb-6">
+          <div className="flex items-center gap-3 transition-transform duration-200 hover:translate-x-[0.3em]">
+            <div className="w-8 h-8 rounded-full transition-all duration-200 ease-in-out hover:rotate-[-5deg] hover:scale-105 bg-[#EDDCD9] border-[0.12em] border-[#264143] flex items-center justify-center flex-shrink-0 shadow-[0.1em_0.1em_0_rgba(38,65,67,0.2)]">
+              <FileText className="w-4 h-4 text-[#264143]" />
             </div>
-            <span className="text-sm sm:text-sm md:text-base text-[#264143]">Important announcements</span>
+            <span className="text-sm md:text-base font-medium text-[#264143]">Important announcements</span>
           </div>
           
-          <div className="flex items-center gap-2 sm:gap-2.5 md:gap-3">
-            <div className="w-7 h-7 sm:w-7 transition-all duration-200 ease-in-out hover:rotate-[-5deg] hover:scale-105 sm:h-7 md:w-8 md:h-8 rounded-full bg-[#EDDCD9] flex items-center justify-center flex-shrink-0">
-              <Calendar className="w-3.5 h-3.5 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 text-[#264143]" />
+          <div className="flex items-center gap-3 transition-transform duration-200 hover:translate-x-[0.3em]">
+            <div className="w-8 h-8 rounded-full transition-all duration-200 ease-in-out hover:rotate-[-5deg] hover:scale-105 bg-[#EDDCD9] border-[0.12em] border-[#264143] flex items-center justify-center flex-shrink-0 shadow-[0.1em_0.1em_0_rgba(38,65,67,0.2)]">
+              <Calendar className="w-4 h-4 text-[#264143]" />
             </div>
-            <span className="text-sm sm:text-sm md:text-base text-[#264143]">Upcoming events</span>
+            <span className="text-sm md:text-base font-medium text-[#264143]">Upcoming events</span>
           </div>
           
-          <div className="flex items-center gap-2 sm:gap-2.5 md:gap-3">
-            <div className="w-7 h-7 sm:w-7 transition-all duration-200 ease-in-out hover:rotate-[-5deg] hover:scale-105 sm:h-7 md:w-8 md:h-8 rounded-full bg-[#EDDCD9] flex items-center justify-center flex-shrink-0">
-              <School className="w-3.5 h-3.5 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 text-[#264143]" />
+          <div className="flex items-center gap-3 transition-transform duration-200 hover:translate-x-[0.3em]">
+            <div className="w-8 h-8 rounded-full transition-all duration-200 ease-in-out hover:rotate-[-5deg] hover:scale-105 bg-[#EDDCD9] border-[0.12em] border-[#264143] flex items-center justify-center flex-shrink-0 shadow-[0.1em_0.1em_0_rgba(38,65,67,0.2)]">
+              <School className="w-4 h-4 text-[#264143]" />
             </div>
-            <span className="text-sm sm:text-sm md:text-base text-[#264143]">Academic deadlines</span>
+            <span className="text-sm md:text-base font-medium text-[#264143]">Academic deadlines</span>
           </div>
         </div>
         
-        <div className="mt-auto pt-4 sm:pt-5 md:pt-6">
+        <div className="mt-auto pt-5 md:pt-6 border-t-[0.15em] border-t-dashed border-t-[rgba(38,65,67,0.15)] relative
+                       before:content-['✂'] before:absolute before:top-[-0.8em] before:left-1/2 before:transform before:-translate-x-1/2 before:rotate-90 before:bg-white before:px-[0.5em] before:text-base before:text-[rgba(38,65,67,0.4)]">
           <Link 
             href="/academics/notices" 
-            className="inline-flex items-center justify-center w-full py-2 sm:py-2.5 md:py-3 px-4 sm:px-4 md:px-5 bg-[#7BB4B1] text-white font-bold text-sm sm:text-base md:text-base rounded-md hover:bg-[#6ba3a0] transition-colors group-hover:shadow-[0.15em_0.15em_0_#264143] sm:group-hover:shadow-[0.17em_0.17em_0_#264143] md:group-hover:shadow-[0.2em_0.2em_0_#264143]"
+            className="inline-flex items-center justify-center w-full py-3 px-5 bg-[#7BB4B1] text-white font-bold text-base rounded-md border-[0.2em] border-[#264143] shadow-[0.2em_0.2em_0_#264143] transition-all duration-200 uppercase tracking-[0.05em]
+                     hover:bg-[#6ba3a0] hover:translate-x-[-0.1em] hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#264143]
+                     active:translate-x-[0.1em] active:translate-y-[0.1em] active:shadow-[0.1em_0.1em_0_#264143] overflow-hidden
+                     before:content-[''] before:absolute before:top-0 before:left-[-100%] before:w-full before:h-full before:bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.2)_50%,transparent_100%)] before:transition-[left] before:duration-600 before:ease-in-out
+                     hover:before:left-[100%]"
           >
             <span>View All Notices</span>
-            <ChevronRight className="w-4 h-4 sm:w-4 sm:h-4 md:w-5 md:h-5 ml-1.5 sm:ml-1.5 md:ml-2" />
+            <ChevronRight className="w-5 h-5 ml-2" />
           </Link>
         </div>
       </div>
       
+      {/* Dots pattern */}
+      <div className="absolute bottom-8 left-[-2em] w-32 h-16 opacity-0 group-hover:opacity-20 rotate-[-10deg] pointer-events-none z-10 transition-opacity duration-300">
+        <svg viewBox="0 0 80 40">
+          <circle fill="#264143" r={3} cy={10} cx={10} />
+          <circle fill="#264143" r={3} cy={10} cx={30} />
+          <circle fill="#264143" r={3} cy={10} cx={50} />
+          <circle fill="#264143" r={3} cy={10} cx={70} />
+          <circle fill="#264143" r={3} cy={20} cx={20} />
+          <circle fill="#264143" r={3} cy={20} cx={40} />
+          <circle fill="#264143" r={3} cy={20} cx={60} />
+          <circle fill="#264143" r={3} cy={30} cx={10} />
+          <circle fill="#264143" r={3} cy={30} cx={30} />
+          <circle fill="#264143" r={3} cy={30} cx={50} />
+          <circle fill="#264143" r={3} cy={30} cx={70} />
+        </svg>
+      </div>
+      
       {/* Corner slice */}
-      <div className="absolute bottom-0 left-0 w-[1.2em] h-[1.2em] sm:w-[1.3em] sm:h-[1.3em] md:w-[1.5em] md:h-[1.5em] bg-white border-r-[0.15em] sm:border-r-[0.2em] md:border-r-[0.25em] border-t-[0.15em] sm:border-t-[0.2em] md:border-t-[0.25em] border-[#264143] rounded-tr-[0.3em] sm:rounded-tr-[0.4em] md:rounded-tr-[0.5em] z-10"></div>
+      <div className="absolute bottom-0 left-0 w-[1.5em] h-[1.5em] bg-white border-r-[0.25em] border-r-[#264143] border-t-[0.25em] border-t-[#264143] rounded-tr-[0.5em] z-10"></div>
     </div>
   );
 };
