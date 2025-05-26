@@ -7,9 +7,7 @@ const InfoSection: React.FC = () => {
       <div className="relative z-10">
         <h2 className="text-xl font-bold text-[#264143] mb-4">About Academic Resources</h2>
         <p className="text-[#264143] opacity-80">
-          NoteSphere helps you organize and access all your academic resources in one place. 
-          Stay updated with notices, explore course materials by academic years, and collaborate with fellow students.
-          Sign up to contribute your own notes and materials!
+          Hey guys , the devs here. just to let u know NoteSphere is a place you can use to not only store and share ur notes but also help out ur juniors in the coming years to have an easy access to notes. i know our university may not exactly be called the tech hub but why not , i think these small things will really help change something maybe not today but maybe in the coming future. Peace out Harnoor and Tushar ✌️ Special mention to our node crew cuz why not Ashboi , Sahil and Kate
         </p>
       </div>
       
