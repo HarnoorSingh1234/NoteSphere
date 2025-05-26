@@ -3,15 +3,35 @@
 import React from 'react';
 import { useUser } from '@clerk/nextjs';
 import { DocumentViewer } from '@/components/notes';
-import { Notice } from './types';
+import { Notice, User, Comment as PrismaComment } from '@prisma/client';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Heart, MessageCircle, Calendar, Send } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 
+// Enhanced Notice type with the related data
+interface ExtendedComment extends PrismaComment {
+  user: {
+    firstName: string;
+    lastName: string;
+  };
+}
+
+interface ExtendedNotice extends Notice {
+  author: {
+    firstName: string;
+    lastName: string;
+  };
+  comments?: ExtendedComment[];
+  _count?: {
+    likes: number;
+    comments: number;
+  };
+}
+
 interface NoticeDetailsProps {
-  notice: Notice;
+  notice: ExtendedNotice;
   formatDate: (date: string) => string;
   isUserLiked: boolean;
   onLike: () => void;
@@ -42,7 +62,7 @@ export default function NoticeDetails({
 
     setSubmittingComment(true);
     try {
-      const response = await fetch(`/api/notices/${notice.id}`, {
+      const response = await fetch(`/api/notices/${notice.id}/comments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -76,8 +96,8 @@ export default function NoticeDetails({
                 <span>By {notice.author.firstName} {notice.author.lastName}</span>
                 <span>•</span>
                 <span className="flex items-center gap-1">
-                  <Calendar className="h-4 w-4" />
-                  {formatDate(notice.createdAt)}
+                  <Calendar className="h-4 w-4" />a
+                  {formatDate(notice.createdAt.toString())}
                 </span>
               </div>
             </div>
@@ -149,14 +169,14 @@ export default function NoticeDetails({
           )}
 
           <div className="space-y-4">
-            {notice.comments?.map((comment) => (
+            {notice.comments?.map((comment: ExtendedComment) => (
               <div key={comment.id} className="bg-[#EDDCD9]/30 p-4 rounded-lg">
                 <div className="flex justify-between items-start mb-2">
                   <span className="font-medium text-[#264143]">
                     {comment.user.firstName} {comment.user.lastName}
                   </span>
                   <span className="text-xs text-[#264143]/70">
-                    {formatDate(comment.createdAt)}
+                    {formatDate(comment.createdAt.toString())}
                   </span>
                 </div>
                 <p className="text-[#264143]/80">{comment.content}</p>
