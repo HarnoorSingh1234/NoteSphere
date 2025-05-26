@@ -143,16 +143,17 @@ const Navbar = () => {
                   <span>Profile</span>
                 </Link>
               )}
+              {/* if ur readng this yes i wanted to add it and yes i m dead tired rn its  been way to long and i m really not i the mod to add  some ui ux feature except if it really helps*/}
               
               {/* My Notes button shows for both admin and regular users */}
-              <Link 
+              {/* <Link 
                 href="/your-notes" 
                 className="hidden sm:flex items-center gap-2 px-3 py-2 text-[#264143] font-bold text-base border-[0.15em] border-transparent rounded-[0.4em] hover:border-[#264143] hover:bg-white hover:translate-x-[-0.1em] hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#E99F4C] active:translate-x-[0.05em] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#E99F4C] transition-all duration-200"
               >
                 <BookmarkPlus className="w-5 h-5" />
                 <span>My Notes</span>
               </Link>
-              
+               */}
               {/* UserButton from Clerk */}
               <UserButton 
                 afterSignOutUrl="/" 
