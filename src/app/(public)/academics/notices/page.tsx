@@ -101,11 +101,57 @@ export default function NoticesPage() {
       toast.error('Failed to fetch notice details');
       console.error(error);
     }
-  };
-  const toggleLike = async (noticeId: string) => {
+  };  const toggleLike = async (noticeId: string) => {
     if (!user) {
       toast.error('Please sign in to like notices');
       return;
+    }
+
+    // Optimistically update the UI before API call
+    const userHasLiked = notices.find(n => n.id === noticeId)?.likes.some(like => like.userId === user.id) || false;
+
+    // Clone the current notices to roll back if the API call fails
+    const previousNotices = [...notices];
+    
+    // Update the notices list optimistically
+    setNotices(prev => prev.map(notice => {
+      if (notice.id === noticeId) {
+        const newLikesCount = userHasLiked 
+          ? notice._count.likes - 1 
+          : notice._count.likes + 1;
+        
+        return {
+          ...notice,
+          _count: { ...notice._count, likes: newLikesCount },
+          likes: userHasLiked
+            ? notice.likes.filter(like => like.userId !== user.id)
+            : [...notice.likes, { 
+                id: 'temp', 
+                userId: user.id, 
+                user: { firstName: user.firstName || '', lastName: user.lastName || '' }
+              }]
+        };
+      }
+      return notice;
+    }));
+
+    // Update selected notice optimistically if it's the same one 
+    if (selectedNotice && selectedNotice.id === noticeId) {
+      const newLikesCount = userHasLiked 
+        ? selectedNotice._count.likes - 1 
+        : selectedNotice._count.likes + 1;
+        
+      setSelectedNotice({
+        ...selectedNotice,
+        _count: { ...selectedNotice._count, likes: newLikesCount },
+        likes: userHasLiked
+          ? selectedNotice.likes.filter(like => like.userId !== user.id)
+          : [...selectedNotice.likes, { 
+              id: 'temp', 
+              userId: user.id, 
+              user: { firstName: user.firstName || '', lastName: user.lastName || '' }
+            }]
+      });
     }
 
     try {
@@ -114,40 +160,18 @@ export default function NoticesPage() {
       });
 
       if (!response.ok) throw new Error('Failed to toggle like');
-
-      // Update the notices list
-      setNotices(prev => prev.map(notice => {
-        if (notice.id === noticeId) {
-          const userHasLiked = notice.likes.some(like => like.userId === user.id);
-          const newLikesCount = userHasLiked 
-            ? notice._count.likes - 1 
-            : notice._count.likes + 1;
-          
-          return {
-            ...notice,
-            _count: { ...notice._count, likes: newLikesCount },
-            likes: userHasLiked
-              ? notice.likes.filter(like => like.userId !== user.id)
-              : [...notice.likes, { 
-                  id: 'temp', 
-                  userId: user.id, 
-                  user: { firstName: user.firstName || '', lastName: user.lastName || '' }
-                }]
-          };
-        }
-        return notice;
-      }));
-
-      // Update selected notice if it's the same one
-      if (selectedNotice && selectedNotice.id === noticeId) {
-        fetchNoticeDetails(noticeId);
-      }
+      
+      // No need to refetch or update state again as we've already updated it optimistically
     } catch (error) {
+      // If there was an error, revert back to the previous state
+      setNotices(previousNotices);
+      if (selectedNotice && selectedNotice.id === noticeId) {
+        fetchNoticeDetails(noticeId); // Refetch only on error
+      }
       toast.error('Failed to toggle like');
       console.error(error);
     }
-  };
-  const submitComment = async (noticeId: string) => {
+  };  const submitComment = async (noticeId: string) => {
     if (!user) {
       toast.error('Please sign in to comment');
       return;
@@ -169,16 +193,53 @@ export default function NoticesPage() {
       });
 
       if (!response.ok) throw new Error('Failed to submit comment');
+      
+      const newComment = await response.json();
+      
+      // Update the selected notice with the new comment optimistically
+      if (selectedNotice && selectedNotice.id === noticeId) {
+        setSelectedNotice({
+          ...selectedNotice,
+          comments: [...selectedNotice.comments, {
+            id: newComment.id,
+            content: comment,
+            createdAt: new Date().toISOString(),
+            user: {
+              firstName: user.firstName || '',
+              lastName: user.lastName || ''
+            }
+          }],
+          _count: {
+            ...selectedNotice._count,
+            comments: selectedNotice._count.comments + 1
+          }
+        });
+      }
+      
+      // Update the notices list optimistically
+      setNotices(prev => prev.map(notice => {
+        if (notice.id === noticeId) {
+          return {
+            ...notice,
+            _count: {
+              ...notice._count,
+              comments: notice._count.comments + 1
+            }
+          };
+        }
+        return notice;
+      }));
 
       toast.success('Comment added successfully');
       setComment('');
-      
-      // Refresh notice details and notices list
-      fetchNoticeDetails(noticeId);
-      fetchNotices();
     } catch (error) {
       toast.error('Failed to submit comment');
       console.error(error);
+      
+      // Only refetch on error
+      if (selectedNotice && selectedNotice.id === noticeId) {
+        fetchNoticeDetails(noticeId);
+      }
     } finally {
       setSubmittingComment(false);
     }
