@@ -98,7 +98,7 @@ const Navbar = () => {
           
           <SignedOut>
             <nav className="hidden md:flex gap-6">
-              {['academics'].map((item) => {
+              {['academics', 'about-us'].map((item) => {
                 const isActive = pathname === `/${item}`;
                 return (
                   <Link 
@@ -111,7 +111,7 @@ const Navbar = () => {
                         ? 'border-[#264143] bg-white translate-x-[-0.1em] translate-y-[-0.1em] shadow-[0.2em_0.2em_0_#E99F4C]' 
                         : 'border-transparent hover:border-[#264143] hover:bg-white hover:translate-x-[-0.1em] hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#E99F4C]'
                       } active:translate-x-[0.05em] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#E99F4C]`}>
-                      {item.charAt(0).toUpperCase() + item.slice(1)}
+                      {item.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
                     </span>
                     <span className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 h-[0.2em] bg-[#E99F4C] transition-all duration-300 ease-in-out z-0 opacity-60 
                       ${isActive ? 'w-[80%]' : 'w-0 group-hover:w-[80%]'}`}>
@@ -120,6 +120,14 @@ const Navbar = () => {
                 );
               })}
             </nav>
+            
+            {/* Mobile view - About Us for Signed Out Users */}
+            <Link 
+              href="/about-us" 
+              className="md:hidden flex items-center justify-center w-10 h-10 text-[#264143] border-[0.15em] border-transparent rounded-[0.4em] hover:border-[#264143] hover:bg-white hover:translate-x-[-0.1em] hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#E99F4C] active:translate-x-[0.05em] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#E99F4C] transition-all duration-200"
+            >
+              <BookOpen className="w-5 h-5" />
+            </Link>
           </SignedOut>
           
           {/* Auth buttons */}
@@ -127,33 +135,65 @@ const Navbar = () => {
             <SignedIn>
               {/* User is signed in - Show different button based on role */}
               {isAdmin ? (
-                <Link 
-                  href="/admin/dashboard" 
-                  className="hidden sm:flex items-center gap-2 px-3 py-2 text-[#264143] font-bold text-base border-[0.15em] border-transparent rounded-[0.4em] hover:border-[#264143] hover:bg-white hover:translate-x-[-0.1em] hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#E99F4C] active:translate-x-[0.05em] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#E99F4C] transition-all duration-200"
-                >
-                  <Settings className="w-5 h-5" />
-                  <span>Dashboard</span>
-                </Link>
+                <>
+                  {/* Desktop view - Admin Dashboard */}
+                  <Link 
+                    href="/admin/dashboard" 
+                    className="hidden md:flex items-center gap-2 px-3 py-2 text-[#264143] font-bold text-base border-[0.15em] border-transparent rounded-[0.4em] hover:border-[#264143] hover:bg-white hover:translate-x-[-0.1em] hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#E99F4C] active:translate-x-[0.05em] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#E99F4C] transition-all duration-200"
+                  >
+                    <Settings className="w-5 h-5" />
+                    <span>Dashboard</span>
+                  </Link>
+                  
+                  <div className="md:hidden flex items-center gap-2">
+                    {/* Mobile view - About Us for Admin */}
+                    <Link 
+                      href="/about-us" 
+                      className="flex items-center justify-center w-10 h-10 text-[#264143] border-[0.15em] border-transparent rounded-[0.4em] hover:border-[#264143] hover:bg-white hover:translate-x-[-0.1em] hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#E99F4C] active:translate-x-[0.05em] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#E99F4C] transition-all duration-200"
+                    >
+                      <BookOpen className="w-5 h-5" />
+                    </Link>
+                    
+                    {/* Mobile view - Admin Dashboard */}
+                    <Link 
+                      href="/admin/dashboard" 
+                      className="flex items-center justify-center w-10 h-10 text-[#264143] border-[0.15em] border-transparent rounded-[0.4em] hover:border-[#264143] hover:bg-white hover:translate-x-[-0.1em] hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#E99F4C] active:translate-x-[0.05em] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#E99F4C] transition-all duration-200"
+                    >
+                      <Settings className="w-5 h-5" />
+                    </Link>
+                  </div>
+                </>
               ) : (
-                <Link 
-                  href="/profile" 
-                  className="hidden sm:flex items-center gap-2 px-3 py-2 text-[#264143] font-bold text-base border-[0.15em] border-transparent rounded-[0.4em] hover:border-[#264143] hover:bg-white hover:translate-x-[-0.1em] hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#E99F4C] active:translate-x-[0.05em] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#E99F4C] transition-all duration-200"
-                >
-                  <UserCircle className="w-5 h-5" />
-                  <span>Profile</span>
-                </Link>
+                <>
+                  {/* Desktop view - Regular User Profile */}
+                  <Link 
+                    href="/profile" 
+                    className="hidden md:flex items-center gap-2 px-3 py-2 text-[#264143] font-bold text-base border-[0.15em] border-transparent rounded-[0.4em] hover:border-[#264143] hover:bg-white hover:translate-x-[-0.1em] hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#E99F4C] active:translate-x-[0.05em] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#E99F4C] transition-all duration-200"
+                  >
+                    <UserCircle className="w-5 h-5" />
+                    <span>Profile</span>
+                  </Link>
+                  
+                  <div className="md:hidden flex items-center gap-2">
+                    {/* Mobile view - About Us for Regular User */}
+                    <Link 
+                      href="/about-us" 
+                      className="flex items-center justify-center w-10 h-10 text-[#264143] border-[0.15em] border-transparent rounded-[0.4em] hover:border-[#264143] hover:bg-white hover:translate-x-[-0.1em] hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#E99F4C] active:translate-x-[0.05em] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#E99F4C] transition-all duration-200"
+                    >
+                      <BookOpen className="w-5 h-5" />
+                    </Link>
+                    
+                    {/* Mobile view - Regular User Profile */}
+                    <Link 
+                      href="/profile" 
+                      className="flex items-center justify-center w-10 h-10 text-[#264143] border-[0.15em] border-transparent rounded-[0.4em] hover:border-[#264143] hover:bg-white hover:translate-x-[-0.1em] hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#E99F4C] active:translate-x-[0.05em] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#E99F4C] transition-all duration-200"
+                    >
+                      <UserCircle className="w-5 h-5" />
+                    </Link>
+                  </div>
+                </>
               )}
-              {/* if ur readng this yes i wanted to add it and yes i m dead tired rn its  been way to long and i m really not i the mod to add  some ui ux feature except if it really helps*/}
               
-              {/* My Notes button shows for both admin and regular users */}
-              {/* <Link 
-                href="/your-notes" 
-                className="hidden sm:flex items-center gap-2 px-3 py-2 text-[#264143] font-bold text-base border-[0.15em] border-transparent rounded-[0.4em] hover:border-[#264143] hover:bg-white hover:translate-x-[-0.1em] hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#E99F4C] active:translate-x-[0.05em] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#E99F4C] transition-all duration-200"
-              >
-                <BookmarkPlus className="w-5 h-5" />
-                <span>My Notes</span>
-              </Link>
-               */}
               {/* UserButton from Clerk */}
               <UserButton 
                 afterSignOutUrl="/" 

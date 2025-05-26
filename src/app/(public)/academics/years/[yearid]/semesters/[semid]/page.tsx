@@ -80,9 +80,26 @@ export default function SemesterPage() {
   // Map subjects to AcademicCard format
   const academicSubjects = subjects.map((subject, index) => {
     // Explicitly type the card type as one of the allowed values
-    const cardType: 'primary' | 'secondary' | 'success' | 'info' | 'warning' | 'danger' | 'purple' | 'teal' = 
-      index % 2 === 0 ? "primary" : "secondary";
-      
+    // Define an array of available card types
+    const cardTypes: ('primary' | 'secondary' | 'success' | 'info' | 'warning' | 'danger' | 'purple' | 'teal')[] = [
+      'primary', 'secondary', 'success', 'info', 'warning', 'danger', 'purple', 'teal'
+    ];
+    
+    // Use modulo operation to cycle through all card types
+    const cardType = cardTypes[index % cardTypes.length];
+    
+    // Define color pairs for each card type
+    const colorPairs = {
+      primary: { accent: "#ff3e00", secondary: "#4d61ff" },
+      secondary: { accent: "#E99F4C", secondary: "#DE5499" },
+      success: { accent: "#2ecc71", secondary: "#27ae60" },
+      info: { accent: "#3498db", secondary: "#2980b9" },
+      warning: { accent: "#f39c12", secondary: "#e67e22" },
+      danger: { accent: "#e74c3c", secondary: "#c0392b" },
+      purple: { accent: "#9b59b6", secondary: "#8e44ad" },
+      teal: { accent: "#1abc9c", secondary: "#16a085" }
+    };
+    
     return {
       id: subject.id,
       title: subject.name,
@@ -93,8 +110,8 @@ export default function SemesterPage() {
       priceDescription: "notes",
       buttonText: "View Notes",
       buttonHref: `/academics/years/${yearid}/semesters/${semid}/subject/${subject.id}`,
-      accentColor: index % 2 === 0 ? "#ff3e00" : "#E99F4C",
-      secondaryColor: index % 2 === 0 ? "#4d61ff" : "#DE5499",
+      accentColor: colorPairs[cardType].accent,
+      secondaryColor: colorPairs[cardType].secondary,
       type: cardType
     };
   });
@@ -152,27 +169,27 @@ export default function SemesterPage() {
               <p className="text-[#050505]/70">Subjects will be added by the administrators.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 justify-items-center">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
               {academicSubjects.map((subject) => (
-                <AcademicCard
-                  key={subject.id}
-                  title={subject.title}
-                  tagText={subject.tagText}
-                  description={subject.description}
-                  features={subject.features}
-                  price={subject.price}
-                  priceDescription={subject.priceDescription}
-                  buttonText={subject.buttonText}
-                  buttonHref={subject.buttonHref}
-                  accentColor={subject.accentColor}
-                  secondaryColor={subject.secondaryColor}
-                  type={subject.type}
-                />
+              <AcademicCard
+                key={subject.id}
+                title={subject.title}
+                tagText={subject.tagText}
+                description={subject.description}
+                features={subject.features}
+                price={subject.price}
+                priceDescription={subject.priceDescription}
+                buttonText={subject.buttonText}
+                buttonHref={subject.buttonHref}
+                accentColor={subject.accentColor}
+                secondaryColor={subject.secondaryColor}
+                type={subject.type}
+              />
               ))}
             </div>
-          )}
-          
-          <div className="mt-12 flex justify-center gap-4">
+            )}
+            
+            <div className="mt-12 flex justify-center gap-4">
             <Link 
               href={`/academics/years/${yearid}`}
               className="inline-flex items-center justify-center px-5 py-2 text-[#050505] font-bold bg-white border-[0.2em] border-[#050505] rounded-[0.4em] shadow-[0.2em_0.2em_0_#ff3e00] hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#ff3e00] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#ff3e00] transition-all duration-200"

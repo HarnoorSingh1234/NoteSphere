@@ -6,7 +6,7 @@ import { NoteType } from '@prisma/client';
 import { uploadFileToDrive } from '@/lib/client/uploadToDrive';
 import { preprocessFileForUpload } from '@/lib/client/file-processing';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface UploadNoteProps {
   subjectId: string;
@@ -64,6 +64,7 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
       window.location.href = googleAuthUrl;
     }
   };
+  
   // Handle dialog open/close
   const openDialog = () => {
     setIsOpen(true);
@@ -116,7 +117,8 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
       setError("Please provide both a title and a file");
       return;
     }
-      try {
+    
+    try {
       setError(null);
       setUploadingFile(true);
       setUploadProgress(5);
@@ -229,263 +231,331 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
     }
   };
 
+  // Animation variants
+  const backdropVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { duration: 0.3 } }
+  };
+  
+  const dialogVariants = {
+    hidden: { scale: 0.95, opacity: 0 },
+    visible: { 
+      scale: 1, 
+      opacity: 1, 
+      transition: { type: "spring", stiffness: 300, damping: 25 }
+    },
+    exit: { 
+      scale: 0.95, 
+      opacity: 0, 
+      transition: { duration: 0.2 } 
+    }
+  };
+
   return (
     <>
       {/* Trigger Button */}
       <button
         onClick={openDialog}
-        className="w-full px-5 py-3 text-white font-bold bg-[#DE5499] border-[0.15em] border-[#264143] rounded-[0.4em] shadow-[0.2em_0.2em_0_#264143] hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#264143] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#264143] transition-all duration-200 flex items-center justify-center"
+        className="w-full px-5 py-3 text-white font-bold bg-[#DE5499] border-[0.25em] border-[#264143] rounded-[0.4em] shadow-[0.2em_0.2em_0_#264143] hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#264143] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#264143] transition-all duration-200 flex items-center justify-center"
       >
         <Upload className="w-5 h-5 mr-2" /> Upload Notes
-      </button>      {/* Modal Backdrop */}
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4 overflow-hidden"
-          onClick={handleBackdropClick}
-        >
-          {/* Modal Content */}          <motion.div
-            ref={dialogRef}
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.95, opacity: 0 }}
-            transition={{ type: "spring", duration: 0.4 }}
-            className="bg-[#F8F5F2] border-[0.2em] border-[#264143] rounded-[0.6em] shadow-[0.4em_0.4em_0_#DE5499] w-full max-w-xl mx-auto overflow-hidden relative z-[101]"
-            onClick={e => e.stopPropagation()}
+      </button>
+      
+      {/* Modal Backdrop */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            variants={backdropVariants}
+            className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4 overflow-hidden"
+            onClick={handleBackdropClick}
           >
-            {/* Header */}
-            <div className="border-b-[0.15em] border-[#264143] p-4 flex justify-between items-center bg-[#e34282] text-white">
-              <h2 className="text-xl font-bold">Share Your Knowledge</h2>
-              {!uploadingFile && (
-                <button 
-                  onClick={closeDialog}
-                  className="text-white hover:text-[#DE5499] transition-colors"
-                >
-                  <X size={20} />
-                </button>
-              )}
-            </div>            {/* Body */}
-            <div className="p-6 space-y-5 max-h-[calc(80vh-120px)] overflow-y-auto">
-              {/* Connection error message - only show when needed */}
-              {googleAuthUrl && (
-                <div className="p-4 bg-white border-[0.15em] border-[#4d61ff] rounded-[0.4em] shadow-[0.2em_0.2em_0_#4d61ff] mb-4">
-                  <h3 className="font-bold text-[#264143] mb-2">Connect Google Drive</h3>
-                  <p className="text-[#264143]/80 text-sm mb-3">
-                    Please connect your Google Drive account to upload files.
-                  </p>
+            {/* Modal Content */}
+            <motion.div
+              ref={dialogRef}
+              variants={dialogVariants}
+              className="bg-[#F9F5F2] border-[0.25em] border-[#264143] rounded-[0.6em] shadow-[0.4em_0.4em_0_#DE5499] w-full max-w-xl mx-auto overflow-hidden relative z-[101]"
+              onClick={e => e.stopPropagation()}
+            >
+              {/* Corner slice */}
+              <div className="absolute bottom-0 left-0 w-[1.2em] h-[1.2em] bg-[#F9F5F2] border-r-[0.25em] border-t-[0.25em] border-[#264143] rounded-tr-[0.5em] z-10"></div>
+              
+              {/* Header */}
+              <div className="border-b-[0.25em] border-[#264143] p-4 flex justify-between items-center bg-[#DE5499] text-white">
+                <h2 className="text-xl font-bold">Share Your Knowledge</h2>
+                {!uploadingFile && (
                   <button 
-                    onClick={connectGoogleAccount} 
-                    className="px-4 py-2 text-white font-bold bg-[#4d61ff] border-[0.15em] border-[#264143] rounded-[0.4em] shadow-[0.2em_0.2em_0_#264143] hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#264143] transition-all duration-200"
+                    onClick={closeDialog}
+                    className="w-8 h-8 rounded-full hover:bg-white/20 flex items-center justify-center transition-colors"
                   >
-                    Connect Google Drive
+                    <X size={20} />
                   </button>
-                </div>
-              )}
-              
-              {/* Success Message */}
-              {success && (
-                <div className="p-4 bg-white border-[0.15em] border-green-600 rounded-[0.4em] shadow-[0.2em_0.2em_0_green-600] flex items-start">
-                  <CheckCircle className="text-green-600 mr-3 mt-0.5" size={20} />
-                  <div>
-                    <h4 className="font-bold text-green-700">Upload Successful!</h4>
-                    <p className="text-sm text-green-600">Your note has been uploaded and will be reviewed shortly</p>
-                  </div>
-                </div>
-              )}
-              
-              {/* Error Message */}
-              {error && (
-                <div className="p-4 bg-white border-[0.15em] border-[#ff3e00] rounded-[0.4em] shadow-[0.2em_0.2em_0_#ff3e00] flex items-start">
-                  <X className="text-[#ff3e00] mr-3 mt-0.5" size={20} />
-                  <div>
-                    <h4 className="font-bold text-[#ff3e00]">Upload Failed</h4>
-                    <p className="text-sm text-[#264143]/80">{error}</p>
-                  </div>
-                </div>
-              )}
-
-              <div className="space-y-6">
-                {/* Title Input */}
-                <div className="space-y-2">
-                  <label className="block text-[#264143] font-medium">Note Title <span className="text-[#ff3e00]">*</span></label>
-                  <input
-                    type="text"
-                    value={noteTitle}
-                    onChange={(e) => setNoteTitle(e.target.value)}
-                    disabled={uploadingFile}
-                    className="w-full p-3 text-black bg-white border-[0.15em] border-[#264143] rounded-[0.4em] focus:outline-none focus:ring-2 focus:ring-[#DE5499] shadow-[0.1em_0.1em_0_#264143]"
-                    placeholder="Enter a descriptive title for your notes"
-                  />
-                </div>
-                
-                {/* Note Content */}
-                <div className="space-y-2">
-                  <label className=" text-[#264143] font-medium flex items-center">
-                    <AlignLeft className="w-4 h-4 mr-1" /> 
-                    Description
-                  </label>
-                  <textarea
-                    value={noteContent}
-                    onChange={(e) => setNoteContent(e.target.value)}
-                    disabled={uploadingFile}
-                    className="w-full p-3 text-black bg-white border-[0.15em] border-[#264143] rounded-[0.4em] focus:outline-none focus:ring-2 focus:ring-[#DE5499] shadow-[0.1em_0.1em_0_#264143] min-h-[100px]"
-                    placeholder="Add a brief description or summary of these notes"
-                  />
-                </div>
-                
-                {/* Tags */}
-                <div className="space-y-2">
-                  <label className="text-[#264143] font-medium flex items-center">
-                    <Tag className="w-4 h-4 mr-1" />
-                    Tags
-                  </label>
-                  <div className="flex flex-wrap gap-2 mb-2">
-                    {tags.map((tag) => (
-                      <div 
-                        key={tag} 
-                        className="bg-[#4d61ff]/10 text-[#4d61ff] px-3 py-1 rounded-full flex items-center"
-                      >
-                        <span>{tag}</span>
-                        <button 
-                          type="button" 
-                          className="ml-1 text-[#4d61ff] hover:text-[#264143]"
-                          onClick={() => handleRemoveTag(tag)}
-                        >
-                          <X size={14} />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex">
-                    <input
-                      type="text"
-                      className="flex-grow p-3 text-black border-[0.15em] border-[#264143] border-r-0 rounded-l-[0.4em] bg-white focus:outline-none focus:ring-2 focus:ring-[#DE5499] shadow-[0.1em_0.1em_0_#264143]"
-                      placeholder="Add tags (e.g., midterm, chapter1)"
-                      value={newTag}
-                      onChange={(e) => setNewTag(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
-                    />
-                    <button
-                      type="button"
-                      className="bg-[#4d61ff] text-white px-4 py-3 border-[0.15em] border-[#264143] rounded-r-[0.4em] shadow-[0.1em_0.1em_0_#264143] flex items-center"
-                      onClick={handleAddTag}
-                    >
-                      <Plus size={18} />
-                    </button>
-                  </div>
-                </div>
-                
-                {/* Note Type Selector */}
-                <div className="space-y-2 ">
-                  <label className="block text-[#264143] font-medium">Note Type <span className="text-[#ff3e00]">*</span></label>
-                  <div className="flex gap-2 flex-wrap">
-                    {Object.values(NoteType).map((type) => (
-                      <button
-                        key={type}
-                        type="button"
-                        onClick={() => setNoteType(type as NoteType)}
-                        className={`px-3 py-3 rounded-[0.4em] border-[0.15em] flex-1 font-medium transition-all ${
-                          noteType === type 
-                            ? 'bg-pink-500 text-white border-pink-400' 
-                            : 'bg-white text-[#264143] border-pink-500 hover:border-pink-400'
-                        }`}
-                      >
-                        {type}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                
-                {/* File Upload */}
-                <div className="space-y-2">
-                  <label className="block text-[#264143] font-medium">File <span className="text-[#ff3e00]">*</span></label>
-                  <div className={`border-[0.15em] border-dashed ${selectedFile ? 'border-[#DE5499]' : 'border-[#264143]'} rounded-[0.4em] p-6 text-center bg-white relative cursor-pointer ${uploadingFile ? 'opacity-70 cursor-not-allowed' : 'hover:bg-white/80'}`}>
-                    {selectedFile ? (
-                      <div>
-                        <FileText className="w-8 h-8 mx-auto text-[#DE5499] mb-2" />
-                        <p className="text-[#264143] font-medium">{selectedFile.name}</p>
-                        <p className="text-[#264143]/70 text-sm">
-                          {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
-                        </p>
-                      </div>
-                    ) : (
-                      <div>
-                        <Upload className="w-8 h-8 mx-auto text-[#264143]/70 mb-2" />
-                        <p className="text-[#264143]/80 font-medium">Click or drag file to upload</p>
-                        <p className="text-[#264143]/60 text-sm">PDF, DOCX, PPTX (Max: 50MB)</p>
-                      </div>
-                    )}
-                    <input
-                      type="file"
-                      onChange={handleFileChange}
-                      disabled={uploadingFile}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                      accept=".pdf,.doc,.docx,.ppt,.pptx"
-                    />
-                  </div>
-                </div>
-
-                {/* Upload Progress */}
-                {uploadingFile && (
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-[#264143]/80">Uploading...</span>
-                      <span className="text-[#264143] font-medium">{uploadProgress}%</span>
-                    </div>
-                    <div className="w-full bg-[#264143]/10 rounded-full h-2.5">
-                      <div 
-                        className="bg-[#DE5499] h-2.5 rounded-full transition-all duration-300" 
-                        style={{ width: `${uploadProgress}%` }}
-                      />
-                    </div>
-                  </div>
                 )}
               </div>
-            </div>
-
-            {/* Footer */}
-            <div className="border-t-[0.15em] border-[#264143] p-4 flex justify-end gap-2 bg-white/20">
-              {!uploadingFile && !success && (
-                <button 
-                  onClick={closeDialog}
-                  className="px-4 py-2 text-[#264143] font-bold bg-white border-[0.15em] border-[#264143] rounded-[0.4em] shadow-[0.2em_0.2em_0_#264143] hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#264143] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#264143] transition-all duration-200"
-                >
-                  Cancel
-                </button>
-              )}
               
-              <button
-                onClick={handleUploadClick}
-                disabled={!selectedFile || !noteTitle || uploadingFile || success}
-                className={`px-5 py-2 text-white font-bold bg-[#DE5499] border-[0.15em] border-[#264143] rounded-[0.4em] shadow-[0.2em_0.2em_0_#264143] flex items-center ${
-                  !selectedFile || !noteTitle || uploadingFile || success
-                    ? 'opacity-70 cursor-not-allowed'
-                    : 'hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#264143] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#264143]'
-                } transition-all duration-200`}
-              >
-                {uploadingFile ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Uploading...
-                  </>
-                ) : success ? (
-                  <>
-                    <CheckCircle className="w-4 h-4 mr-2" />
-                    Complete!
-                  </>
-                ) : (
-                  <>
-                    <Upload className="w-4 h-4 mr-2" />
-                    Upload Notes
-                  </>
+              {/* Body */}
+              <div className="p-6 space-y-5 max-h-[calc(80vh-120px)] overflow-y-auto">
+                {/* Connection error message - only show when needed */}
+                {googleAuthUrl && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-4 bg-white border-[0.25em] border-[#7BB4B1] rounded-[0.4em] shadow-[0.2em_0.2em_0_#7BB4B1] mb-4"
+                  >
+                    <h3 className="font-bold text-[#264143] mb-2">Connect Google Drive</h3>
+                    <p className="text-[#264143]/80 text-sm mb-3">
+                      Please connect your Google Drive account to upload files.
+                    </p>
+                    <button 
+                      onClick={connectGoogleAccount} 
+                      className="px-4 py-2 text-white font-bold bg-[#7BB4B1] border-[0.25em] border-[#264143] rounded-[0.4em] shadow-[0.2em_0.2em_0_#264143] hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#264143] transition-all duration-200"
+                    >
+                      Connect Google Drive
+                    </button>
+                  </motion.div>
                 )}
-              </button>
-            </div>
+                
+                {/* Success Message */}
+                <AnimatePresence>
+                  {success && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      className="p-4 bg-white border-[0.25em] border-[#7BB4B1] rounded-[0.4em] shadow-[0.2em_0.2em_0_#7BB4B1] flex items-start"
+                    >
+                      <CheckCircle className="text-[#7BB4B1] mr-3 mt-0.5" size={20} />
+                      <div>
+                        <h4 className="font-bold text-[#264143]">Upload Successful!</h4>
+                        <p className="text-sm text-[#264143]/80">Your note has been uploaded and will be reviewed shortly</p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+                
+                {/* Error Message */}
+                <AnimatePresence>
+                  {error && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      className="p-4 bg-white border-[0.25em] border-[#DE5499] rounded-[0.4em] shadow-[0.2em_0.2em_0_#DE5499] flex items-start"
+                    >
+                      <X className="text-[#DE5499] mr-3 mt-0.5" size={20} />
+                      <div>
+                        <h4 className="font-bold text-[#264143]">Upload Failed</h4>
+                        <p className="text-sm text-[#264143]/80">{error}</p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <div className="space-y-6">
+                  {/* Title Input */}
+                  <div className="space-y-2">
+                    <label className="block text-[#264143] font-medium">Note Title <span className="text-[#DE5499]">*</span></label>
+                    <input
+                      type="text"
+                      value={noteTitle}
+                      onChange={(e) => setNoteTitle(e.target.value)}
+                      disabled={uploadingFile}
+                      className="w-full p-3 text-[#264143] bg-white border-[0.25em] border-[#264143] rounded-[0.4em] focus:outline-none focus:ring-2 focus:ring-[#DE5499] shadow-[0.15em_0.15em_0_#E99F4C] placeholder-[#264143]/40 transition-shadow duration-200"
+                      placeholder="Enter a descriptive title for your notes"
+                    />
+                  </div>
+                  
+                  {/* Note Content */}
+                  <div className="space-y-2">
+                    <label className="text-[#264143] font-medium flex items-center">
+                      <AlignLeft className="w-4 h-4 mr-1" /> 
+                      Description
+                    </label>
+                    <textarea
+                      value={noteContent}
+                      onChange={(e) => setNoteContent(e.target.value)}
+                      disabled={uploadingFile}
+                      className="w-full p-3 text-[#264143] bg-white border-[0.25em] border-[#264143] rounded-[0.4em] focus:outline-none focus:ring-2 focus:ring-[#DE5499] shadow-[0.15em_0.15em_0_#E99F4C] min-h-[100px] placeholder-[#264143]/40 transition-shadow duration-200"
+                      placeholder="Add a brief description or summary of these notes"
+                    />
+                  </div>
+                  
+                  {/* Tags */}
+                  <div className="space-y-2">
+                    <label className="text-[#264143] font-medium flex items-center">
+                      <Tag className="w-4 h-4 mr-1" />
+                      Tags
+                    </label>
+                    <div className="flex flex-wrap gap-2 mb-2">
+                      {tags.map((tag) => (
+                        <motion.div 
+                          key={tag} 
+                          className="bg-[#EDDCD9] text-[#264143] px-3 py-1 rounded-full flex items-center border-[0.1em] border-[#264143]"
+                          initial={{ scale: 0, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          exit={{ scale: 0, opacity: 0 }}
+                          transition={{ type: "spring", stiffness: 500, damping: 20 }}
+                        >
+                          <span className="font-medium">{tag}</span>
+                          <button 
+                            type="button" 
+                            className="ml-1 text-[#264143] hover:text-[#DE5499]"
+                            onClick={() => handleRemoveTag(tag)}
+                          >
+                            <X size={14} />
+                          </button>
+                        </motion.div>
+                      ))}
+                    </div>
+                    <div className="flex">
+                      <input
+                        type="text"
+                        className="flex-grow p-3 text-[#264143] border-[0.25em] border-[#264143] border-r-0 rounded-l-[0.4em] bg-white focus:outline-none focus:ring-2 focus:ring-[#DE5499] shadow-[0.15em_0.15em_0_#E99F4C] placeholder-[#264143]/40 transition-shadow duration-200"
+                        placeholder="Add tags (e.g., midterm, chapter1)"
+                        value={newTag}
+                        onChange={(e) => setNewTag(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
+                      />
+                      <button
+                        type="button"
+                        className="bg-[#7BB4B1] text-white px-4 py-3 border-[0.25em] border-[#264143] rounded-r-[0.4em] shadow-[0.15em_0.15em_0_#E99F4C] flex items-center hover:bg-[#6ba3a0] transition-colors duration-200"
+                        onClick={handleAddTag}
+                      >
+                        <Plus size={18} />
+                      </button>
+                    </div>
+                  </div>
+                  
+                  {/* Note Type Selector */}
+                  <div className="space-y-2">
+                    <label className="block text-[#264143] font-medium">Note Type <span className="text-[#DE5499]">*</span></label>
+                    <div className="flex gap-2 flex-wrap">
+                      {Object.values(NoteType).map((type) => (
+                        <motion.button
+                          key={type}
+                          type="button"
+                          onClick={() => setNoteType(type as NoteType)}
+                          className={`px-3 py-3 rounded-[0.4em] border-[0.25em] flex-1 font-medium transition-all duration-200 ${
+                            noteType === type 
+                              ? 'bg-[#DE5499] text-white border-[#264143] shadow-[0.15em_0.15em_0_#264143]' 
+                              : 'bg-white text-[#264143] border-[#264143]/30 hover:border-[#264143] hover:shadow-[0.1em_0.1em_0_#E99F4C]'
+                          }`}
+                          whileHover={{ scale: noteType !== type ? 1.03 : 1 }}
+                          whileTap={{ scale: 0.97 }}
+                        >
+                          {type}
+                        </motion.button>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* File Upload */}
+                  <motion.div 
+                    className="space-y-2"
+                    initial={{ opacity: 1 }}
+                    animate={{ opacity: uploadingFile ? 0.7 : 1 }}
+                  >
+                    <label className="block text-[#264143] font-medium">File <span className="text-[#DE5499]">*</span></label>
+                    <div className={`border-[0.25em] border-dashed ${selectedFile ? 'border-[#DE5499]' : 'border-[#264143]'} rounded-[0.4em] p-6 text-center bg-white relative cursor-pointer transition-all duration-200 ${uploadingFile ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#EDDCD9]/10'} ${selectedFile ? 'shadow-[0.15em_0.15em_0_#DE5499]' : 'shadow-[0.15em_0.15em_0_#264143]'}`}>
+                      {selectedFile ? (
+                        <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 300, damping: 15 }}>
+                          <FileText className="w-8 h-8 mx-auto text-[#DE5499] mb-2" />
+                          <p className="text-[#264143] font-medium">{selectedFile.name}</p>
+                          <p className="text-[#264143]/70 text-sm">
+                            {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
+                          </p>
+                        </motion.div>
+                      ) : (
+                        <div>
+                          <Upload className="w-8 h-8 mx-auto text-[#264143]/70 mb-2" />
+                          <p className="text-[#264143]/80 font-medium">Click or drag file to upload</p>
+                          <p className="text-[#264143]/60 text-sm">PDF, DOCX, PPTX (Max: 50MB)</p>
+                        </div>
+                      )}
+                      <input
+                        type="file"
+                        onChange={handleFileChange}
+                        disabled={uploadingFile}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        accept=".pdf,.doc,.docx,.ppt,.pptx"
+                      />
+                    </div>
+                  </motion.div>
+
+                  {/* Upload Progress */}
+                  <AnimatePresence>
+                    {uploadingFile && (
+                      <motion.div 
+                        className="space-y-2"
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                      >
+                        <div className="flex justify-between text-sm">
+                          <span className="text-[#264143]/80">Uploading...</span>
+                          <span className="text-[#264143] font-medium">{uploadProgress}%</span>
+                        </div>
+                        <div className="w-full bg-[#264143]/10 rounded-full h-3 overflow-hidden border border-[#264143]/20">
+                          <motion.div 
+                            className="bg-[#DE5499] h-full rounded-full transition-all"
+                            initial={{ width: "0%" }}
+                            animate={{ width: `${uploadProgress}%` }}
+                          />
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="border-t-[0.25em] border-[#264143] p-4 flex justify-end gap-2 bg-white">
+                {!uploadingFile && !success && (
+                  <motion.button 
+                    onClick={closeDialog}
+                    className="px-4 py-2 text-[#264143] font-bold bg-white border-[0.25em] border-[#264143] rounded-[0.4em] shadow-[0.2em_0.2em_0_#E99F4C] hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#E99F4C] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#E99F4C] transition-all duration-200"
+                    whileHover={{ y: -2 }}
+                    whileTap={{ y: 1 }}
+                  >
+                    Cancel
+                  </motion.button>
+                )}
+                
+                <motion.button
+                  onClick={handleUploadClick}
+                  disabled={!selectedFile || !noteTitle || uploadingFile || success}
+                  className={`px-5 py-2 text-white font-bold bg-[#DE5499] border-[0.25em] border-[#264143] rounded-[0.4em] shadow-[0.2em_0.2em_0_#264143] flex items-center ${
+                    !selectedFile || !noteTitle || uploadingFile || success
+                      ? 'opacity-70 cursor-not-allowed'
+                      : 'hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#264143] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#264143]'
+                  } transition-all duration-200`}
+                  whileHover={!(!selectedFile || !noteTitle || uploadingFile || success) ? { y: -2 } : {}}
+                  whileTap={!(!selectedFile || !noteTitle || uploadingFile || success) ? { y: 1 } : {}}
+                >
+                  {uploadingFile ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Uploading...
+                    </>
+                  ) : success ? (
+                    <>
+                      <CheckCircle className="w-4 h-4 mr-2" />
+                      Complete!
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="w-4 h-4 mr-2" />
+                      Upload Notes
+                    </>
+                  )}
+                </motion.button>
+              </div>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      )}
+        )}
+      </AnimatePresence>
     </>
   );
 };

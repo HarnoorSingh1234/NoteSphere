@@ -178,7 +178,10 @@ export default function AddSemester() {
                       id="number"
                       className="w-full px-4 py-3 border-[0.15em] border-[#264143] rounded-[0.4em] focus:outline-none focus:ring-2 focus:ring-[#4CAF50] bg-white font-medium"
                       value={number}
-                      onChange={(e) => setNumber(parseInt(e.target.value))}
+                      onChange={(e) => {
+                        const val = e.target.value === '' ? 1 : parseInt(e.target.value);
+                        setNumber(isNaN(val) ? 1 : Math.min(Math.max(val, 1), 4));
+                      }}
                       min="1"
                       max="4"
                       required
