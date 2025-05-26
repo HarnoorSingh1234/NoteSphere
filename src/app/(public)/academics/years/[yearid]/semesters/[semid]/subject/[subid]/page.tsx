@@ -47,7 +47,7 @@ export default function SubjectPage() {
   // Use the useParams hook to access route parameters
   const params = useParams();
   const router = useRouter();
-  const { user, isSignedIn } = useUser();
+  const { isSignedIn } = useUser();
   const yearid = params.yearid as string;
   const semid = params.semid as string;
   const subid = params.subid as string;

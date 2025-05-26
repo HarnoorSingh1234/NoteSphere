@@ -193,7 +193,22 @@ export default function NoticeDetailPage() {
           
           {/* Actions */}
           <div className="flex items-center gap-6 mb-8">
-            <LikeButton 
+            <LikeButton message port closed before a response was received.Understand this error
+/api/notes/process-rejected:1 
+            
+            
+           Failed to load resource: the server responded with a status of 403 ()Understand this error
+1684-0e7969553dc6805a.js:1 Error processing rejected notes: Error: Unauthorized, admin role required
+    at F (page-4df3cd2e45d07609.js:1:17507)
+    at async r (page-4df3cd2e45d07609.js:1:18006)
+window.console.error @ 1684-0e7969553dc6805a.js:1Understand this error
+/api/admin/make-admin:1 
+            
+            
+           Failed to load resource: the server responded with a status of 500 ()Understand this error
+1684-0e7969553dc6805a.js:1 Error: Failed to make user admin
+    at o (page-8e245978a9f07d15.js:1:815)
+window.console.error @ 1684-0e7969553dc6805a.js:1Understand this error
               isLiked={notice.likes.some(like => like.userId === user?.id)}
               likesCount={notice._count?.likes || notice.likes.length}
               onToggleLike={handleToggleLike}

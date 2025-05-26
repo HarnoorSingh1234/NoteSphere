@@ -9,8 +9,8 @@ const REJECTION_TIME_LIMIT = 48 * 60 * 60 * 1000;
 /**
  * Process expired rejected notes
  */
-export async function POST() {
-  try {    // Check if user is authorized (admin check)
+export async function POST() {  try {    
+    // Check if user is authorized and is admin
     const user = await getCurrentUser();
     if (!user || !user.id) {
       return NextResponse.json(
@@ -18,15 +18,12 @@ export async function POST() {
         { status: 401 }
       );
     }
-      // Get user role from database
-    const dbUser = await prisma.user.findUnique({
-      where: { clerkId: user.id },
-      select: { role: true }
-    });
-      // Verify user is an admin
-    if (!dbUser || dbUser.role !== 'ADMIN') {
+
+    // Check if user is admin in their Clerk metadata
+    const role = user.publicMetadata.role;
+    if (role !== 'ADMIN') {
       return NextResponse.json(
-        { message: 'Unauthorized, admin role required' }, 
+        { message: 'Forbidden: Admin access required' },
         { status: 403 }
       );
     }
