@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/db';
+import { isAdmin } from '@/lib/auth';
 
 export async function PATCH(
   req: NextRequest,
@@ -12,7 +13,13 @@ export async function PATCH(
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-
+    const adminStatus = await isAdmin();
+    if (!adminStatus) {
+      return NextResponse.json(
+        { error: 'Forbidden: Admin access required' },
+        { status: 403 }
+      );
+    }
    
     const { title, description, driveLink, driveFileId, isPublished } = await req.json();
 

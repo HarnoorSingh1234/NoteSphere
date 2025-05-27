@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { fetchAdminSubject } from '@/lib/admin-subject-actions';
+import { isAdmin } from '@/lib/auth';
 
 export async function GET(
   request: Request,
@@ -15,6 +16,15 @@ export async function GET(
         { status: 401 }
       );
     }
+
+    // Check if the user is an admin
+    const adminStatus = await isAdmin();
+        if (!adminStatus) {
+          return NextResponse.json(
+            { error: 'Forbidden: Admin access required' },
+            { status: 403 }
+          );
+        }
     
     try {
       // Await the params Promise to get the actual parameters

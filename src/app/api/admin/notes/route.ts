@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { auth } from '@clerk/nextjs/server';
+import { isAdmin } from '@/lib/auth';
 
 
 // GET all notes (including non-public) for admin users
@@ -14,7 +15,13 @@ export async function GET(request: Request) {
         { status: 401 }
       );
     }
-      // Skip admin verification - handled in frontend
+    const adminStatus = await isAdmin();
+        if (!adminStatus) {
+          return NextResponse.json(
+            { error: 'Forbidden: Admin access required' },
+            { status: 403 }
+          );
+        }
     // This allows the API to be accessed if the user is logged in
       const { searchParams } = new URL(request.url);
     const subjectId = searchParams.get('subjectId');

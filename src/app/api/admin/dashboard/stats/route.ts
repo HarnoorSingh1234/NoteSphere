@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { auth } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
+import { isAdmin } from '@/lib/auth';
 
 /**
  * GET - Retrieve dashboard statistics for admin
@@ -17,7 +18,14 @@ export async function GET(request: NextRequest) {
       );
     }
     
-   
+   const adminStatus = await isAdmin();
+       if (!adminStatus) {
+         return NextResponse.json(
+           { error: 'Forbidden: Admin access required' },
+           { status: 403 }
+         );
+       }
+
     // Total notes count
     const totalNotes = await prisma.note.count();
     

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/db';
+import { isAdmin } from '@/lib/auth';
 
 export async function GET() {
   try {
@@ -11,7 +12,13 @@ export async function GET() {
     }
 
    
-
+    const adminStatus = await isAdmin();
+    if (!adminStatus) {
+      return NextResponse.json(
+        { error: 'Forbidden: Admin access required' },
+        { status: 403 }
+      );
+    }
     const notices = await prisma.notice.findMany({
       include: {
         author: {

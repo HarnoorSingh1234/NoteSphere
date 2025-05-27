@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { isAdmin } from '@/lib/auth';
 
 // GET all years
 export async function GET(request: Request) {
@@ -75,7 +76,13 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-    
+    const adminStatus = await isAdmin();
+        if (!adminStatus) {
+          return NextResponse.json(
+            { error: 'Forbidden: Admin access required' },
+            { status: 403 }
+          );
+        }
     // Check if year already exists since we have a unique constraint
     const existingYear = await prisma.year.findUnique({
       where: { number }

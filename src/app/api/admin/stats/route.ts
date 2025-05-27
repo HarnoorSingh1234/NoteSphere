@@ -14,23 +14,13 @@ export async function GET(request: Request) {
         { status: 401 }
       );
     }
-    // Check from your database only
-    const user = await prisma.user.findUnique({
-      where: { clerkId: userId },
-      select: { role: true }
-    });
-    
-    console.log("Database query result:", user);
-
-    const adminStatus = user?.role === 'ADMIN';
-
+    const adminStatus = await isAdmin();
     if (!adminStatus) {
       return NextResponse.json(
         { error: 'Forbidden: Admin access required' },
         { status: 403 }
       );
     }
-    
     // Statistics about users
     const userStats = {
       total: await prisma.user.count()
