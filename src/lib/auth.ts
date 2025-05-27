@@ -20,17 +20,26 @@ export async function getCurrentUser() {
   }
 }
 
+// Add debug logging to check if the user is found
 export async function isAdmin(): Promise<boolean> {
   const authResult = await auth();
   const userId = authResult.userId;
   
-  if (!userId) return false;
-    try {
+  if (!userId) {
+    console.log("No userId found in auth");
+    return false;
+  }
+    
+  try {
+    console.log(`Checking admin status for user: ${userId}`);
+    
     // Check from your database only
     const user = await prisma.user.findUnique({
       where: { clerkId: userId },
       select: { role: true }
     });
+    
+    console.log("Database query result:", user);
     
     if (user && user.role === 'ADMIN') {
       return true;
