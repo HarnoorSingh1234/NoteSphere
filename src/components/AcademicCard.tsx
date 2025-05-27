@@ -92,9 +92,9 @@ const AcademicCard: React.FC<AcademicCardProps> = ({
   return (
     <div className={twMerge("relative group", className)}>
       <div 
-        className="relative w-full max-w-[280px] xs:max-w-[300px] sm:max-w-[320px] h-auto min-h-[420px] sm:min-h-[480px] bg-white border-[0.25em] sm:border-[0.35em] border-[#050505] rounded-[0.5em] sm:rounded-[0.6em] shadow-[0.5em_0.5em_0_#000,inset_0_0_0_0.15em_rgba(0,0,0,0.05)] sm:shadow-[0.7em_0.7em_0_#000,inset_0_0_0_0.15em_rgba(0,0,0,0.05)] transition-all duration-400 ease-in-out overflow-hidden font-sans origin-center m-2 sm:m-4
-                hover:translate-x-[-0.3em] hover:translate-y-[-0.3em] sm:hover:translate-x-[-0.4em] sm:hover:translate-y-[-0.4em] hover:scale-[1.01] sm:hover:scale-[1.02] hover:shadow-[0.7em_0.7em_0_#000] sm:hover:shadow-[1em_1em_0_#000]
-                active:translate-x-[0.05em] active:translate-y-[0.05em] sm:active:translate-x-[0.1em] sm:active:translate-y-[0.1em] active:scale-[0.99] sm:active:scale-[0.98] active:shadow-[0.4em_0.4em_0_#000] sm:active:shadow-[0.5em_0.5em_0_#000]"
+        className="relative w-full max-w-[280px] xs:max-w-[300px] sm:max-w-[320px] min-w-[250px] h-auto min-h-[420px] sm:min-h-[480px] bg-white border-[0.25em] sm:border-[0.35em] border-[#050505] rounded-[0.5em] sm:rounded-[0.6em] shadow-[0.5em_0.5em_0_#000,inset_0_0_0_0.15em_rgba(0,0,0,0.05)] sm:shadow-[0.7em_0.7em_0_#000,inset_0_0_0_0.15em_rgba(0,0,0,0.05)] transition-all duration-400 ease-in-out overflow-hidden font-sans origin-center m-2 sm:m-4
+            hover:translate-x-[-0.3em] hover:translate-y-[-0.3em] sm:hover:translate-x-[-0.4em] sm:hover:translate-y-[-0.4em] hover:scale-[1.01] sm:hover:scale-[1.02] hover:shadow-[0.7em_0.7em_0_#000] sm:hover:shadow-[1em_1em_0_#000]
+            active:translate-x-[0.05em] active:translate-y-[0.05em] sm:active:translate-x-[0.1em] sm:active:translate-y-[0.1em] active:scale-[0.99] sm:active:scale-[0.98] active:shadow-[0.4em_0.4em_0_#000] sm:active:shadow-[0.5em_0.5em_0_#000]"
       >
         {/* Card pattern grid */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,0,0,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.05)_1px,transparent_1px)] bg-[length:0.5em_0.5em] pointer-events-none opacity-50 transition-opacity duration-400 z-10 group-hover:opacity-100" />

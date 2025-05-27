@@ -192,8 +192,7 @@ const UserProfilePage = () => {
                       <FileText className="w-5 h-5 mr-2" />
                     </motion.div>
                     Upload New Note
-                  </Link>
-                  <Link
+                  </Link>                  <Link
                     href="/my-uploads">
                     <button
                       className="w-full inline-flex items-center justify-center px-4 py-2.5 bg-white text-[#264143] font-bold rounded-[0.4em] border-[0.15em] border-[#264143] hover:bg-[#EDDCD9]/40 hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#DE5499] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#DE5499] transition-all duration-200"
@@ -204,7 +203,21 @@ const UserProfilePage = () => {
                       >
                         <Book className="w-5 h-5 mr-2" />
                       </motion.div>
-                      My  uploads
+                      My uploads
+                    </button>
+                  </Link>
+                  <Link
+                    href="/liked-notes">
+                    <button
+                      className="w-full inline-flex items-center justify-center px-4 py-2.5 bg-white text-[#264143] font-bold rounded-[0.4em] border-[0.15em] border-[#264143] hover:bg-[#EDDCD9]/40 hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#DE5499] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#DE5499] transition-all duration-200"
+                    >
+                      <motion.div 
+                        whileHover={{ rotate: 15 }}
+                        transition={{ type: "spring", stiffness: 400 }}
+                      >
+                        <Heart className="w-5 h-5 mr-2" />
+                      </motion.div>
+                      Liked notes
                     </button>
                   </Link>
                   <div className="border-t-[0.15em] border-[#264143]/10 my-4 pt-4">
@@ -350,14 +363,20 @@ const UserProfilePage = () => {
                       </Link>
                     </div>
                   )}
-                </div>
-                  <div className="text-center">
+                </div>                  <div className="text-center flex flex-wrap items-center justify-center gap-3">
                   <Link
                     href="/my-uploads"
                     className="inline-flex items-center px-4 py-2 bg-white border-[0.15em] border-[#264143] text-[#264143] font-bold rounded-[0.3em] shadow-[0.15em_0.15em_0_#7BB4B1] hover:translate-y-[-0.1em] hover:shadow-[0.25em_0.25em_0_#7BB4B1] active:translate-y-[0.05em] active:shadow-[0.05em_0.05em_0_#7BB4B1] transition-all duration-200"
                   >
                     View All Notes
                     <ChevronRight className="w-4 h-4 ml-1" />
+                  </Link>
+                  <Link
+                    href="/liked-notes"
+                    className="inline-flex items-center px-4 py-2 bg-white border-[0.15em] border-[#264143] text-[#264143] font-bold rounded-[0.3em] shadow-[0.15em_0.15em_0_#DE5499] hover:translate-y-[-0.1em] hover:shadow-[0.25em_0.25em_0_#DE5499] active:translate-y-[0.05em] active:shadow-[0.05em_0.05em_0_#DE5499] transition-all duration-200"
+                  >
+                    <Heart className="w-4 h-4 mr-1" />
+                    Liked Notes
                   </Link>
                 </div>
               </div>
