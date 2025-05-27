@@ -46,14 +46,7 @@ export async function POST(request: Request) {
       );
     }
     
-    // Check if user is admin using our helper function
-    const adminStatus = await isAdmin();
-    if (!adminStatus) {
-      return NextResponse.json(
-        { error: 'Forbidden: Only admins can create semesters' },
-        { status: 403 }
-      );
-    }
+   
 
     const { number, yearId } = await request.json();
     
