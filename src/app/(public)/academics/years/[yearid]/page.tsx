@@ -117,7 +117,7 @@ export default function YearPage() {
           
           <div className="mt-12 flex justify-center gap-4">
             <Link 
-              href="/years"
+              href="/academics/years"
               className="inline-flex items-center justify-center px-5 py-2 text-[#050505] font-bold bg-white border-[0.2em] border-[#050505] rounded-[0.4em] shadow-[0.2em_0.2em_0_#ff3e00] hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#ff3e00] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#ff3e00] transition-all duration-200"
             >
               <ArrowLeft className="mr-2 h-5 w-5" />
