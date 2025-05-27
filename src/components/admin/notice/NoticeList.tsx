@@ -6,7 +6,6 @@ import NoticeForm from './NoticeForm';
 import NoticeCard from './NoticeCard';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Dialog } from '@/components/ui/dialog';
 
 interface Notice {
   id: string;
@@ -173,36 +172,44 @@ const NoticeList: React.FC<NoticeListProps> = ({ notices, onRefresh }) => {
         </div>
       </div>
 
-      {/* Dialog for Create/Edit Form - Fixed to ensure DialogTrigger is inside Dialog */}
-      <Dialog
-        open={isCreateDialogOpen} 
-        onOpenChange={(open) => {
-          setIsCreateDialogOpen(open);
-          if (!open) setEditingNotice(null);
-        }}
-      >
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 sm:p-8" onClick={closeDialog}>
-          <div 
-            className="bg-white border-[0.25em] border-[#264143] rounded-[0.6em] shadow-[0.4em_0.4em_0_#DE5499] w-full max-w-md max-h-[90vh] overflow-y-auto p-6 relative z-50"
-            onClick={(e) => e.stopPropagation()}
+      {/* Custom dialog implementation */}
+      <AnimatePresence>
+        {isCreateDialogOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 sm:p-8"
+            onClick={closeDialog}
           >
-            {/* Corner slice */}
-            <div className="absolute bottom-0 left-0 w-[1.5em] h-[1.5em] bg-white border-r-[0.25em] border-t-[0.25em] border-[#264143] rounded-tr-[0.5em] z-10"></div>
-            
-            <div className="relative z-[1]">
-              <h2 className="text-xl font-bold text-[#264143] mb-6">
-                {editingNotice ? 'Edit Notice' : 'Create New Notice'}
-              </h2>
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white border-[0.25em] border-[#264143] rounded-[0.6em] shadow-[0.4em_0.4em_0_#DE5499] w-full max-w-md max-h-[90vh] overflow-y-auto p-6 relative"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Corner slice */}
+              <div className="absolute bottom-0 left-0 w-[1.5em] h-[1.5em] bg-white border-r-[0.25em] border-t-[0.25em] border-[#264143] rounded-tr-[0.5em] z-10"></div>
               
-              <NoticeForm 
-                editingNotice={editingNotice}
-                onClose={closeDialog}
-                onSuccess={onRefresh}
-              />
-            </div>
-          </div>
-        </div>
-      </Dialog>
+              <div className="relative z-[1]">
+                <h2 className="text-xl font-bold text-[#264143] mb-6">
+                  {editingNotice ? 'Edit Notice' : 'Create New Notice'}
+                </h2>
+                
+                <NoticeForm 
+                  editingNotice={editingNotice}
+                  onClose={closeDialog}
+                  onSuccess={() => {
+                    onRefresh();
+                    closeDialog();
+                  }}
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };
