@@ -11,8 +11,7 @@ interface Year {
 
 export default function AddSemester() {
   const router = useRouter();
-  
-  const [number, setNumber] = useState<number>(1);
+    const [number, setNumber] = useState<number>(0);
   const [yearId, setYearId] = useState<string>('');
   const [years, setYears] = useState<Year[]>([]);
   const [loading, setLoading] = useState(false);
@@ -44,12 +43,16 @@ export default function AddSemester() {
     
     fetchYears();
   }, []);
-  
-  const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!yearId) {
       setError('Please select a year');
+      return;
+    }
+    
+    if (number === 0) {
+      setError('Please enter a semester number between 1 and 4');
       return;
     }
     
@@ -172,23 +175,25 @@ export default function AddSemester() {
                   <div>
                     <label className="block text-[#264143] font-bold mb-2" htmlFor="number">
                       Semester Number <span className="text-red-500">*</span>
-                    </label>
-                    <input
+                    </label>                    <input
                       type="number"
                       id="number"
                       className="w-full px-4 py-3 border-[0.15em] border-[#264143] rounded-[0.4em] focus:outline-none focus:ring-2 focus:ring-[#4CAF50] bg-white font-medium"
-                      value={number}
+                      value={number === 0 ? "" : number}
                       onChange={(e) => {
-                        const val = e.target.value === '' ? 1 : parseInt(e.target.value);
-                        setNumber(isNaN(val) ? 1 : Math.min(Math.max(val, 1), 4));
+                        const value = e.target.value;
+                        if (value === "") {
+                          setNumber(0);
+                        } else {
+                          const val = parseInt(value);
+                          setNumber(isNaN(val) ? 0 : Math.min(Math.max(val, 1), 10));
+                        }
                       }}
                       min="1"
                       max="10"
                       required
                     />
-                    <p className="text-sm text-[#264143]/70 mt-2 font-medium">
-                      Usually 1 or 2 for each academic year
-                    </p>
+                    
                   </div>
                   
                   <div className="flex items-center justify-end space-x-4 pt-6">
