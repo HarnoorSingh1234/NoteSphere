@@ -1,7 +1,6 @@
 'use server';
 
 import { prisma } from '@/lib/db';
-import { isAdmin } from '@/lib/auth';
 
 /**
  * Fetch a specific subject by ID with all its notes for admin view
@@ -9,11 +8,7 @@ import { isAdmin } from '@/lib/auth';
  */
 export async function fetchAdminSubject(subjectId: string) {
   try {
-    // Ensure the user is an admin
-    const adminStatus = await isAdmin();
-    if (!adminStatus) {
-      throw new Error('Forbidden: Only admins can perform this action');
-    }
+ 
     
     const subject = await prisma.subject.findUnique({
       where: { id: subjectId },
