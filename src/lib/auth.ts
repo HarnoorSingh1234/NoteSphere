@@ -20,33 +20,30 @@ export async function getCurrentUser() {
   }
 }
 
-// Add debug logging to check if the user is found
+// Check if the current user is an admin using Clerk's public metadata
 export async function isAdmin(): Promise<boolean> {
-  const authResult = await auth();
-  const userId = authResult.userId;
-  
-  if (!userId) {
-    console.log("No userId found in auth");
-    return false;
-  }
-    
   try {
-    console.log(`Checking admin status for user: ${userId}`);
+    const user = await currentUser();
     
-    // Check from your database only
-    const user = await prisma.user.findUnique({
-      where: { clerkId: userId },
-      select: { role: true }
-    });
+    if (!user) {
+      console.log("No user found in auth");
+      return false;
+    }
     
-    console.log("Database query result:", user);
+    console.log(`Checking admin status for user: ${user.id}`);
+    console.log("User public metadata:", user.publicMetadata);
     
-    if (user && user.role === 'ADMIN') {
+    // Check role from Clerk's public metadata
+    const role = user.publicMetadata?.role as string;
+    
+    if (role === 'ADMIN' || role === 'admin') {
+      console.log("User is admin via public metadata");
       return true;
     }
     
+    console.log("User is not admin, role:", role);
     return false;
-  } catch (error) {
+    } catch (error) {
     console.error("Error checking admin status:", error);
     return false;
   }

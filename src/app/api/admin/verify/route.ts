@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { auth } from '@clerk/nextjs/server';
+import { isAdmin } from '@/lib/auth';
 
 // GET notes pending verification for admin review
 export async function GET(request: Request) {
@@ -11,10 +12,16 @@ export async function GET(request: Request) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
-      );
-    }
+      );    }
     
     // Verify admin status
+    const adminStatus = await isAdmin();
+    if (!adminStatus) {
+      return NextResponse.json(
+        { error: 'Forbidden: Admin access required' },
+        { status: 403 }
+      );
+    }
     
     const { searchParams } = new URL(request.url);
     const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : 50;
@@ -81,7 +88,7 @@ export async function GET(request: Request) {
 // POST to verify or reject a note
 export async function POST(request: Request) {
   try {
-  const { userId } = await auth();
+    const { userId } = await auth();
     
     if (!userId) {
       return NextResponse.json(
@@ -89,16 +96,9 @@ export async function POST(request: Request) {
         { status: 401 }
       );
     }
-    // Check from your database only
-    const user = await prisma.user.findUnique({
-      where: { clerkId: userId },
-      select: { role: true }
-    });
     
-    console.log("Database query result:", user);
-
-    const adminStatus = user?.role === 'ADMIN';
-
+    // Verify admin status
+    const adminStatus = await isAdmin();
     if (!adminStatus) {
       return NextResponse.json(
         { error: 'Forbidden: Admin access required' },
