@@ -1,13 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { FileText, Loader2, Upload, X } from 'lucide-react';
+import { FileText, Loader2, Upload, X, AlertTriangle } from 'lucide-react';
 import { uploadFileToDrive } from '@/lib/client/uploadToDrive';
 import { preprocessFileForUpload } from '@/lib/client/file-processing';
 import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 
 interface Notice {
   id: string;
@@ -192,69 +190,75 @@ const NoticeForm: React.FC<NoticeFormProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-5">
       {/* Error message */}
       {error && (
-        <div className="p-4 bg-white border-[0.15em] border-red-500 rounded-md shadow-sm flex items-start">
-          <X className="text-red-500 mr-3 mt-0.5" size={20} />
+        <motion.div 
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="p-4 bg-[#DE5499]/10 border-[0.15em] border-[#DE5499] rounded-[0.4em] flex items-start"
+        >
+          <AlertTriangle className="text-[#DE5499] mr-3 mt-0.5" size={20} />
           <div>
-            <h4 className="font-bold text-red-500">Error</h4>
-            <p className="text-sm text-gray-700">{error}</p>
+            <h4 className="font-bold text-[#DE5499]">Error</h4>
+            <p className="text-sm text-[#264143]">{error}</p>
           </div>
-        </div>
+        </motion.div>
       )}
       
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
-        <Input
+      <div className="space-y-2">
+        <label className="block text-[#264143] font-medium">Title</label>
+        <input
           value={formData.title}
           onChange={(e) => setFormData({ ...formData, title: e.target.value })}
           placeholder="Enter notice title"
           disabled={uploadingFile}
           required
-          className="focus:ring-primary-500 focus:border-primary-500"
+          className="w-full px-4 py-2.5 bg-white border-[0.15em] border-[#264143] rounded-[0.4em] focus:outline-none focus:ring-2 focus:ring-[#7BB4B1] placeholder-[#264143]/50 text-[#264143]"
         />
       </div>
       
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-        <Textarea
+      <div className="space-y-2">
+        <label className="block text-[#264143] font-medium">Description</label>
+        <textarea
           value={formData.description}
           onChange={(e) => setFormData({ ...formData, description: e.target.value })}
           placeholder="Enter notice description"
           rows={4}
           disabled={uploadingFile}
           required
-          className="focus:ring-primary-500 focus:border-primary-500"
+          className="w-full px-4 py-2.5 bg-white border-[0.15em] border-[#264143] rounded-[0.4em] focus:outline-none focus:ring-2 focus:ring-[#7BB4B1] placeholder-[#264143]/50 text-[#264143]"
         />
       </div>
       
       {/* File upload section */}
       <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          File {!editingNotice && <span className="text-red-500">*</span>}
+        <label className="block text-[#264143] font-medium">
+          File {!editingNotice && <span className="text-[#DE5499]">*</span>}
         </label>
-        <div 
-          className={`border-2 border-dashed ${selectedFile ? 'border-primary-500' : 'border-gray-300'} rounded-lg p-6 text-center bg-white relative cursor-pointer ${uploadingFile ? 'opacity-70 cursor-not-allowed' : 'hover:bg-gray-50'}`}
+        <motion.div 
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className={`border-[0.15em] border-dashed ${selectedFile ? 'border-[#7BB4B1]' : 'border-[#264143]/40'} rounded-[0.5em] p-6 text-center bg-white relative cursor-pointer ${uploadingFile ? 'opacity-70 cursor-not-allowed' : 'hover:border-[#264143]'}`}
         >
           {selectedFile ? (
             <div>
-              <FileText className="w-8 h-8 mx-auto text-primary-500 mb-2" />
-              <p className="text-gray-700 font-medium">{selectedFile.name}</p>
-              <p className="text-gray-500 text-sm">
+              <FileText className="w-10 h-10 mx-auto text-[#7BB4B1] mb-2" />
+              <p className="text-[#264143] font-medium">{selectedFile.name}</p>
+              <p className="text-[#264143]/70 text-sm">
                 {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
               </p>
             </div>
           ) : (
             <div>
-              <Upload className="w-8 h-8 mx-auto text-gray-400 mb-2" />
-              <p className="text-gray-600 font-medium">
+              <Upload className="w-10 h-10 mx-auto text-[#264143]/50 mb-2" />
+              <p className="text-[#264143] font-medium">
                 {editingNotice ? 'Click to change file (optional)' : 'Click to upload file'}
               </p>
-              <p className="text-gray-500 text-sm">PDF, DOCX, PPTX, Images (Max: 50MB)</p>
+              <p className="text-[#264143]/70 text-sm">PDF, DOCX, PPTX, Images (Max: 50MB)</p>
               
               {editingNotice && (
-                <p className="mt-2 text-xs text-primary-500">
+                <p className="mt-2 text-xs text-[#7BB4B1]">
                   Current file will be kept if no new file is selected
                 </p>
               )}
@@ -267,29 +271,37 @@ const NoticeForm: React.FC<NoticeFormProps> = ({
             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             accept=".pdf,.doc,.docx,.ppt,.pptx,.jpg,.jpeg,.png"
           />
-        </div>
+        </motion.div>
       </div>
       
       {/* Upload Progress */}
       {uploadingFile && (
-        <div className="space-y-2">
+        <motion.div 
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          className="space-y-2"
+        >
           <div className="flex justify-between text-sm">
-            <span className="text-gray-600">Uploading...</span>
-            <span className="text-gray-800 font-medium">{uploadProgress}%</span>
+            <span className="text-[#264143]/70 font-medium">Uploading...</span>
+            <span className="text-[#264143] font-bold">{uploadProgress}%</span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2.5">
-            <div 
-              className="bg-primary-500 h-2.5 rounded-full transition-all duration-300" 
-              style={{ width: `${uploadProgress}%` }}
+          <div className="w-full bg-[#EDDCD9]/40 rounded-full h-2.5 overflow-hidden border-[0.1em] border-[#264143]/20">
+            <motion.div 
+              initial={{ width: "0%" }}
+              animate={{ width: `${uploadProgress}%` }}
+              className="bg-[#7BB4B1] h-2.5 rounded-full" 
             />
           </div>
-        </div>
+        </motion.div>
       )}
       
-      <div className="flex gap-2 pt-4">        <Button 
+      <div className="flex gap-3 pt-4">
+        <motion.button 
           type="submit" 
-          className="bg-[#4d61ff] hover:bg-[#3a4cd1] text-white flex-1"
+          className="px-5 py-2.5 bg-[#7BB4B1] text-white font-bold rounded-[0.4em] border-[0.2em] border-[#264143] shadow-[0.2em_0.2em_0_#264143] hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#264143] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#264143] transition-all duration-200 flex-1 flex items-center justify-center"
           disabled={uploadingFile}
+          whileHover={{ y: -2 }}
+          whileTap={{ y: 0 }}
         >
           {uploadingFile ? (
             <>
@@ -301,16 +313,17 @@ const NoticeForm: React.FC<NoticeFormProps> = ({
           ) : (
             'Create Notice'
           )}
-        </Button>
-        <Button 
+        </motion.button>
+        <motion.button 
           type="button" 
-          variant="outline" 
           onClick={onClose}
           disabled={uploadingFile}
-          className="border-gray-300 text-gray-700 hover:bg-gray-50"
+          className="px-5 py-2.5 bg-white text-[#264143] font-bold rounded-[0.4em] border-[0.2em] border-[#264143] hover:bg-[#EDDCD9]/40 hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_rgba(0,0,0,0.1)] active:translate-y-[0.05em] active:shadow-none transition-all duration-200"
+          whileHover={{ y: -2 }}
+          whileTap={{ y: 0 }}
         >
           Cancel
-        </Button>
+        </motion.button>
       </div>
     </form>
   );
