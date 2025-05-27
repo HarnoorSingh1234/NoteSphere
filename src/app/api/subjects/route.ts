@@ -61,16 +61,7 @@ export async function POST(request: Request) {
         { status: 401 }
       );
     }
-    
-    // Check if user is admin using our helper function
-    const adminStatus = await isAdmin();
-    if (!adminStatus) {
-      return NextResponse.json(
-        { error: 'Forbidden: Only admins can create subjects' },
-        { status: 403 }
-      );
-    }
-
+ 
     const { name, code, semesterId } = await request.json();
     
     // Validate input

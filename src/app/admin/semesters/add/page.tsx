@@ -183,7 +183,7 @@ export default function AddSemester() {
                         setNumber(isNaN(val) ? 1 : Math.min(Math.max(val, 1), 4));
                       }}
                       min="1"
-                      max="4"
+                      max="10"
                       required
                     />
                     <p className="text-sm text-[#264143]/70 mt-2 font-medium">
