@@ -110,7 +110,7 @@ const NoteCard: React.FC<NoteCardProps> = ({ note }) => {
               <span>{note.comments?.length || 0}</span>
             </div>
           </Link>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 mr-2">
             <Download className="w-3.5 h-3.5" />
             <span>{note.downloadCount || 0}</span>
           </div>
