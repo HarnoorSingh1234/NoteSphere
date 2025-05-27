@@ -27,7 +27,7 @@ const AdminNoteCard: React.FC<AdminNoteCardProps> = ({
   isProcessing = false,
   showUnrejectActions = false
 }) => {
-  const { color, bgColor } = getNoteTypeDetails(note.type);
+ 
   
   // Determine status display with our playful design colors
   const getStatusDisplay = () => {

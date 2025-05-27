@@ -14,9 +14,16 @@ export async function GET(request: Request) {
         { status: 401 }
       );
     }
+    // Check from your database only
+    const user = await prisma.user.findUnique({
+      where: { clerkId: userId },
+      select: { role: true }
+    });
     
-    // Verify admin status
-    const adminStatus = await isAdmin();
+    console.log("Database query result:", user);
+
+    const adminStatus = user?.role === 'ADMIN';
+
     if (!adminStatus) {
       return NextResponse.json(
         { error: 'Forbidden: Admin access required' },

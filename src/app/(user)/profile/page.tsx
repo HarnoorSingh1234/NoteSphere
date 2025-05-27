@@ -125,28 +125,9 @@ const UserProfilePage = () => {
         
         {/* Main Content */}
         <div className="col-span-1 md:col-span-2 space-y-6">
-          {/* User's Rejected Notes (if any) */}
+         
           
-          
-          {/* My Notes Section */}
-          <div className="bg-white border-[0.15em] border-[#264143] rounded-[0.6em] shadow-[0.2em_0.2em_0_#E99F4C] p-6">
-            <h2 className="text-xl font-bold text-[#264143] mb-4">My Notes</h2>
-            
-            <div className="bg-[#F8F5F2] p-6 rounded-md text-center">
-              <div className="flex justify-center">
-                <BookOpen className="w-12 h-12 text-[#264143]/40 mb-2" />
-              </div>
-              <h3 className="text-lg font-bold text-[#264143] mb-2">Your Uploaded Notes</h3>
-              <p className="text-[#264143]/70 mb-4">See all notes you've contributed to NoteSphere</p>
-              <Link
-                href="/myuploads"
-                className="inline-flex items-center px-4 py-2 bg-white text-[#264143] font-medium rounded-[0.4em] border-[0.15em] border-[#264143] hover:bg-[#EDDCD9] hover:translate-y-[-0.1em] transition-all duration-200 shadow-[0.1em_0.1em_0_#264143] hover:shadow-[0.2em_0.2em_0_#264143]"
-              >
-                View My Notes
-              </Link>
-            </div>
-          </div>
-          
+         
           {/* Achievements Section */}
           <div className="bg-white border-[0.15em] border-[#264143] rounded-[0.6em] shadow-[0.2em_0.2em_0_#DE5499] p-6">
             <div className="flex items-center justify-between mb-4">
