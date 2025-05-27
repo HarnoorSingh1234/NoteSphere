@@ -8,17 +8,17 @@ datasource db {
 }
 
 model User {
-  clerkId        String          @id @unique
-  email          String          @unique
-  firstName      String
-  lastName       String
-  createdAt      DateTime        @default(now())
-  role           UserRole        @default(USER)
-  comments       Comment[]
-  likes          Like[]
-  notes          Note[]
-  feedback       Feedback[]
-  notices        Notice[]
+  clerkId   String     @id @unique
+  email     String     @unique
+  firstName String
+  lastName  String
+  createdAt DateTime   @default(now())
+  role      UserRole   @default(USER)
+  comments  Comment[]
+  likes     Like[]
+  notes     Note[]
+  feedback  Feedback[]
+  notices   Notice[]
 }
 
 model Year {

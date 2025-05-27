@@ -1,15 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { getCurrentUser } from "@/lib/auth";
+import { auth } from "@clerk/nextjs/server";
 
 export async function POST(request: NextRequest) {
   try {
     // Parse the request body
     const body = await request.json();
     
-    // Manual validation
+    // Extract content and authorClerkId
     const { content, authorClerkId } = body;
     
+    // Validate content
     if (!content || typeof content !== 'string') {
       return NextResponse.json(
         { 
@@ -20,39 +21,16 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    // Check if authorClerkId is a string or null
-    if (authorClerkId !== null && typeof authorClerkId !== 'string') {
-      return NextResponse.json(
-        { 
-          success: false, 
-          message: "Invalid author ID format" 
-        }, 
-        { status: 400 }
-      );
-    }
-    
-    // If authorClerkId is provided, verify the user exists
-    if (authorClerkId) {
-      const user = await getCurrentUser();
-      
-      // If user is not authenticated but trying to submit with a clerkId
-      if (!user || user.id !== authorClerkId) {
-        return NextResponse.json(
-          { success: false, message: "Unauthorized" }, 
-          { status: 401 }
-        );
-      }
-    }
-    
-    // Create the feedback entry
+    // Create the feedback entry - authorClerkId can be null for anonymous feedback
     const feedback = await prisma.feedback.create({
       data: {
         content,
-        authorClerkId,
+        authorClerkId: authorClerkId || null, // Handle null/undefined case
         viewed: false,
       },
     });
     
+    // Return success response
     return NextResponse.json({ 
       success: true, 
       message: "Feedback submitted successfully",
@@ -61,8 +39,14 @@ export async function POST(request: NextRequest) {
     
   } catch (error) {
     console.error("Error processing feedback submission:", error);
+    
+    // Return detailed error information
     return NextResponse.json(
-      { success: false, message: "Failed to process feedback" }, 
+      { 
+        success: false, 
+        message: "Failed to process feedback", 
+        error: error instanceof Error ? error.message : String(error) 
+      }, 
       { status: 500 }
     );
   }
@@ -71,13 +55,28 @@ export async function POST(request: NextRequest) {
 // API endpoint to get all feedback (admin only)
 export async function GET(request: NextRequest) {
   try {
-    const user = await getCurrentUser();
+    // Get current user from Clerk
+    const { userId } = await auth();
     
-    // Check if user is an admin
-    if (!user || user.publicMetadata?.role !== "ADMIN") {
+    // If no user is authenticated, return unauthorized
+    if (!userId) {
       return NextResponse.json(
         { success: false, message: "Unauthorized" }, 
         { status: 401 }
+      );
+    }
+    
+    // Fetch the user to check if they are an admin
+    const user = await prisma.user.findUnique({
+      where: { clerkId: userId },
+      select: { role: true }
+    });
+    
+    // If user not found or not an admin, return unauthorized
+    if (!user || user.role !== 'ADMIN') {
+      return NextResponse.json(
+        { success: false, message: "Unauthorized - Admin access required" }, 
+        { status: 403 }
       );
     }
     

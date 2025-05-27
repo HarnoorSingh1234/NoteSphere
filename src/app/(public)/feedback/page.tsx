@@ -24,7 +24,8 @@ export default function FeedbackPage() {
 
     try {
       // Determine if we should send the user's clerkId
-      const clerkId = isAnonymous ? null : user?.id;
+      // If isAnonymous is true or user is not available, send null
+      const authorClerkId = isAnonymous ? null : user?.id || null;
 
       const response = await fetch('/api/feedback', {
         method: 'POST',
@@ -33,7 +34,7 @@ export default function FeedbackPage() {
         },
         body: JSON.stringify({
           content: feedbackContent,
-          authorClerkId: clerkId,
+          authorClerkId,
         }),
       });
 
@@ -50,6 +51,7 @@ export default function FeedbackPage() {
         setSubmitted(false);
       }, 5000);
     } catch (err) {
+      console.error("Error submitting feedback:", err);
       setError(err instanceof Error ? err.message : 'Failed to submit feedback');
     } finally {
       setIsSubmitting(false);
