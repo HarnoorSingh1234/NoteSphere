@@ -2,7 +2,7 @@
 
 import { useUser, SignOutButton } from '@clerk/nextjs';
 import { useState, useEffect } from 'react';
-import { User, FileText, BookOpen, Award, Settings, LogOut, ChevronRight, Heart, MessageCircle, ThumbsUp, CheckCircle, Clock, XCircle, Download, Book } from 'lucide-react';
+import { User, FileText, BookOpen, Award, Settings, LogOut, ChevronRight, Heart, MessageCircle, ThumbsUp, CheckCircle, Clock, XCircle, Download, Book, User2 } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
@@ -218,6 +218,20 @@ const UserProfilePage = () => {
                         <Heart className="w-5 h-5 mr-2" />
                       </motion.div>
                       Liked notes
+                    </button>
+                  </Link>
+                  <Link
+                    href="/profile/details">
+                    <button
+                      className="w-full inline-flex items-center justify-center px-4 py-2.5 bg-white text-[#264143] font-bold rounded-[0.4em] border-[0.15em] border-[#264143] hover:bg-[#EDDCD9]/40 hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#DE5499] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#DE5499] transition-all duration-200"
+                    >
+                      <motion.div 
+                        whileHover={{ rotate: 15 }}
+                        transition={{ type: "spring", stiffness: 400 }}
+                      >
+                        <User2 className="w-5 h-5 mr-2" />
+                      </motion.div>
+                     Profile
                     </button>
                   </Link>
                   <div className="border-t-[0.15em] border-[#264143]/10 my-4 pt-4">
