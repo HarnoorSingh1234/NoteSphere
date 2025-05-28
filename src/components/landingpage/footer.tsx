@@ -82,7 +82,7 @@ function Footer() {
                   href="/about-us" 
                   className="block text-[#264143]/80 hover:text-[#DE5499] transition-colors relative pl-4 before:content-[''] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-2 before:h-2 before:bg-[#E99F4C] before:rounded-sm before:border-[0.1em] before:border-[#264143] before:transition-all before:duration-200 hover:before:rotate-45 hover:before:scale-110"
                 >
-                  About-Us
+                  About Us
                 </Link>
               </nav>
             </div>
