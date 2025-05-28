@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import Link from 'next/link';
 import { ArrowRight, Check, Loader2, Shield } from 'lucide-react';
+import Image from 'next/image';
 
 export default function MakeAdminPage() {
   const { user } = useUser();
@@ -30,7 +31,9 @@ export default function MakeAdminPage() {
 
       if (!response.ok) {
         throw new Error('Failed to make user admin');
-      }      toast.success('Database role updated to match Clerk admin role');
+      }
+      toast.success('Database role updated to match Clerk admin role');
+      setSuccess(true); // Set success state to true on successful request
     } catch (error: any) {
       console.error(error);
       if (error.message?.includes('admin in Clerk first')) {
@@ -76,13 +79,19 @@ export default function MakeAdminPage() {
             <div className="bg-[#EDDCD9]/30 border-[0.15em] border-[#264143]/10 p-4 rounded-[0.4em] mb-8">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-white border-[0.15em] border-[#264143]/20 overflow-hidden flex-shrink-0">
-                  {user.imageUrl ? (
-                    <img src={user.imageUrl} alt={user.fullName || 'User'} className="w-full h-full object-cover" />
-                  ) : (
+                    {user.imageUrl ? (
+                    <Image 
+                      src={user.imageUrl} 
+                      alt={user.fullName || 'User'} 
+                      width={40} 
+                      height={40}
+                      className="w-full h-full object-cover" 
+                    />
+                    ) : (
                     <div className="w-full h-full bg-[#DE5499]/20 flex items-center justify-center text-[#264143] font-bold">
                       {(user.firstName?.[0] || '') + (user.lastName?.[0] || '')}
                     </div>
-                  )}
+                    )}
                 </div>
                 <div className="flex-1">
                   <div className="font-medium text-[#264143]">
@@ -129,6 +138,21 @@ export default function MakeAdminPage() {
               </Link>
             )}
           </div>
+          
+          {/* Success confirmation message */}
+          {success && (
+            <div className="mt-6 p-4 bg-[#7BB4B1]/20 border-[0.15em] border-[#7BB4B1]/30 rounded-[0.4em] text-[#264143]">
+              <div className="flex items-center gap-3">
+                <div className="bg-[#7BB4B1]/30 p-2 rounded-full">
+                  <Check className="h-5 w-5 text-[#264143]" />
+                </div>
+                <div>
+                  <h3 className="font-bold">Admin Access Granted!</h3>
+                  <p>Your account has been successfully upgraded to admin status. You now have access to all administrative features.</p>
+                </div>
+              </div>
+            </div>
+          )}
           
           {/* Info note */}
           <div className="mt-8 text-sm text-[#264143]/70 bg-[#EDDCD9]/20 p-4 rounded-[0.3em] border-l-[0.3em] border-[#E99F4C]">

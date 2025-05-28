@@ -1,10 +1,10 @@
 'use client';
 
-import React, { JSX, useEffect, useState } from 'react';
+import React, { JSX, useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { BookOpen, ArrowLeft, GraduationCap } from 'lucide-react';
-import AcademicCard from '@/components/AcademicCard';
+import { ArrowLeft, GraduationCap, ChevronLeft, ChevronRight } from 'lucide-react';
+import AcademicCardSubject from '@/components/AcademicCardSubject';
 import { useParams } from 'next/navigation';
 
 interface Subject {
@@ -39,6 +39,20 @@ export default function SemesterPage() {
   const [year, setYear] = useState<Year | null>(null);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [loading, setLoading] = useState(true);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  
+  // Scroll controls
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: -300, behavior: 'smooth' });
+    }
+  };
+  
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+    }
+  };
   
   useEffect(() => {
     async function fetchSemesterData() {
@@ -77,6 +91,7 @@ export default function SemesterPage() {
       fetchSemesterData();
     }
   }, [semid, yearid]); // Add dependencies
+  
   // Map subjects to AcademicCard format
   const academicSubjects = subjects.map((subject, index) => {
     // Explicitly type the card type as one of the allowed values
@@ -120,20 +135,20 @@ export default function SemesterPage() {
   const semesterTagText = semester ? getSemesterTagText(semester.number) : "";
 
   return (
-    <div className="relative w-full min-h-screen bg-[#EDDCD9] py-12">
+    <div className="relative w-full min-h-screen bg-[#EDDCD9] py-8 px-4 sm:py-12 sm:px-6 overflow-x-hidden">
       {/* Pattern grid background */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,0,0,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.05)_1px,transparent_1px)] bg-[length:1em_1em] pointer-events-none opacity-30 z-[1]" />
       
       {/* Overlay dots */}
       <div className="absolute inset-0 bg-[radial-gradient(rgba(0,0,0,0.05)_1px,transparent_1px)] bg-[length:2em_2em] bg-[-1em_-1em] pointer-events-none opacity-10 z-[1]" />
       
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-6xl mx-auto">
+      <div className="container mx-auto max-w-7xl relative z-10">
+        <div className="w-full">
           <motion.div 
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="mb-12 text-center"
+            className="mb-8 md:mb-12 text-center"
           >
             <div className="inline-flex items-center justify-center mb-4">
               <div className="flex items-center justify-center w-12 h-12 bg-white border-[0.15em] border-[#050505] rounded-full shadow-[0.2em_0.2em_0_#ff3e00] mb-4">
@@ -169,27 +184,101 @@ export default function SemesterPage() {
               <p className="text-[#050505]/70">Subjects will be added by the administrators.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
-              {academicSubjects.map((subject) => (
-              <AcademicCard
-                key={subject.id}
-                title={subject.title}
-                tagText={subject.tagText}
-                description={subject.description}
-                features={subject.features}
-                price={subject.price}
-                priceDescription={subject.priceDescription}
-                buttonText={subject.buttonText}
-                buttonHref={subject.buttonHref}
-                accentColor={subject.accentColor}
-                secondaryColor={subject.secondaryColor}
-                type={subject.type}
-              />
-              ))}
+            <div className="relative">
+              {/* Mobile horizontal scroll view with nav buttons */}
+              <div className="block md:hidden relative mt-2 mb-6">
+                <div className="relative overflow-hidden">
+                  <button
+                    onClick={scrollLeft}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-8 h-8 bg-white border-[0.15em] border-[#050505] rounded-full shadow-[0.1em_0.1em_0_#ff3e00] hover:translate-y-[-0.1em] hover:shadow-[0.15em_0.15em_0_#ff3e00] transition-all duration-200 flex items-center justify-center"
+                    aria-label="Scroll left"
+                  >
+                    <ChevronLeft className="w-5 h-5 text-[#050505]" />
+                  </button>
+                  
+                  <div 
+                    ref={scrollContainerRef}
+                    className="flex overflow-x-auto py-4 px-6 snap-x snap-mandatory hide-scrollbar"
+                    style={{
+                      scrollbarWidth: 'none', // Firefox
+                      msOverflowStyle: 'none', // IE/Edge
+                    }}
+                  >
+                    {academicSubjects.map((subject, index) => (
+                      <div 
+                        key={subject.id} 
+                        className="flex-shrink-0 w-[280px] mx-2 snap-center"
+                        style={{scrollSnapAlign: 'center'}}
+                      >
+                        <AcademicCardSubject
+                          title={subject.title}
+                          tagText={subject.tagText}
+                          description={subject.description}
+                          features={subject.features}
+                          price={subject.price}
+                          priceDescription={subject.priceDescription}
+                          buttonText={subject.buttonText}
+                          buttonHref={subject.buttonHref}
+                          accentColor={subject.accentColor}
+                          secondaryColor={subject.secondaryColor}
+                          type={subject.type}
+                          className="mx-auto"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <button
+                    onClick={scrollRight}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-8 h-8 bg-white border-[0.15em] border-[#050505] rounded-full shadow-[0.1em_0.1em_0_#ff3e00] hover:translate-y-[-0.1em] hover:shadow-[0.15em_0.15em_0_#ff3e00] transition-all duration-200 flex items-center justify-center"
+                    aria-label="Scroll right"
+                  >
+                    <ChevronRight className="w-5 h-5 text-[#050505]" />
+                  </button>
+                </div>
+                
+                {/* Scroll indicator dots */}
+                <div className="flex justify-center gap-2 mt-4">
+                  {academicSubjects.map((_, index) => (
+                    <button 
+                      key={index} 
+                      className="w-3 h-3 rounded-full bg-[#050505]/30 hover:bg-[#ff3e00]/70 transition-colors duration-200"
+                      onClick={() => {
+                        if (scrollContainerRef.current) {
+                          const cardWidth = 280 + 8; // card width + margin
+                          scrollContainerRef.current.scrollLeft = index * cardWidth;
+                        }
+                      }}
+                      aria-label={`Go to subject ${index + 1}`}
+                    />
+                  ))}
+                </div>
+              </div>
+              
+              {/* Desktop grid layout */}
+              <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-x-6 gap-y-10">
+                {academicSubjects.map((subject) => (
+                  <AcademicCardSubject
+                    key={subject.id}
+                    title={subject.title}
+                    tagText={subject.tagText}
+                    description={subject.description}
+                    features={subject.features}
+                    price={subject.price}
+                    priceDescription={subject.priceDescription}
+                    buttonText={subject.buttonText}
+                    buttonHref={subject.buttonHref}
+                    accentColor={subject.accentColor}
+                    secondaryColor={subject.secondaryColor}
+                    type={subject.type}
+                    className="mx-auto"
+                  />
+                ))}
+              </div>
             </div>
-            )}
+          )}
             
-            <div className="mt-12 flex justify-center gap-4">
+          <div className="mt-12 flex justify-center gap-4">
             <Link 
               href={`/academics/years/${yearid}`}
               className="inline-flex items-center justify-center px-5 py-2 text-[#050505] font-bold bg-white border-[0.2em] border-[#050505] rounded-[0.4em] shadow-[0.2em_0.2em_0_#ff3e00] hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#ff3e00] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#ff3e00] transition-all duration-200"
@@ -203,11 +292,18 @@ export default function SemesterPage() {
       
       {/* Corner slice */}
       <div className="absolute bottom-0 left-0 w-[2.5em] h-[2.5em] bg-white border-r-[0.25em] border-t-[0.25em] border-[#050505] rounded-tr-[0.8em] z-[3]" />
+      
+      {/* Add the style to hide scrollbar */}
+      <style jsx global>{`
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
     </div>
   );
 }
 
-// Helper functions
+// Helper functions remain unchanged
 function getSemesterTagText(semesterNumber: number): string {
   return semesterNumber % 2 !== 0 ? "Fall" : "Spring";
 }

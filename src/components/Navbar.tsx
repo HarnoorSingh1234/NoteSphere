@@ -5,6 +5,7 @@ import { BookOpen, LogIn, UserCircle, BookmarkPlus, Settings } from 'lucide-reac
 import Link from 'next/link';
 import { SignedIn, SignedOut, UserButton, useUser } from '@clerk/nextjs';
 import { usePathname } from 'next/navigation';
+import Image from 'next/image';
 
 /**
  * Navigation bar component with authentication controls using Clerk
@@ -133,76 +134,64 @@ const Navbar = () => {
           {/* Auth buttons */}
           <div className="flex items-center gap-3">
             <SignedIn>
-              {/* User is signed in - Show different button based on role */}
-              {isAdmin ? (
-                <>
-                  {/* Desktop view - Admin Dashboard */}
-                  <Link 
-                    href="/admin/dashboard" 
-                    className="hidden md:flex items-center gap-2 px-3 py-2 text-[#264143] font-bold text-base border-[0.15em] border-transparent rounded-[0.4em] hover:border-[#264143] hover:bg-white hover:translate-x-[-0.1em] hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#E99F4C] active:translate-x-[0.05em] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#E99F4C] transition-all duration-200"
-                  >
-                    <Settings className="w-5 h-5" />
-                    <span>Dashboard</span>
-                  </Link>
-                  
-                  <div className="md:hidden flex items-center gap-2">
-                    {/* Mobile view - About Us for Admin */}
-                    <Link 
-                      href="/about-us" 
-                      className="flex items-center justify-center w-10 h-10 text-[#264143] border-[0.15em] border-transparent rounded-[0.4em] hover:border-[#264143] hover:bg-white hover:translate-x-[-0.1em] hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#E99F4C] active:translate-x-[0.05em] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#E99F4C] transition-all duration-200"
-                    >
-                      <BookOpen className="w-5 h-5" />
-                    </Link>
-                    
-                    {/* Mobile view - Admin Dashboard */}
-                    <Link 
-                      href="/admin/dashboard" 
-                      className="flex items-center justify-center w-10 h-10 text-[#264143] border-[0.15em] border-transparent rounded-[0.4em] hover:border-[#264143] hover:bg-white hover:translate-x-[-0.1em] hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#E99F4C] active:translate-x-[0.05em] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#E99F4C] transition-all duration-200"
-                    >
-                      <Settings className="w-5 h-5" />
-                    </Link>
-                  </div>
-                </>
-              ) : (
-                <>
-                  {/* Desktop view - Regular User Profile */}
-                  <Link 
-                    href="/profile" 
-                    className="hidden md:flex items-center gap-2 px-3 py-2 text-[#264143] font-bold text-base border-[0.15em] border-transparent rounded-[0.4em] hover:border-[#264143] hover:bg-white hover:translate-x-[-0.1em] hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#E99F4C] active:translate-x-[0.05em] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#E99F4C] transition-all duration-200"
-                  >
-                    <UserCircle className="w-5 h-5" />
-                    <span>Profile</span>
-                  </Link>
-                  
-                  <div className="md:hidden flex items-center gap-2">
-                    {/* Mobile view - About Us for Regular User */}
-                    <Link 
-                      href="/about-us" 
-                      className="flex items-center justify-center w-10 h-10 text-[#264143] border-[0.15em] border-transparent rounded-[0.4em] hover:border-[#264143] hover:bg-white hover:translate-x-[-0.1em] hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#E99F4C] active:translate-x-[0.05em] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#E99F4C] transition-all duration-200"
-                    >
-                      <BookOpen className="w-5 h-5" />
-                    </Link>
-                    
-                    {/* Mobile view - Regular User Profile */}
-                    <Link 
-                      href="/profile" 
-                      className="flex items-center justify-center w-10 h-10 text-[#264143] border-[0.15em] border-transparent rounded-[0.4em] hover:border-[#264143] hover:bg-white hover:translate-x-[-0.1em] hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#E99F4C] active:translate-x-[0.05em] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#E99F4C] transition-all duration-200"
-                    >
-                      <UserCircle className="w-5 h-5" />
-                    </Link>
-                  </div>
-                </>
+              <div className="flex items-center gap-3">
+              {/* Admin Dashboard link for admin users */}
+              {isAdmin && (
+                <Link 
+                href="/admin/dashboard" 
+                className="hidden md:flex items-center gap-2 px-3 py-2 text-[#264143] font-bold text-base border-[0.15em] border-transparent rounded-[0.4em] hover:border-[#264143] hover:bg-white hover:translate-x-[-0.1em] hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#E99F4C] active:translate-x-[0.05em] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#E99F4C] transition-all duration-200"
+                >
+                <Settings className="w-5 h-5" />
+                <span>Dashboard</span>
+                </Link>
               )}
               
-              {/* UserButton from Clerk */}
-              <UserButton 
-                afterSignOutUrl="/" 
-                appearance={{
-                  elements: {
-                    avatarBox: "border-2 border-[#264143] transition-all duration-200"
-                  }
-                }}
-              />
+              {/* Mobile navigation */}
+              <div className="md:hidden flex items-center gap-2">
+                <Link 
+                href="/about-us" 
+                className="flex items-center justify-center w-10 h-10 text-[#264143] border-[0.15em] border-transparent rounded-[0.4em] hover:border-[#264143] hover:bg-white hover:translate-x-[-0.1em] hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#E99F4C] active:translate-x-[0.05em] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#E99F4C] transition-all duration-200"
+                >
+                <BookOpen className="w-5 h-5" />
+                </Link>
+                
+                {isAdmin && (
+                <Link 
+                  href="/admin/dashboard" 
+                  className="flex items-center justify-center w-10 h-10 text-[#264143] border-[0.15em] border-transparent rounded-[0.4em] hover:border-[#264143] hover:bg-white hover:translate-x-[-0.1em] hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#E99F4C] active:translate-x-[0.05em] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#E99F4C] transition-all duration-200"
+                >
+                  <Settings className="w-5 h-5" />
+                </Link>
+                )}
+              </div>
+              
+              {/* Profile button with user's avatar */}
+              <Link 
+                href="/profile" 
+                className="flex items-center justify-center transition-all duration-200"
+              >
+                {user?.imageUrl ? (
+                <div className="w-8 h-8 rounded-full border-2 border-[#264143] overflow-hidden hover:border-[#E99F4C] hover:scale-105 transition-all duration-200">
+                  <Image 
+                  src={user.imageUrl} 
+                  alt={`${user.firstName || 'User'}'s profile`}
+                  width={40}
+                  height={40}
+                  className="w-full h-full object-cover"
+                  />
+                </div>
+                ) : (
+                <div className="w-10 h-10 rounded-full bg-[#DE5499] border-2 border-[#264143] flex items-center justify-center hover:border-[#E99F4C] hover:scale-105 transition-all duration-200">
+                  <UserCircle className="w-5 h-5 text-white" />
+                </div>
+                )}
+              </Link>
+              
+              {/* Hidden clerk button for sign out functionality */}
+              <div className="hidden">
+                <UserButton afterSignOutUrl="/" />
+              </div>
+              </div>
             </SignedIn>
             
             <SignedOut>

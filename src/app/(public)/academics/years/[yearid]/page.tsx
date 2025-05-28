@@ -1,9 +1,9 @@
 'use client';
 
-import React, { JSX, useEffect, useState } from 'react';
+import React, { JSX, useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { BookOpen, ArrowLeft, CalendarDays } from 'lucide-react';
+import { BookOpen, ArrowLeft, CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react';
 import AcademicCard from '@/components/AcademicCard';
 import { useParams } from 'next/navigation';
 import { getYearPageData, type YearPageData } from '@/lib/year-actions';
@@ -15,6 +15,20 @@ export default function YearPage() {
   
   const [data, setData] = useState<YearPageData | null>(null);
   const [loading, setLoading] = useState(true);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  
+  // Scroll controls
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: -320, behavior: 'smooth' });
+    }
+  };
+  
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: 320, behavior: 'smooth' });
+    }
+  };
   
   useEffect(() => {
     async function fetchYearData() {
@@ -33,7 +47,9 @@ export default function YearPage() {
     if (yearid) {
       fetchYearData();
     }
-  }, [yearid]); // Updated dependency array with yearid from useParams  // Map semesters to AcademicCard format
+  }, [yearid]); // Updated dependency array with yearid from useParams  
+  
+  // Map semesters to AcademicCard format
   const academicSemesters = data?.semesters.map((semester, index) => ({
     id: semester.id,
     title: `Semester ${semester.number}`,
@@ -46,22 +62,21 @@ export default function YearPage() {
     buttonHref: `/academics/years/${yearid}/semesters/${semester.id}` // Using the destructured yearid
   })) || [];
 
-  // Rest of your component remains the same
   return (
-    <div className="relative w-full min-h-screen bg-[#EDDCD9] py-12">
+    <div className="relative w-full min-h-screen bg-[#EDDCD9] py-8 px-4 sm:py-12 sm:px-6 overflow-x-hidden">
       {/* Pattern grid background */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,0,0,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.05)_1px,transparent_1px)] bg-[length:1em_1em] pointer-events-none opacity-30 z-[1]" />
       
       {/* Overlay dots */}
       <div className="absolute inset-0 bg-[radial-gradient(rgba(0,0,0,0.05)_1px,transparent_1px)] bg-[length:2em_2em] bg-[-1em_-1em] pointer-events-none opacity-10 z-[1]" />
       
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-6xl mx-auto">
+      <div className="container mx-auto max-w-7xl relative z-10">
+        <div className="w-full">
           <motion.div 
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="mb-12 text-center"
+            className="mb-8 md:mb-12 text-center"
           >
             <div className="inline-flex items-center justify-center mb-4">
               <div className="flex items-center justify-center w-12 h-12 bg-white border-[0.15em] border-[#050505] rounded-full shadow-[0.2em_0.2em_0_#ff3e00] mb-4">
@@ -72,7 +87,8 @@ export default function YearPage() {
             {loading ? (
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#050505] mb-2">
                 Loading...
-              </h1>            ) : (
+              </h1>
+            ) : (
               <>
                 <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#050505] mb-2">
                   Year <span className="text-[#ff3e00]">{data?.year?.number}</span>
@@ -95,24 +111,98 @@ export default function YearPage() {
               <p className="text-[#050505]/70">Semesters will be added by the administrators.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 justify-items-center">
-              {academicSemesters.map((semester, index) => (
-                <AcademicCard
-                  key={semester.id}
-                  title={semester.title}
-                  tagText={semester.tagText}
-                  description={semester.description}
-                  features={semester.features}
-                  price={semester.price}
-                  priceDescription={semester.priceDescription}
-                  buttonText={semester.buttonText}
-                  buttonHref={semester.buttonHref}
-                  accentColor={index % 2 === 0 ? "#ff3e00" : "#E99F4C"}
-                  secondaryColor={index % 2 === 0 ? "#4d61ff" : "#DE5499"}
-                  type={index % 2 === 0 ? "primary" : "secondary"}
-                />
-              ))}
-            </div>
+            <>
+              {/* Mobile horizontal scroll view with nav buttons */}
+              <div className="block md:hidden relative mt-2 mb-6">
+                <div className="relative overflow-hidden">
+                  <button
+                    onClick={scrollLeft}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-8 h-8 bg-white border-[0.15em] border-[#050505] rounded-full shadow-[0.1em_0.1em_0_#ff3e00] hover:translate-y-[-0.1em] hover:shadow-[0.15em_0.15em_0_#ff3e00] transition-all duration-200 flex items-center justify-center"
+                    aria-label="Scroll left"
+                  >
+                    <ChevronLeft className="w-5 h-5 text-[#050505]" />
+                  </button>
+                  
+                  <div 
+                    ref={scrollContainerRef}
+                    className="flex overflow-x-auto py-4 px-6 snap-x snap-mandatory hide-scrollbar"
+                    style={{
+                      scrollbarWidth: 'none', // Firefox
+                      msOverflowStyle: 'none', // IE/Edge
+                    }}
+                  >
+                    {academicSemesters.map((semester, index) => (
+                      <div 
+                        key={semester.id} 
+                        className="flex-shrink-0 w-[300px] mx-3 snap-center"
+                        style={{scrollSnapAlign: 'center'}}
+                      >
+                        <AcademicCard
+                          title={semester.title}
+                          tagText={semester.tagText}
+                          description={semester.description}
+                          features={semester.features}
+                          price={semester.price}
+                          priceDescription={semester.priceDescription}
+                          buttonText={semester.buttonText}
+                          buttonHref={semester.buttonHref}
+                          accentColor={index % 2 === 0 ? "#ff3e00" : "#E99F4C"}
+                          secondaryColor={index % 2 === 0 ? "#4d61ff" : "#DE5499"}
+                          type={index % 2 === 0 ? "primary" : "secondary"}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <button
+                    onClick={scrollRight}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-8 h-8 bg-white border-[0.15em] border-[#050505] rounded-full shadow-[0.1em_0.1em_0_#ff3e00] hover:translate-y-[-0.1em] hover:shadow-[0.15em_0.15em_0_#ff3e00] transition-all duration-200 flex items-center justify-center"
+                    aria-label="Scroll right"
+                  >
+                    <ChevronRight className="w-5 h-5 text-[#050505]" />
+                  </button>
+                </div>
+                
+                {/* Scroll indicator dots */}
+                {academicSemesters.length > 1 && (
+                  <div className="flex justify-center gap-2 mt-4">
+                    {academicSemesters.map((_, index) => (
+                      <button 
+                        key={index} 
+                        className="w-3 h-3 rounded-full bg-[#050505]/30 hover:bg-[#ff3e00]/70 transition-colors duration-200"
+                        onClick={() => {
+                          if (scrollContainerRef.current) {
+                            const cardWidth = 300 + 24; // card width + margins
+                            scrollContainerRef.current.scrollLeft = index * cardWidth;
+                          }
+                        }}
+                        aria-label={`Go to semester ${index + 1}`}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+              
+              {/* Desktop grid layout */}
+              <div className="hidden md:grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-8 justify-items-center">
+                {academicSemesters.map((semester, index) => (
+                  <AcademicCard
+                    key={semester.id}
+                    title={semester.title}
+                    tagText={semester.tagText}
+                    description={semester.description}
+                    features={semester.features}
+                    price={semester.price}
+                    priceDescription={semester.priceDescription}
+                    buttonText={semester.buttonText}
+                    buttonHref={semester.buttonHref}
+                    accentColor={index % 2 === 0 ? "#ff3e00" : "#E99F4C"}
+                    secondaryColor={index % 2 === 0 ? "#4d61ff" : "#DE5499"}
+                    type={index % 2 === 0 ? "primary" : "secondary"}
+                  />
+                ))}
+              </div>
+            </>
           )}
           
           <div className="mt-12 flex justify-center gap-4">
@@ -129,11 +219,18 @@ export default function YearPage() {
       
       {/* Corner slice */}
       <div className="absolute bottom-0 left-0 w-[2.5em] h-[2.5em] bg-white border-r-[0.25em] border-t-[0.25em] border-[#050505] rounded-tr-[0.8em] z-[3]" />
+      
+      {/* Add the style to hide scrollbar */}
+      <style jsx global>{`
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
     </div>
   );
 }
 
-// Helper functions
+// Helper functions remain unchanged
 function getSemesterTagText(semesterNumber: number): string {
   return semesterNumber % 2 !== 0 ? "Fall" : "Spring";
 }

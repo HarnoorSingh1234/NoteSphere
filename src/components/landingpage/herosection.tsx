@@ -1,21 +1,60 @@
-'use client';
+"use client";
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Sparkles, BookOpen, NotebookPen } from 'lucide-react';
+import { ArrowRight, Sparkles, BookOpen, NotebookPen, Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { CanvasBackground } from './canvasbackground';
 import { useUser } from '@clerk/nextjs';
+
+// Define interface for user profile data
+interface UserProfileData {
+  id: string;
+  yearId: string | null;
+  semesterId: string | null;
+  yearNumber: number | null;
+  semesterNumber: number | null;
+}
 
 export default function HeroSection() {
   // Track if the component is mounted to prevent hydration issues
   const [isMounted, setIsMounted] = useState(false);
   // Get the user and isLoaded state from Clerk
   const { user, isLoaded } = useUser();
+  // State for user profile data
+  const [profileData, setProfileData] = useState<UserProfileData | null>(null);
+  const [loadingProfile, setLoadingProfile] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  // Fetch the user profile data when user is loaded
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (!user) return;
+      
+      setLoadingProfile(true);
+      try {
+        const response = await fetch('/api/users/profile');
+        
+        if (response.ok) {
+          const data = await response.json();
+          setProfileData(data);
+        } else {
+          console.error('Failed to fetch user profile');
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      } finally {
+        setLoadingProfile(false);
+      }
+    };
+
+    if (isLoaded && user) {
+      fetchUserProfile();
+    }
+  }, [isLoaded, user]);
 
   return (
     <div className="relative w-full min-h-[80vh] overflow-hidden bg-[#EDDCD9] border-b-[0.35em] border-[#264143] group">
@@ -85,13 +124,32 @@ export default function HeroSection() {
                       Loading...
                     </div>
                   ) : user ? (
-                    // User is logged in - show Go To Academics button
-                    <Link 
-                      href="/academics"
-                      className="inline-flex items-center justify-center px-5 py-2 text-white font-bold bg-[#DE5499] border-[0.2em] border-[#264143] rounded-[0.4em] shadow-[0.25em_0.25em_0_#E99F4C] hover:translate-x-[-0.1em] hover:translate-y-[-0.1em] hover:bg-[#E66BA7] hover:shadow-[0.35em_0.35em_0_#E99F4C] active:translate-x-[0.1em] active:translate-y-[0.1em] active:shadow-[0.15em_0.15em_0_#E99F4C] transition-all duration-200"
-                    >
-                      Go To Academics <NotebookPen className="ml-2 h-4 w-4" />
-                    </Link>
+                    // User is logged in - show buttons based on profile data
+                    <>
+                      {/* Go To Academics button always shown for logged in users */}
+                      <Link 
+                        href="/academics"
+                        className="inline-flex items-center justify-center px-5 py-2 text-white font-bold bg-[#DE5499] border-[0.2em] border-[#264143] rounded-[0.4em] shadow-[0.25em_0.25em_0_#E99F4C] hover:translate-x-[-0.1em] hover:translate-y-[-0.1em] hover:bg-[#E66BA7] hover:shadow-[0.35em_0.35em_0_#E99F4C] active:translate-x-[0.1em] active:translate-y-[0.1em] active:shadow-[0.15em_0.15em_0_#E99F4C] transition-all duration-200"
+                      >
+                        Go To Academics <NotebookPen className="ml-2 h-4 w-4" />
+                      </Link>
+                      
+                      {/* Direct link to user's semester if available */}
+                      {profileData?.yearId && profileData?.semesterId && (
+                        <Link 
+                          href={`/academics/years/${profileData.yearId}/semesters/${profileData.semesterId}`}
+                          className="inline-flex items-center justify-center px-5 py-2 text-[#264143] font-bold bg-[#E99F4C] border-[0.2em] border-[#264143] rounded-[0.4em] shadow-[0.25em_0.25em_0_#DE5499] hover:translate-x-[-0.1em] hover:translate-y-[-0.1em] hover:shadow-[0.35em_0.35em_0_#DE5499] active:translate-x-[0.1em] active:translate-y-[0.1em] active:shadow-[0.15em_0.15em_0_#DE5499] transition-all duration-200"
+                        >
+                          {loadingProfile ? (
+                            "Loading..."
+                          ) : (
+                            <>
+                              Go to Year {profileData.yearNumber}, Semester {profileData.semesterNumber} <Calendar className="ml-2 h-4 w-4" />
+                            </>
+                          )}
+                        </Link>
+                      )}
+                    </>
                   ) : (
                     // User is not logged in - show Get Started and Sign Up buttons
                     <>

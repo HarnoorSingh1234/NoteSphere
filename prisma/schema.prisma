@@ -19,6 +19,8 @@ model User {
   notes     Note[]
   feedback  Feedback[]
   notices   Notice[]
+
+  UserProfile UserProfile[]
 }
 
 model Year {
@@ -128,6 +130,21 @@ model RejectedNote {
   @@index([authorClerkId])
   @@index([rejectedAt])
   @@index([subjectId])
+}
+
+model UserProfile {
+  id         String   @id @default(cuid())
+  clerkId    String   @unique
+  bio        String?
+  studentId  String?  @unique
+  department String?
+  yearId     String?
+  semesterId String?
+  visibility Boolean  @default(true)
+  profilePic String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation(fields: [clerkId], references: [clerkId])
 }
 
 model Feedback {
