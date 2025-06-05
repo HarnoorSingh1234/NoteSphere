@@ -111,18 +111,17 @@ export async function POST(request: Request) {
       );
     }
    
-    
-    let title: string;
+      let title: string;
     let description: string = '';
     let subjectId: string;
     let noteType: string;
     let fileUrl: string;
     let driveFileId: string;
+    let tags: string[] = [];
     
     // Check content type to handle both JSON and FormData
     const contentType = request.headers.get('content-type') || '';
-    
-    if (contentType.includes('application/json')) {
+      if (contentType.includes('application/json')) {
       console.log('Processing JSON request for note creation');
       // Handle JSON data
       const jsonData = await request.json();
@@ -132,6 +131,7 @@ export async function POST(request: Request) {
       noteType = jsonData.type || 'PDF';
       fileUrl = jsonData.fileUrl;
       driveFileId = jsonData.driveFileId;
+      tags = jsonData.tags || [];
     } else {
       console.log('Processing FormData request for note creation');
       // Use formData to handle file uploads
@@ -144,6 +144,7 @@ export async function POST(request: Request) {
       noteType = formData.get('noteType') as string;
       fileUrl = formData.get('fileUrl') as string; // URL to stored file (from upload endpoint)
       driveFileId = formData.get('driveFileId') as string; // Google Drive file ID
+      tags = formData.get('tags') ? JSON.parse(formData.get('tags') as string) : [];
     }
     
     // Validate required fields
@@ -174,8 +175,7 @@ export async function POST(request: Request) {
     }
     // Determine if note should be auto-verified (admins' notes are auto-verified)
     const isUserAdmin = await isAdmin();
-    const autoVerified = isUserAdmin;
-      // Log the data we're about to use to create the note
+    const autoVerified = isUserAdmin;      // Log the data we're about to use to create the note
     console.log('Creating note with data:', {
       title,
       content: description || '',
@@ -184,10 +184,10 @@ export async function POST(request: Request) {
       type: noteType || 'LECTURE',
       isPublic: autoVerified,
       subjectId,
-      authorId: user.clerkId
+      authorId: user.clerkId,
+      tags: tags || []
     });
-    
-    // Create note
+      // Create note
     const note = await prisma.note.create({
       data: {
         title,
@@ -197,7 +197,8 @@ export async function POST(request: Request) {
         type: (noteType as any) || 'LECTURE',
         isPublic: autoVerified,
         subjectId,
-        authorClerkId: user.clerkId
+        authorClerkId: user.clerkId,
+        tags: tags || []
       },
       include: {
         subject: {

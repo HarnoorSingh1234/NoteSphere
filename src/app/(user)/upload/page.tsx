@@ -41,11 +41,6 @@ interface Subject {
   semesterId: string;
 }
 
-interface Tag {
-  id?: string;
-  name: string;
-}
-
 const noteTypes: NoteType[] = ['PPT', 'LECTURE', 'HANDWRITTEN', 'PDF'];
 
 export default function UploadNotePage() {
@@ -69,13 +64,10 @@ export default function UploadNotePage() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-
   // Data fetching states
   const [years, setYears] = useState<Year[]>([]);
   const [semesters, setSemesters] = useState<Semester[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
-  const [allTags, setAllTags] = useState<Tag[]>([]);
-
   // Fetch years on component mount
   useEffect(() => {
     async function fetchYears() {
@@ -90,20 +82,7 @@ export default function UploadNotePage() {
       }
     }
 
-    // Fetch all existing tags
-    async function fetchTags() {
-      try {
-        const response = await fetch('/api/tags');
-        if (!response.ok) throw new Error('Failed to fetch tags');
-        const data = await response.json();
-        setAllTags(data.tags || []);
-      } catch (err) {
-        console.error('Error fetching tags:', err);
-      }
-    }
-
     fetchYears();
-    fetchTags();
   }, []);
 
   // Fetch semesters when year changes
@@ -566,27 +545,7 @@ export default function UploadNotePage() {
                       onClick={handleAddTag}
                     >
                       <Plus size={18} />
-                    </button>
-                  </div>
-                  
-                  {/* Suggested tags */}
-                  {allTags.length > 0 && (
-                    <div className="mt-2">
-                      <p className="text-sm text-gray-500 mb-1">Suggested tags:</p>
-                      <div className="flex flex-wrap gap-1">
-                        {allTags.slice(0, 5).map((tag) => (
-                          <button
-                            key={tag.id}
-                            type="button"
-                            className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full hover:bg-gray-200"
-                            onClick={() => !tags.includes(tag.name) && setTags([...tags, tag.name])}
-                          >
-                            {tag.name}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                    </button>                  </div>
                 </div>
                 
                 {/* Visibility */}

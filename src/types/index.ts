@@ -25,25 +25,19 @@ export interface Note {
   updatedAt: Date;
   authorId: string;
   subjectId: string;
+  tags: string[];
   author: {
     firstName: string;
     lastName: string;
     email: string;
   };
   subject?: Subject;
-  tags?: Tag[];
   likes?: Like[];
   comments?: Comment[];
   _count?: {
     likes: number;
     comments: number;
   };
-}
-
-export interface Tag {
-  id: string;
-  name: string;
-  notes?: Note[];
 }
 
 export interface Like {

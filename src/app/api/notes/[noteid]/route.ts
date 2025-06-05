@@ -55,7 +55,6 @@ export async function GET(
             }
           }
         },
-        tags: true,
         _count: {
           select: {
             likes: true,
@@ -125,13 +124,11 @@ export async function PUT(
     }
     
     const params = await context.params;
-    const noteId = params.noteid;
-    // Get the existing note
+    const noteId = params.noteid;    // Get the existing note
     const existingNote = await prisma.note.findUnique({
       where: { id: noteId },
       include: {
-        author: true,
-        tags: true
+        author: true
       }
     });
     
@@ -177,24 +174,9 @@ export async function PUT(
         );
       }
     }
-    
-    // Process tags if provided
-    let tagUpdateOperation = {};
-    if (tags && Array.isArray(tags)) {
-      // Create a list of tag objects for connect or create
-      const tagData = tags.map((tagName: string) => ({
-        where: { name: tagName },
-        create: { name: tagName }
-      }));
-      tagUpdateOperation = {
-        tags: {
-          disconnect: existingNote.tags.map((tag: { id: string }) => ({ id: tag.id })), // Remove existing tags
-          connectOrCreate: tagData // Add new tags
-        }
-      };
-    }
-    
-    // Update note
+      // Process tags if provided
+    const tagsToUpdate = tags && Array.isArray(tags) ? tags : undefined;
+      // Update note
     const updatedNote = await prisma.note.update({
       where: { id: noteId },
       data: {
@@ -202,7 +184,7 @@ export async function PUT(
         ...(content !== undefined && { content }),
         ...(subjectId !== undefined && { subjectId }),
         ...(type !== undefined && { type }),
-        ...tagUpdateOperation
+        ...(tagsToUpdate !== undefined && { tags: tagsToUpdate })
       },
       include: {
         subject: {
@@ -213,16 +195,14 @@ export async function PUT(
               }
             }
           }
-        },
-        author: {
+        },        author: {
           select: {
             clerkId: true,
             firstName: true,
             lastName: true,
             email: true
           }
-        },
-        tags: true
+        }
       }
     });
     

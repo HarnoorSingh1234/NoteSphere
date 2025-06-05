@@ -8,19 +8,18 @@ datasource db {
 }
 
 model User {
-  clerkId   String     @id @unique
-  email     String     @unique
-  firstName String
-  lastName  String
-  createdAt DateTime   @default(now())
-  role      UserRole   @default(USER)
-  comments  Comment[]
-  likes     Like[]
-  notes     Note[]
-  feedback  Feedback[]
-  notices   Notice[]
-
-  UserProfile UserProfile[]
+  clerkId     String       @id @unique
+  email       String       @unique
+  firstName   String
+  lastName    String
+  createdAt   DateTime     @default(now())
+  role        UserRole     @default(USER)
+  comments    Comment[]
+  feedback    Feedback[]
+  likes       Like[]
+  notes       Note[]
+  notices     Notice[]
+  UserProfile UserProfile?
 }
 
 model Year {
@@ -65,19 +64,19 @@ model Note {
   isPublic      Boolean   @default(false)
   isRejected    Boolean   @default(false)
   rejectedAt    DateTime?
+  tags          String[]  @default([])
   comments      Comment[]
   likes         Like[]
   author        User      @relation(fields: [authorClerkId], references: [clerkId])
   subject       Subject   @relation(fields: [subjectId], references: [id])
-  tags          Tag[]     @relation("NoteToTag")
 }
 
 model Like {
   id        String   @id @default(cuid())
   userId    String
   noteId    String?
-  noticeId  String?
   createdAt DateTime @default(now())
+  noticeId  String?
   note      Note?    @relation(fields: [noteId], references: [id])
   notice    Notice?  @relation(fields: [noticeId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [clerkId])
@@ -96,12 +95,6 @@ model Comment {
   note      Note?    @relation(fields: [noteId], references: [id])
   notice    Notice?  @relation(fields: [noticeId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [clerkId])
-}
-
-model Tag {
-  id    String @id @default(cuid())
-  name  String @unique
-  notes Note[] @relation("NoteToTag")
 }
 
 model UserAuth {
@@ -153,7 +146,7 @@ model Feedback {
   createdAt     DateTime @default(now())
   viewed        Boolean  @default(false)
   authorClerkId String?
-  author        User?    @relation(fields: [authorClerkId], references: [clerkId], onDelete: SetNull)
+  author        User?    @relation(fields: [authorClerkId], references: [clerkId])
 }
 
 model Notice {
@@ -166,9 +159,9 @@ model Notice {
   updatedAt   DateTime  @updatedAt
   authorId    String
   isPublished Boolean   @default(true)
-  author      User      @relation(fields: [authorId], references: [clerkId])
-  likes       Like[]
   comments    Comment[]
+  likes       Like[]
+  author      User      @relation(fields: [authorId], references: [clerkId])
 
   @@index([createdAt])
   @@index([isPublished])

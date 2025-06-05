@@ -11,8 +11,7 @@ export async function getPublicNoteById(noteId: string) {
       isPublic: true,
       isRejected: false,
     },
-    include: {
-      author: true,
+    include: {      author: true,
       subject: {
         include: {
           semester: {
@@ -22,7 +21,6 @@ export async function getPublicNoteById(noteId: string) {
           },
         },
       },
-      tags: true,
       _count: {
         select: { 
           likes: true,
