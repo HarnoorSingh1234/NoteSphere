@@ -3,22 +3,11 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, FileText, Filter, Eye, DownloadCloud, ThumbsUp, MessageCircle, Book } from 'lucide-react';
+import { ArrowLeft, FileText, Filter, Book } from 'lucide-react';
 import { Subject, Note } from '@/types';
-import { getNoteTypeDetails, formatDate, formatAuthorName } from '@/components/subjects/utils';
-import NoteCard from '@/components/subjects/NoteCard';
-import { Note as NoteCardNote } from '@/components/subjects/types';
 import SubjectNotesList from '@/components/admin/SubjectNotesList';
 import { motion } from 'framer-motion';
 
-// Helper function to convert Note to NoteCardNote
-const convertToNoteCardType = (note: Note): NoteCardNote => {
-  return {
-    ...note,
-    createdAt: note.createdAt instanceof Date ? note.createdAt.toISOString() : note.createdAt,
-    updatedAt: note.updatedAt instanceof Date ? note.updatedAt.toISOString() : note.updatedAt
-  };
-};
 
 const AdminSubjectNotesPage = () => {
   const params = useParams();
