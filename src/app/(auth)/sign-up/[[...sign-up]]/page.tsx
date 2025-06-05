@@ -46,6 +46,23 @@ export default function SignUpPage() {
           <div className="relative z-[1]">
             <SignUp 
               appearance={{
+                variables: {
+                  colorPrimary: '#7BB4B1',
+                  colorText: '#264143',
+                  colorTextSecondary: 'rgba(38, 65, 67, 0.7)',
+                  colorBackground: 'white',
+                  colorDanger: '#DE5499',
+                  colorSuccess: '#7BB4B1',
+                  fontFamily: 'inherit',
+                  fontWeight: {
+                    normal: '400',
+                    medium: '500',
+                    bold: '700'
+                  },
+                  fontSize: '16px',
+                  borderRadius: '0.6em',
+                  colorInputBackground: 'white',
+                },
                 elements: {
                   formButtonPrimary: 'bg-[#7BB4B1] border-[0.15em] border-[#264143] hover:shadow-[0.2em_0.2em_0_#264143] hover:translate-y-[-0.1em] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#264143] transition-all duration-200',
                   card: 'bg-transparent shadow-none p-0',
@@ -53,14 +70,39 @@ export default function SignUpPage() {
                   headerSubtitle: 'hidden',
                   formFieldInput: 'border-[0.15em] border-[#264143]/40 rounded-[0.4em] focus:border-[#7BB4B1] focus:ring-[#7BB4B1]',
                   formFieldLabel: 'text-[#264143] font-medium',
-                  footerAction: 'text-[#DE5499] hover:text-[#DE5499]/80',
+                  footerActionText: 'text-[#264143]/70',
+                  footerActionLink: 'text-[#DE5499] hover:text-[#DE5499]/80',
                   identityPreviewEditButton: 'text-[#7BB4B1]',
                   formFieldAction: 'text-[#7BB4B1]',
-                  formFieldErrorText: 'text-[#DE5499]'
+                  formFieldErrorText: 'text-[#DE5499]',
+                  formResendCodeLink: 'text-[#7BB4B1]',
+                  otpCodeFieldInput: 'border-[0.15em] border-[#264143]/40',
+                  alternativeMethods: 'text-[#264143] font-medium',
+                  socialButtonsBlockButton: 'border-[0.15em] border-[#264143]/30 rounded-[0.4em] hover:bg-[#F9F5F2] transition-colors',
+                  socialButtonsIconButton: 'border-[0.15em] border-[#264143]/30 rounded-[0.4em] hover:bg-[#F9F5F2] transition-colors',
+                  dividerLine: 'bg-[#264143]/20',
+                  dividerText: 'text-[#264143]/60',
+                  formHeaderTitle: 'text-[#264143] font-bold',
+                  formHeaderSubtitle: 'text-[#264143]/70',
+                  verificationLinkStatusText: 'text-[#264143]',
+                  avatarBox: 'border-[0.15em] border-[#264143]/40 rounded-[0.4em] focus:border-[#7BB4B1]',
                 }
               }}
               fallbackRedirectUrl={'/'}
+              signInUrl="/sign-in"
+              oauthFlow="auto"
             />
+          </div>
+          
+          {/* Sign In link */}
+          <div className="relative z-[1] mt-6 text-center border-t-[0.15em] border-[#264143]/10 pt-4">
+            <p className="text-[#264143]/70 mb-3">Already have an account?</p>
+            <Link
+              href="/sign-in"
+              className="inline-flex items-center justify-center px-4 py-2.5 bg-white text-[#264143] font-bold rounded-[0.4em] border-[0.15em] border-[#264143] hover:bg-[#EDDCD9]/40 hover:translate-y-[-0.1em] hover:shadow-[0.2em_0.2em_0_#7BB4B1] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#7BB4B1] transition-all duration-200"
+            >
+              Sign In
+            </Link>
           </div>
         </div>
         

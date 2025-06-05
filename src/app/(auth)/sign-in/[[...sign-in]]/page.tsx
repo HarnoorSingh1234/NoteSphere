@@ -46,6 +46,23 @@ export default function SignInPage() {
           <div className="relative z-[1]">
             <SignIn 
               appearance={{
+                variables: {
+                  colorPrimary: '#7BB4B1',
+                  colorText: '#264143',
+                  colorTextSecondary: 'rgba(38, 65, 67, 0.7)',
+                  colorBackground: 'white',
+                  colorDanger: '#DE5499',
+                  colorSuccess: '#7BB4B1',
+                  fontFamily: 'inherit',
+                  fontWeight: {
+                    normal: '400',
+                    medium: '500',
+                    bold: '700'
+                  },
+                  fontSize: '16px',
+                  borderRadius: '0.6em',
+                  colorInputBackground: 'white',
+                },
                 elements: {
                   formButtonPrimary: 'bg-[#E99F4C] border-[0.15em] border-[#264143] hover:shadow-[0.2em_0.2em_0_#264143] hover:translate-y-[-0.1em] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#264143] transition-all duration-200',
                   card: 'bg-transparent shadow-none p-0',
@@ -53,15 +70,26 @@ export default function SignInPage() {
                   headerSubtitle: 'hidden',
                   formFieldInput: 'border-[0.15em] border-[#264143]/40 rounded-[0.4em] focus:border-[#E99F4C] focus:ring-[#E99F4C]',
                   formFieldLabel: 'text-[#264143] font-medium',
-                  footerAction: 'text-[#7BB4B1] hover:text-[#7BB4B1]/80',
+                  footerActionText: 'text-[#264143]/70',
+                  footerActionLink: 'text-[#7BB4B1] hover:text-[#7BB4B1]/80',
                   identityPreviewEditButton: 'text-[#E99F4C]',
                   formFieldAction: 'text-[#E99F4C]',
                   formFieldErrorText: 'text-[#DE5499]',
                   formResendCodeLink: 'text-[#7BB4B1]',
-                  otpCodeFieldInput: 'border-[0.15em] border-[#264143]/40'
+                  otpCodeFieldInput: 'border-[0.15em] border-[#264143]/40',
+                  alternativeMethods: 'text-[#264143] font-medium',
+                  socialButtonsBlockButton: 'border-[0.15em] border-[#264143]/30 rounded-[0.4em] hover:bg-[#F9F5F2] transition-colors',
+                  socialButtonsIconButton: 'border-[0.15em] border-[#264143]/30 rounded-[0.4em] hover:bg-[#F9F5F2] transition-colors',
+                  dividerLine: 'bg-[#264143]/20',
+                  dividerText: 'text-[#264143]/60',
+                  formHeaderTitle: 'text-[#264143] font-bold',
+                  formHeaderSubtitle: 'text-[#264143]/70',
                 }
               }}
               fallbackRedirectUrl={'/'}
+              signUpUrl="/sign-up"
+              oauthFlow="auto"
+              
             />
           </div>
           
@@ -76,6 +104,8 @@ export default function SignInPage() {
             </Link>
           </div>
         </div>
+        
+        {/* Back link */}
         <div className="mt-6 text-center">
           <Link href="/" className="inline-flex items-center text-[#264143] hover:text-[#E99F4C] transition-colors">
             <ArrowLeft className="w-4 h-4 mr-1" />
