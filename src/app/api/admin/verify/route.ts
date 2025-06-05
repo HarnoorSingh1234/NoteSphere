@@ -32,8 +32,7 @@ export async function GET(request: Request) {
     const totalCount = await prisma.note.count({
       where: { isPublic: false }
     });
-    
-    // Get private notes (pending verification) with pagination
+      // Get private notes (pending verification) with pagination
     const pendingNotes = await prisma.note.findMany({
       where: { isPublic: false },
       orderBy: { createdAt: 'asc' }, // Oldest first
@@ -57,7 +56,6 @@ export async function GET(request: Request) {
             email: true
           }
         },
-        tags: true,
         _count: {
           select: {
             likes: true,
