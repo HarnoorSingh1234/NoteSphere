@@ -22,6 +22,7 @@ interface Note {
   downloadCount: number;
   createdAt: string;
   updatedAt: string;
+  tags?: string[];
   authorClerkId: string;
   subjectId: string;
   likes: {
@@ -192,7 +193,43 @@ export default function SubjectPage() {
             semid={semid}
           />
         </motion.div>
-        
+          {/* Upload Card - Mobile First */}
+        <motion.div 
+          className="lg:hidden mb-8"
+          initial="hidden"
+          animate="visible"
+          variants={fadeIn}
+          custom={1}
+        >
+          <div className="bg-white border-[0.25em] border-[#264143] rounded-[0.6em] shadow-[0.3em_0.3em_0_#DE5499] p-6 relative overflow-hidden">
+            {/* Corner slice */}
+            <div className="absolute bottom-0 left-0 w-[1.2em] h-[1.2em] bg-white border-r-[0.25em] border-t-[0.25em] border-[#264143] rounded-tr-[0.5em] z-10"></div>
+            
+            {/* Decorative element */}
+            <div className="absolute top-0 right-0 w-16 h-16 bg-[#EDDCD9] transform rotate-45 translate-x-8 -translate-y-8"></div>
+            
+            <h3 className="text-xl font-bold text-[#264143] mb-2">Share Your Knowledge</h3>
+            <p className="text-[#264143]/70 mb-5">Help your peers by sharing your notes and materials for {subject.name}!</p>
+            
+            {isSignedIn ? (
+              /* Upload Notes Button that opens dialog if user is signed in */
+              <UploadNoteDialog 
+                subjectId={subject.id} 
+                googleAuthUrl={googleAuthUrl} 
+                setGoogleAuthUrl={setGoogleAuthUrl} 
+              />
+            ) : (
+              /* Sign in to upload if user is not signed in */
+              <button
+                onClick={() => router.push(`/sign-in?redirect=${encodeURIComponent(window.location.pathname)}`)}
+                className="w-full px-5 py-3 text-white font-bold bg-[#DE5499] border-[0.25em] border-[#264143] rounded-[0.4em] shadow-[0.2em_0.2em_0_#264143] hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#264143] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#264143] transition-all duration-200"
+              >
+                Sign in to Upload Notes
+              </button>
+            )}
+          </div>
+        </motion.div>
+
         {/* Main content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Notes listing */}
@@ -201,23 +238,26 @@ export default function SubjectPage() {
             initial="hidden"
             animate="visible"
             variants={fadeIn}
-            custom={1}
+            custom={2}
           >
             <NotesListing 
-              notes={subject.notes || []} 
+              notes={(subject.notes || []).map(note => ({
+                ...note,
+                tags: note.tags || [] 
+              }))}
               subjectName={subject.name}
             />
           </motion.div>
           
-          {/* Sidebar */}
+          {/* Sidebar - Desktop Only */}
           <motion.div 
-            className="space-y-6"
+            className="hidden lg:flex lg:flex-col space-y-6"
             initial="hidden"
             animate="visible"
             variants={fadeIn}
-            custom={2}
+            custom={3}
           >
-            {/* Upload Card */}
+            {/* Upload Card - Desktop */}
             <div className="bg-white border-[0.25em] border-[#264143] rounded-[0.6em] shadow-[0.3em_0.3em_0_#DE5499] p-6 relative overflow-hidden">
               {/* Corner slice */}
               <div className="absolute bottom-0 left-0 w-[1.2em] h-[1.2em] bg-white border-r-[0.25em] border-t-[0.25em] border-[#264143] rounded-tr-[0.5em] z-10"></div>
@@ -243,10 +283,9 @@ export default function SubjectPage() {
                 >
                   Sign in to Upload Notes
                 </button>
-              )}
-            </div>
+              )}            </div>
             
-            {/* Subject Info Card */}
+            {/* Subject Info Card - Desktop */}
             <div className="bg-white border-[0.25em] border-[#264143] rounded-[0.6em] shadow-[0.3em_0.3em_0_#7BB4B1] p-6 relative">
               {/* Corner slice */}
               <div className="absolute bottom-0 left-0 w-[1.2em] h-[1.2em] bg-white border-r-[0.25em] border-t-[0.25em] border-[#264143] rounded-tr-[0.5em] z-10"></div>

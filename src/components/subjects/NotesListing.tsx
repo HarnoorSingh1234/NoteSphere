@@ -93,7 +93,7 @@ const NotesListing: React.FC<NotesListingProps> = ({ notes = [], subjectName = '
           
         {/* Notes grid layout */}
         <motion.div 
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 py-4 px-4"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4 py-4 px-4"
           variants={containerVariants}
           initial="hidden"
           animate="visible"

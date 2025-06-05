@@ -18,9 +18,8 @@ export default function DocumentPreview({ driveLink, driveFileId }: DocumentPrev
           <h3 className="font-medium text-[#264143]">Attached Document</h3>
         </div>
       </div>
-      
-      {fileId ? (
-        <div className="aspect-[16/9] w-full bg-white">
+        {fileId ? (
+        <div className="w-full bg-white" style={{ height: 'min(80vh, 800px)' }}>
           <iframe 
             src={`https://drive.google.com/file/d/${fileId}/preview`}
             className="w-full h-full border-0"

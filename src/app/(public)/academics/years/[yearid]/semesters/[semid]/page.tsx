@@ -254,25 +254,24 @@ export default function SemesterPage() {
                   ))}
                 </div>
               </div>
-              
-              {/* Desktop grid layout */}
-              <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-x-6 gap-y-10">
+                {/* Desktop grid layout */}
+              <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-8 md:gap-10 lg:gap-14">
                 {academicSubjects.map((subject) => (
-                  <AcademicCardSubject
-                    key={subject.id}
-                    title={subject.title}
-                    tagText={subject.tagText}
-                    description={subject.description}
-                    features={subject.features}
-                    price={subject.price}
-                    priceDescription={subject.priceDescription}
-                    buttonText={subject.buttonText}
-                    buttonHref={subject.buttonHref}
-                    accentColor={subject.accentColor}
-                    secondaryColor={subject.secondaryColor}
-                    type={subject.type}
-                    className="mx-auto"
-                  />
+                  <div key={subject.id} className="flex justify-center">
+                    <AcademicCardSubject
+                      title={subject.title}
+                      tagText={subject.tagText}
+                      description={subject.description}
+                      features={subject.features}
+                      price={subject.price}
+                      priceDescription={subject.priceDescription}
+                      buttonText={subject.buttonText}
+                      buttonHref={subject.buttonHref}
+                      accentColor={subject.accentColor}
+                      secondaryColor={subject.secondaryColor}
+                      type={subject.type}
+                    />
+                  </div>
                 ))}
               </div>
             </div>

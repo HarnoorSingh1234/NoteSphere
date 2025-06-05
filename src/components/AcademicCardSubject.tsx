@@ -92,7 +92,7 @@ const AcademicCardSubject: React.FC<AcademicCardProps> = ({
   return (
     <div className={twMerge("relative group", className)}>
       <div 
-        className="relative w-full max-w-[280px] xs:max-w-[300px] sm:max-w-[320px] min-w-[250px] h-auto min-h-[420px] sm:min-h-[480px] bg-white border-[0.25em] sm:border-[0.35em] border-[#050505] rounded-[0.5em] sm:rounded-[0.6em] shadow-[0.5em_0.5em_0_#000,inset_0_0_0_0.15em_rgba(0,0,0,0.05)] sm:shadow-[0.7em_0.7em_0_#000,inset_0_0_0_0.15em_rgba(0,0,0,0.05)] transition-all duration-400 ease-in-out overflow-hidden font-sans origin-center m-2 sm:m-4
+        className="relative w-full max-w-[285px] xs:max-w-[300px] sm:max-w-[320px] min-w-[250px] h-auto min-h-[420px] sm:min-h-[480px] bg-white border-[0.25em] sm:border-[0.35em] border-[#050505] rounded-[0.5em] sm:rounded-[0.6em] shadow-[0.5em_0.5em_0_#000,inset_0_0_0_0.15em_rgba(0,0,0,0.05)] sm:shadow-[0.7em_0.7em_0_#000,inset_0_0_0_0.15em_rgba(0,0,0,0.05)] transition-all duration-400 ease-in-out overflow-hidden font-sans origin-center m-2 sm:m-4
             hover:translate-x-[-0.3em] hover:translate-y-[-0.3em] sm:hover:translate-x-[-0.4em] sm:hover:translate-y-[-0.4em] hover:scale-[1.01] sm:hover:scale-[1.02] hover:shadow-[0.7em_0.7em_0_#000] sm:hover:shadow-[1em_1em_0_#000]
             active:translate-x-[0.05em] active:translate-y-[0.05em] sm:active:translate-x-[0.1em] sm:active:translate-y-[0.1em] active:scale-[0.99] sm:active:scale-[0.98] active:shadow-[0.4em_0.4em_0_#000] sm:active:shadow-[0.5em_0.5em_0_#000]"
       >
@@ -118,10 +118,10 @@ const AcademicCardSubject: React.FC<AcademicCardProps> = ({
         
         {/* Card title area */}
         <div 
-          className="relative p-[1.1em] sm:p-[1.4em] text-white font-extrabold text-[1em] sm:text-[1.2em] flex flex-col gap-1 items-start border-b-[0.25em] sm:border-b-[0.35em] border-b-[#050505] uppercase tracking-[0.05em] z-20 min-w-[300px] sm:min-w-[350px] overflow-visible"
+          className="relative p-[1em] sm:p-[1.4em] text-white font-extrabold text-[1em] sm:text-[1.1em] flex flex-col gap-1 items-start border-b-[0.25em] sm:border-b-[0.35em] border-b-[#050505]  uppercase tracking-[0.05em] z-20 min-w-[300px] sm:min-w-[350px] overflow-visible"
           style={{ backgroundColor: primaryColor }}
         >
-          <span className="bg-white text-[#050505] text-[0.5em] sm:text-[0.6em] font-extrabold py-[0.3em] sm:py-[0.4em] px-[0.6em] sm:px-[0.8em] border-[0.12em] sm:border-[0.15em] border-[#050505] rounded-[0.3em] shadow-[0.15em_0.15em_0_#000] sm:shadow-[0.2em_0.2em_0_#000] uppercase tracking-[0.1em] rotate-3 transition-all duration-300 shrink-0 relative z-10">
+          <span className="bg-white text-[#050505] text-[0.5em] sm:text-[0.6em] font-extrabold m-0 py-[0.3em] sm:py-[0.4em] px-[0.6em] sm:px-[0.8em] border-[0.12em] sm:border-[0.15em] border-[#050505] rounded-[0.3em] shadow-[0.15em_0.15em_0_#000] sm:shadow-[0.2em_0.2em_0_#000] uppercase tracking-[0.1em] rotate-3 transition-all duration-300 shrink-0 relative z-10">
             {tagText}
           </span>
           <div className="min-w-0">
