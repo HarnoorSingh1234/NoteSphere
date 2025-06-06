@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { auth, clerkClient } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 
@@ -119,8 +119,7 @@ export async function PUT(req: Request) {
         return new NextResponse("Student ID already in use", { status: 400 });
       }
     }
-    
-    // Create or update user profile
+      // Create or update user profile
     const updatedProfile = await prisma.userProfile.upsert({
       where: {
         clerkId: userId
@@ -143,6 +142,44 @@ export async function PUT(req: Request) {
         visibility: visibility !== undefined ? visibility : undefined,
       }
     });
+
+    // Update Clerk's public metadata with year and semester information for performance optimization
+    let yearNumber = null;
+    let semesterNumber = null;
+    
+    if (yearId) {
+      const year = await prisma.year.findUnique({
+        where: { id: yearId }
+      });
+      if (year) {
+        yearNumber = year.number;
+      }
+    }
+    
+    if (semesterId) {
+      const semester = await prisma.semester.findUnique({
+        where: { id: semesterId }
+      });
+      if (semester) {
+        semesterNumber = semester.number;
+      }
+    }
+    
+    // Update Clerk user's public metadata with year/semester data
+    try {
+      const client = await clerkClient();
+      await client.users.updateUserMetadata(userId, {
+        publicMetadata: {
+          yearNumber,
+          semesterNumber,
+          yearId,
+          semesterId
+        }
+      });
+    } catch (clerkError) {
+      console.error('Failed to update Clerk metadata:', clerkError);
+      // Don't fail the entire request if Clerk metadata update fails
+    }
     
     revalidatePath('/profile/details');
     return NextResponse.json(updatedProfile);

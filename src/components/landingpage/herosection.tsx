@@ -20,39 +20,38 @@ export default function HeroSection() {
   // Track if the component is mounted to prevent hydration issues
   const [isMounted, setIsMounted] = useState(false);
   // Get the user and isLoaded state from Clerk
-  const { user, isLoaded } = useUser();
-  // State for user profile data
+  const { user, isLoaded } = useUser();  // State for user profile data
   const [profileData, setProfileData] = useState<UserProfileData | null>(null);
-  const [loadingProfile, setLoadingProfile] = useState(false);
+  const [loadingProfile, setLoadingProfile] = useState(true);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
-
-  // Fetch the user profile data when user is loaded
+  // Extract year/semester data from Clerk metadata when user is loaded
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      if (!user) return;
-      
-      setLoadingProfile(true);
-      try {
-        const response = await fetch('/api/users/profile');
-        
-        if (response.ok) {
-          const data = await response.json();
-          setProfileData(data);
-        } else {
-          console.error('Failed to fetch user profile');
-        }
-      } catch (error) {
-        console.error('Error fetching user profile:', error);
-      } finally {
-        setLoadingProfile(false);
-      }
-    };
-
     if (isLoaded && user) {
-      fetchUserProfile();
+      const metadata = user.publicMetadata;
+      
+      // Extract year/semester data from Clerk's public metadata
+      const yearId = metadata.yearId as string || null;
+      const semesterId = metadata.semesterId as string || null;
+      const yearNumber = metadata.yearNumber as number || null;
+      const semesterNumber = metadata.semesterNumber as number || null;
+      
+      // Set profile data from metadata
+      setProfileData({
+        id: user.id,
+        yearId,
+        semesterId,
+        yearNumber,
+        semesterNumber
+      });
+      
+      setLoadingProfile(false);
+    } else if (isLoaded && !user) {
+      // Clear profile data if no user
+      setProfileData(null);
+      setLoadingProfile(false);
     }
   }, [isLoaded, user]);
 
