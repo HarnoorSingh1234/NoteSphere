@@ -324,9 +324,7 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
                       Connect Google Drive
                     </button>
                   </motion.div>
-                )}
-                
-                {/* Success Message */}
+                )}                  {/* Success Message */}
                 <AnimatePresence>
                   {success && (
                     <motion.div 
@@ -343,6 +341,23 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
                     </motion.div>
                   )}
                 </AnimatePresence>
+                
+                {/* Publication Notice */}
+                <motion.div 
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="p-4 bg-white border-[0.15em] border-[#E99F4C] rounded-[0.4em] shadow-[0.2em_0.2em_0_rgba(0,0,0,0.05)] flex items-start"
+                >
+                  <div className="bg-[#E99F4C]/20 p-1.5 rounded-full mr-3 mt-0.5">
+                    <FileText className="text-[#E99F4C]" size={16} />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-[#264143]">Note Publication</h4>
+                    <p className="text-sm text-[#264143]/80">
+                      Your note will be published immediately after verification by Admin and available to other students.
+                    </p>
+                  </div>
+                </motion.div>
                 
                 {/* Error Message */}
                 <AnimatePresence>

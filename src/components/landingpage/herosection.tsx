@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Sparkles, BookOpen, NotebookPen, Calendar } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { ArrowRight, Sparkles, BookOpen, NotebookPen, Calendar, Info, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { CanvasBackground } from './canvasbackground';
 import { useUser } from '@clerk/nextjs';
 
@@ -23,10 +23,12 @@ export default function HeroSection() {
   const { user, isLoaded } = useUser();  // State for user profile data
   const [profileData, setProfileData] = useState<UserProfileData | null>(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
-
+  const [showLoginTip, setShowLoginTip] = useState(false);
+  const [showProfileTip, setShowProfileTip] = useState(false);
   useEffect(() => {
     setIsMounted(true);
   }, []);
+  
   // Extract year/semester data from Clerk metadata when user is loaded
   useEffect(() => {
     if (isLoaded && user) {
@@ -48,10 +50,26 @@ export default function HeroSection() {
       });
       
       setLoadingProfile(false);
+      
+      // Show profile tip if user is logged in but doesn't have year/semester data
+      if (!yearId || !semesterId) {
+        setShowProfileTip(true);
+        // Auto-hide after 8 seconds
+        setTimeout(() => {
+          setShowProfileTip(false);
+        }, 8000);
+      }
     } else if (isLoaded && !user) {
       // Clear profile data if no user
       setProfileData(null);
       setLoadingProfile(false);
+      
+      // Show login tip for non-logged-in users
+      setShowLoginTip(true);
+      // Auto-hide after 8 seconds
+      setTimeout(() => {
+        setShowLoginTip(false);
+      }, 8000);
     }
   }, [isLoaded, user]);
 
@@ -194,9 +212,66 @@ export default function HeroSection() {
           </motion.div>
         </div>
       </motion.section>
-      
-      {/* Corner slice to match navbar */}
+        {/* Corner slice to match navbar */}
       <div className="absolute bottom-0 left-0 w-[2.5em] h-[2.5em] bg-white border-r-[0.25em] border-t-[0.25em] border-[#264143] rounded-tr-[0.8em] z-[3]" />
+      
+      {/* Popup Tips */}
+      <AnimatePresence>
+        {showLoginTip && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.9 }}
+            transition={{ duration: 0.3 }}
+            className="absolute right-4 bottom-4 max-w-xs bg-white border-[0.15em] border-[#264143] rounded-[0.5em] p-3 shadow-[0.25em_0.25em_0_#E99F4C] z-20"
+          >
+            <div className="flex items-start justify-between">
+              <div className="flex items-center gap-2">
+                <div className="p-1 bg-[#EDDCD9] rounded-full">
+                  <Info className="w-4 h-4 text-[#264143]" />
+                </div>
+                <p className="text-sm text-[#264143] font-medium">Sign in to interact with others and save your preferences!</p>
+              </div>
+              <button 
+                onClick={() => setShowLoginTip(false)}
+                className="p-1 text-[#264143]/60 hover:text-[#264143]"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </motion.div>
+        )}
+        
+        {showProfileTip && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.9 }}
+            transition={{ duration: 0.3 }}
+            className="absolute right-4 bottom-4 max-w-xs bg-white border-[0.15em] border-[#264143] rounded-[0.5em] p-3 shadow-[0.25em_0.25em_0_#DE5499] z-20"
+          >
+            <div className="flex items-start justify-between">
+              <div className="flex items-center gap-2">
+                <div className="p-1 bg-[#EDDCD9] rounded-full">
+                  <Info className="w-4 h-4 text-[#264143]" />
+                </div>
+                <p className="text-sm text-[#264143] font-medium">Add your year and semester details in your profile for quick access!</p>
+              </div>
+              <button 
+                onClick={() => setShowProfileTip(false)}
+                className="p-1 text-[#264143]/60 hover:text-[#264143]"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="mt-2 ml-7">
+              <Link href="/profile/details" className="text-xs text-[#DE5499] hover:underline">
+                Go to profile settings →
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
