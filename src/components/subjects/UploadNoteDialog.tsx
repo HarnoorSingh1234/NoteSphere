@@ -28,7 +28,9 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
   const [success, setSuccess] = useState(false);
   const [tags, setTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState('');
-
+  // Sample tags for quick selection
+  const sampleTags = ['MST', 'SEC A', 'SEC B', 'SEC C', 'SEC D'];
+  
   // Handle file selection
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -56,6 +58,13 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
 
   const handleRemoveTag = (tagToRemove: string) => {
     setTags(tags.filter(tag => tag !== tagToRemove));
+  };
+  
+  // Add a sample tag to the current tags list
+  const addSampleTag = (tag: string) => {
+    if (!tags.includes(tag)) {
+      setTags([...tags, tag]);
+    }
   };
   
   // Connect to Google account when user clicks the connect button
@@ -408,7 +417,29 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
                           </button>
                         </motion.div>
                       ))}
-                    </div>
+                    </div>     
+                         {/* Sample Tags */}
+                    <div className="mt-4">
+                      <p className="text-sm text-[#264143]/70 mb-2">Suggested tags:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {sampleTags.map((tag) => (
+                          <motion.button
+                            key={tag}
+                            onClick={() => addSampleTag(tag)}
+                            disabled={tags.includes(tag) || uploadingFile}
+                            className={`px-2 py-1 text-xs rounded-full transition-all duration-200 border-[0.1em] ${
+                              tags.includes(tag)
+                                ? 'bg-[#EDDCD9]/50 text-[#264143]/50 border-[#264143]/20 cursor-not-allowed'
+                                : 'bg-[#EDDCD9]/80 text-[#264143] border-[#264143]/30 hover:border-[#264143] hover:bg-[#EDDCD9]'
+                            }`}
+                            whileHover={!tags.includes(tag) ? { scale: 1.05 } : {}}
+                            whileTap={!tags.includes(tag) ? { scale: 0.95 } : {}}
+                          >
+                            {tag}
+                          </motion.button>
+                        ))}
+                      </div>
+                    </div>               
                     <div className="flex">
                       <input
                         type="text"
@@ -426,6 +457,8 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
                         <Plus size={18} />
                       </button>
                     </div>
+
+               
                   </div>
                   
                   {/* Note Type Selector */}
