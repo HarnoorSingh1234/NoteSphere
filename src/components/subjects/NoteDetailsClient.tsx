@@ -3,6 +3,7 @@
 import React from 'react';
 import { ThumbsUp, Clock, User as UserIcon, Download, MessageCircle } from 'lucide-react';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { Note as PrismaNote, User as PrismaUser, Subject as PrismaSubject, Semester as PrismaSemester, Year as PrismaYear, NoteType } from '@prisma/client';
 import DownloadButton from '@/components/subjects/DownloadButton';
 import DocumentViewer from '@/components/notes/DocumentViewer';
@@ -51,10 +52,11 @@ export default function NoteDetails({ note, color, bgColor }: NoteDetailsProps) 
               <div>
                 <h1 className="text-2xl md:text-3xl font-bold text-[#264143] mb-3 break-words">{note.title}</h1>
                 
-                <div className="flex flex-wrap items-center gap-3 text-sm text-[#264143]">
-                  <div className="flex items-center gap-2 bg-[#EDDCD9]/40 px-3 py-1 rounded-full border-[0.1em] border-[#264143]/20">
+                <div className="flex flex-wrap items-center gap-3 text-sm text-[#264143]">                  <div className="flex items-center gap-2 bg-[#EDDCD9]/40 px-3 py-1 rounded-full border-[0.1em] border-[#264143]/20 hover:bg-[#EDDCD9]/60 transition-colors">
                     <UserIcon className="w-4 h-4" />
-                    <span className="font-medium">{note.author.firstName} {note.author.lastName}</span>
+                    <Link href={`/author/${note.author.clerkId}`} className="font-medium hover:underline">
+                      {note.author.firstName} {note.author.lastName}
+                    </Link>
                   </div>
                   <div className="flex items-center gap-2 bg-[#EDDCD9]/40 px-3 py-1 rounded-full border-[0.1em] border-[#264143]/20">
                     <Clock className="w-4 h-4" />

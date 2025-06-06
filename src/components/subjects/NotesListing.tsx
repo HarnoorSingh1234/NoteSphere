@@ -9,9 +9,14 @@ import { motion } from 'framer-motion';
 interface NotesListingProps {
   notes: Note[];
   subjectName: string;
+  columnCount?: 2 | 3;
 }
 
-const NotesListing: React.FC<NotesListingProps> = ({ notes = [], subjectName = 'this subject' }) => {
+const NotesListing: React.FC<NotesListingProps> = ({ 
+  notes = [], 
+  subjectName = 'this subject',
+  columnCount = 2
+}) => {
   const [activeTab, setActiveTab] = React.useState('all');
   
   // Make sure notes is an array to avoid errors
@@ -89,11 +94,11 @@ const NotesListing: React.FC<NotesListingProps> = ({ notes = [], subjectName = '
               {tab === 'all' ? 'All' : tab.charAt(0).toUpperCase() + tab.slice(1)}
             </motion.button>
           ))}
-        </div>
-          
-        {/* Notes grid layout */}
+        </div>        {/* Notes grid layout */}
         <motion.div 
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4 py-4 px-4"
+          className={`grid grid-cols-1 sm:grid-cols-2 ${
+            columnCount === 3 ? 'lg:grid-cols-3 xl:grid-cols-3' : 'lg:grid-cols-2 xl:grid-cols-2'
+          } gap-4 py-4 px-4`}
           variants={containerVariants}
           initial="hidden"
           animate="visible"
