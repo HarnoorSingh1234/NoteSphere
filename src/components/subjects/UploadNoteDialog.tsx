@@ -80,18 +80,21 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
     // Prevent scrolling on the body when dialog is open
     document.body.style.overflow = 'hidden';
   };
-  
-  const closeDialog = () => {
+    const closeDialog = () => {
     if (!uploadingFile) {
       setIsOpen(false);
       // Re-enable scrolling when dialog closes
       document.body.style.overflow = 'auto';
       setTimeout(() => {
+        // Reset all form fields and state
         setError(null);
         setSuccess(false);
+        setSelectedFile(null);
+        setNoteTitle('');
+        setNoteContent('');
         setTags([]);
         setNewTag('');
-        setNoteContent('');
+        setUploadProgress(0);
       }, 300);
     }
   };
@@ -291,16 +294,18 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
               {/* Corner slice */}
               <div className="absolute bottom-0 left-0 w-[1.2em] h-[1.2em] bg-[#F9F5F2] border-r-[0.25em] border-t-[0.25em] border-[#264143] rounded-tr-[0.5em] z-10"></div>
               
-              {/* Header */}
-              <div className="border-b-[0.25em] border-[#264143] p-4 flex justify-between items-center bg-[#DE5499] text-white">
+              {/* Header */}              <div className="border-b-[0.25em] border-[#264143] p-4 flex justify-between items-center bg-[#DE5499] text-white">
                 <h2 className="text-xl font-bold">Share Your Knowledge</h2>
                 {!uploadingFile && (
-                  <button 
+                  <motion.button 
                     onClick={closeDialog}
                     className="w-8 h-8 rounded-full hover:bg-white/20 flex items-center justify-center transition-colors"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    aria-label="Close dialog"
                   >
                     <X size={20} />
-                  </button>
+                  </motion.button>
                 )}
               </div>
               
@@ -411,8 +416,7 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
                     <label className="text-[#264143] font-medium flex items-center">
                       <Tag className="w-4 h-4 mr-1" />
                       Tags
-                    </label>
-                    <div className="flex flex-wrap gap-2 mb-2">
+                    </label>                    <div className="flex flex-wrap gap-2 mb-2">
                       {tags.map((tag) => (
                         <motion.div 
                           key={tag} 
@@ -432,7 +436,7 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
                           </button>
                         </motion.div>
                       ))}
-                    </div>     
+                    </div>
                          {/* Sample Tags */}
                     <div className="mt-4">
                       <p className="text-sm text-[#264143]/70 mb-2">Suggested tags:</p>
@@ -558,11 +562,11 @@ const UploadNoteDialog: React.FC<UploadNoteProps> = ({ subjectId, googleAuthUrl,
                 </div>
               </div>
 
-              {/* Footer */}
-              <div className="border-t-[0.25em] border-[#264143] p-4 flex justify-end gap-2 bg-white">
+              {/* Footer */}              <div className="border-t-[0.25em] border-[#264143] p-4 flex justify-end gap-2 bg-white">
                 {!uploadingFile && !success && (
                   <motion.button 
                     onClick={closeDialog}
+                    type="button"
                     className="px-4 py-2 text-[#264143] font-bold bg-white border-[0.25em] border-[#264143] rounded-[0.4em] shadow-[0.2em_0.2em_0_#E99F4C] hover:translate-y-[-0.1em] hover:shadow-[0.3em_0.3em_0_#E99F4C] active:translate-y-[0.05em] active:shadow-[0.1em_0.1em_0_#E99F4C] transition-all duration-200"
                     whileHover={{ y: -2 }}
                     whileTap={{ y: 1 }}

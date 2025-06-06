@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { Note as PrismaNote, User as PrismaUser, Subject as PrismaSubject, Semester as PrismaSemester, Year as PrismaYear, NoteType } from '@prisma/client';
 import DownloadButton from '@/components/subjects/DownloadButton';
+import ShareButton from '@/components/subjects/ShareButton';
 import DocumentViewer from '@/components/notes/DocumentViewer';
 import { motion } from 'framer-motion';
 import AdminControlsWrapper from '@/components/admin/AdminControlsWrapper';
@@ -151,15 +152,24 @@ export default function NoteDetails({ note, color, bgColor }: NoteDetailsProps) 
                 )}
               </div>
             </div>
-            
-            {/* Download Button */}
-            <motion.div 
-              className="flex justify-center"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-            >
-              <DownloadButton noteId={note.id} />
-            </motion.div>
+              {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
+              <motion.div 
+                className="flex-1"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                <DownloadButton noteId={note.id} />
+              </motion.div>
+              
+              <motion.div
+                className="flex-1"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                <ShareButton noteId={note.id} noteTitle={note.title} />
+              </motion.div>
+            </div>
           </div>
         </div>
       </div>
