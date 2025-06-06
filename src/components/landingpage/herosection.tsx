@@ -25,6 +25,7 @@ export default function HeroSection() {
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [showLoginTip, setShowLoginTip] = useState(false);
   const [showProfileTip, setShowProfileTip] = useState(false);
+  const [showFeedbackTip, setShowFeedbackTip] = useState(false);
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -50,26 +51,41 @@ export default function HeroSection() {
       });
       
       setLoadingProfile(false);
-      
-      // Show profile tip if user is logged in but doesn't have year/semester data
+        // Show profile tip or feedback tip if user is logged in but doesn't have year/semester data
       if (!yearId || !semesterId) {
-        setShowProfileTip(true);
-        // Auto-hide after 8 seconds
-        setTimeout(() => {
-          setShowProfileTip(false);
-        }, 8000);
-      }
-    } else if (isLoaded && !user) {
+        // Randomly decide which tip to show
+        const tipSelector = Math.random();
+        if (tipSelector < 0.7) {  // 70% chance to show profile tip
+          setShowProfileTip(true);
+          // Auto-hide after 8 seconds
+          setTimeout(() => {
+            setShowProfileTip(false);
+          }, 8000);
+        } else {  // 30% chance to show feedback tip
+          setShowFeedbackTip(true);
+          setTimeout(() => {
+            setShowFeedbackTip(false);
+          }, 8000);
+        }
+      }} else if (isLoaded && !user) {
       // Clear profile data if no user
       setProfileData(null);
       setLoadingProfile(false);
       
-      // Show login tip for non-logged-in users
-      setShowLoginTip(true);
-      // Auto-hide after 8 seconds
-      setTimeout(() => {
-        setShowLoginTip(false);
-      }, 8000);
+      // Randomly decide which tip to show
+      const tipSelector = Math.random();
+      if (tipSelector < 0.7) {  // 70% chance to show login tip for non-logged users
+        setShowLoginTip(true);
+        // Auto-hide after 8 seconds
+        setTimeout(() => {
+          setShowLoginTip(false);
+        }, 8000);
+      } else {  // 30% chance to show feedback tip
+        setShowFeedbackTip(true);
+        setTimeout(() => {
+          setShowFeedbackTip(false);
+        }, 8000);
+      }
     }
   }, [isLoaded, user]);
 
@@ -212,11 +228,11 @@ export default function HeroSection() {
           </motion.div>
         </div>
       </motion.section>
-        {/* Corner slice to match navbar */}
+      {/* Corner slice to match navbar */}
+
       <div className="absolute bottom-0 left-0 w-[2.5em] h-[2.5em] bg-white border-r-[0.25em] border-t-[0.25em] border-[#264143] rounded-tr-[0.8em] z-[3]" />
       
-      {/* Popup Tips */}
-      <AnimatePresence>
+      {/* Popup Tips */}        <AnimatePresence>
         {showLoginTip && (
           <motion.div 
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
@@ -267,6 +283,36 @@ export default function HeroSection() {
             <div className="mt-2 ml-7">
               <Link href="/profile/details" className="text-xs text-[#DE5499] hover:underline">
                 Go to profile settings →
+              </Link>
+            </div>
+          </motion.div>
+        )}
+        
+        {showFeedbackTip && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.9 }}
+            transition={{ duration: 0.3 }}
+            className="absolute right-4 bottom-4 max-w-xs bg-white border-[0.15em] border-[#264143] rounded-[0.5em] p-3 shadow-[0.25em_0.25em_0_#E99F4C] z-20"
+          >
+            <div className="flex items-start justify-between">
+              <div className="flex items-center gap-2">
+                <div className="p-1 bg-[#EDDCD9] rounded-full">
+                  <Info className="w-4 h-4 text-[#264143]" />
+                </div>
+                <p className="text-sm text-[#264143] font-medium">We'd love to hear your feedback about NoteSphere!</p>
+              </div>
+              <button 
+                onClick={() => setShowFeedbackTip(false)}
+                className="p-1 text-[#264143]/60 hover:text-[#264143]"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="mt-2 ml-7">
+              <Link href="/feedback" className="text-xs text-[#DE5499] hover:underline">
+                Give Feedback 😃
               </Link>
             </div>
           </motion.div>
