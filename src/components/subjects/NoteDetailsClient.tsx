@@ -8,6 +8,7 @@ import { Note as PrismaNote, User as PrismaUser, Subject as PrismaSubject, Semes
 import DownloadButton from '@/components/subjects/DownloadButton';
 import DocumentViewer from '@/components/notes/DocumentViewer';
 import { motion } from 'framer-motion';
+import AdminControlsWrapper from '@/components/admin/AdminControlsWrapper';
 
 const LikeButton = dynamic(() => import('@/components/subjects/LikeButton'), { ssr: false });
 const CommentSection = dynamic(() => import('@/components/subjects/CommentSection'), { ssr: false });
@@ -51,13 +52,16 @@ export default function NoteDetails({ note, color, bgColor }: NoteDetailsProps) 
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div>
                 <h1 className="text-2xl md:text-3xl font-bold text-[#264143] mb-3 break-words">{note.title}</h1>
-                
-                <div className="flex flex-wrap items-center gap-3 text-sm text-[#264143]">                  <div className="flex items-center gap-2 bg-[#EDDCD9]/40 px-3 py-1 rounded-full border-[0.1em] border-[#264143]/20 hover:bg-[#EDDCD9]/60 transition-colors">
-                    <UserIcon className="w-4 h-4" />
-                    <Link href={`/author/${note.author.clerkId}`} className="font-medium hover:underline">
-                      {note.author.firstName} {note.author.lastName}
-                    </Link>
-                  </div>
+                  <div className="flex flex-wrap items-center gap-3 text-sm text-[#264143]">
+                  <Link href={`/author/${note.author.clerkId}`} className="block">
+                    <div className="flex items-center gap-2 bg-[#EDDCD9]/40 px-3 py-1 rounded-full border-[0.1em] border-[#264143]/20 hover:bg-[#EDDCD9]/60 transition-colors">
+                      <UserIcon className="w-4 h-4" />
+                      <span className="font-medium hover:underline">
+                        {note.author.firstName} {note.author.lastName}
+                      </span>
+                    </div>
+                  </Link>
+                  
                   <div className="flex items-center gap-2 bg-[#EDDCD9]/40 px-3 py-1 rounded-full border-[0.1em] border-[#264143]/20">
                     <Clock className="w-4 h-4" />
                     <span className="font-medium">{new Date(note.createdAt).toLocaleDateString()}</span>
@@ -122,14 +126,29 @@ export default function NoteDetails({ note, color, bgColor }: NoteDetailsProps) 
                   <span className="text-sm font-medium text-[#264143]">{note.downloadCount} downloads</span>
                 </div>
               </div>
-              
-              <div className="bg-[#EDDCD9]/30 border-[0.15em] border-[#264143] rounded-[0.4em] p-4 shadow-[0.2em_0.2em_0_#7BB4B1]">
+                <div className="bg-[#EDDCD9]/30 border-[0.15em] border-[#264143] rounded-[0.4em] p-4 shadow-[0.2em_0.2em_0_#7BB4B1]">
                 <div className="text-sm text-[#264143] mb-1">
                   <span className="font-medium">Subject:</span> <span className="font-semibold">{note.subject?.name} ({note.subject?.code})</span>
                 </div>
-                <div className="text-sm text-[#264143]">
+                <div className="text-sm text-[#264143] mb-2">
                   <span className="font-medium">Academic:</span> Year {note.subject?.semester?.year?.number}, Semester {note.subject?.semester?.number}
                 </div>
+                
+                {note.tags && note.tags.length > 0 && (
+                  <div>
+                    <div className="text-xs text-[#264143]/70 mb-1">Tags:</div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {note.tags.map((tag: string, index: number) => (
+                        <span
+                          key={`tag-${index}-${tag}`}
+                          className="px-2 py-0.5 text-xs font-medium bg-[#EDDCD9] text-[#264143] border-[0.1em] border-[#264143]/20 rounded-full hover:bg-[#E99F4C]/30 transition-colors"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
             
@@ -144,6 +163,8 @@ export default function NoteDetails({ note, color, bgColor }: NoteDetailsProps) 
           </div>
         </div>
       </div>
+        {/* Admin Controls */}
+      <AdminControlsWrapper noteId={note.id} />
       
       {/* Comment Section */}
       <div className="mt-6 md:mt-8 bg-white border-[0.25em] border-[#264143] rounded-[0.6em] shadow-[0.4em_0.4em_0_#E99F4C] p-5 md:p-6 relative overflow-hidden">

@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth, useUser } from '@clerk/nextjs';
-import { Send } from 'lucide-react';
+import { Send, Edit, Trash2, Check, X } from 'lucide-react';
 import Link from 'next/link';
 import { formatTimeAgo } from '@/lib/date-utils';
 
@@ -14,6 +14,7 @@ interface Comment {
     firstName: string;
     lastName: string;
     clerkId: string;
+    role?: string;
   };
 }
 
@@ -28,6 +29,10 @@ export default function CommentSection({ noteId, className = '' }: CommentSectio
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+  const [editContent, setEditContent] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+  const editInputRef = useRef<HTMLInputElement>(null);
   const { userId, isSignedIn } = useAuth();
   const { user } = useUser();
   
@@ -56,7 +61,6 @@ export default function CommentSection({ noteId, className = '' }: CommentSectio
       fetchComments();
     }
   }, [noteId]);
-
   const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -88,7 +92,79 @@ export default function CommentSection({ noteId, className = '' }: CommentSectio
     } finally {
       setIsSubmitting(false);
     }
-  };  return (
+  };
+
+  const handleDeleteComment = async (commentId: string) => {
+    if (!confirm('Are you sure you want to delete this comment?')) return;
+    
+    try {
+      const response = await fetch(`/api/notes/${noteId}/comments/${commentId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setComments(prevComments => prevComments.filter(comment => comment.id !== commentId));
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to delete comment');
+      }
+    } catch (error) {
+      console.error('Failed to delete comment:', error);
+      alert('Failed to delete comment. Please try again.');
+    }
+  };
+
+  const startEditingComment = (comment: Comment) => {
+    setEditingCommentId(comment.id);
+    setEditContent(comment.content);
+    setIsEditing(true);
+    setTimeout(() => {
+      if (editInputRef.current) {
+        editInputRef.current.focus();
+      }
+    }, 10);
+  };
+
+  const cancelEditingComment = () => {
+    setEditingCommentId(null);
+    setEditContent('');
+    setIsEditing(false);
+  };
+
+  const handleUpdateComment = async (commentId: string) => {
+    if (!editContent.trim()) return;
+    
+    setIsEditing(true);
+    
+    try {
+      const response = await fetch(`/api/notes/${noteId}/comments/${commentId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ content: editContent }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setComments(prevComments => 
+          prevComments.map(comment => 
+            comment.id === commentId ? data.comment : comment
+          )
+        );
+        setEditingCommentId(null);
+        setEditContent('');
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to update comment');
+      }
+    } catch (error) {
+      console.error('Failed to update comment:', error);
+      alert('Failed to update comment. Please try again.');
+    } finally {
+      setIsEditing(false);
+    }
+  };return (
     <div className={`bg-white rounded-[0.6em] border-[0.15em] border-[#264143] p-5 ${className}`} id="comments">
       <h3 className="font-bold text-lg md:text-xl text-[#264143] mb-4">Comments</h3>
       
@@ -125,10 +201,10 @@ export default function CommentSection({ noteId, className = '' }: CommentSectio
       )}{isLoading ? (
         <div className="flex justify-center py-4 md:py-6">
           <div className="w-8 h-8 md:w-10 md:h-10 border-3 md:border-4 border-[#4d61ff] rounded-full border-t-transparent animate-spin"></div>
-        </div>
-      ) : comments.length > 0 ? (
+        </div>      ) : comments.length > 0 ? (
         <ul className="space-y-3 md:space-y-5">
-          {comments.map((comment) => (            <li key={comment.id} className="border-[0.1em] border-[#050505]/20 rounded-[0.4em] p-3 md:p-4 bg-[#F8F9FA] last:mb-0">
+          {comments.map((comment) => (
+            <li key={comment.id} className="border-[0.1em] border-[#050505]/20 rounded-[0.4em] p-3 md:p-4 bg-[#F8F9FA] last:mb-0">
               <div className="flex items-center justify-between gap-1 mb-3">
                 <div className="flex items-center gap-2">
                   {/* Use a generic avatar with initials if we don't have a Clerk user object */}
@@ -137,13 +213,63 @@ export default function CommentSection({ noteId, className = '' }: CommentSectio
                   </div>
                   <div className="font-bold text-sm md:text-base text-[#050505]">
                     {comment.user?.firstName} {comment.user?.lastName}
+                    {comment.user?.role === 'ADMIN' && (
+                      <span className="ml-2 px-1.5 py-0.5 text-[10px] font-medium bg-[#DE5499] text-white rounded">Admin</span>
+                    )}
                   </div>
                 </div>
-                <div className="text-[10px] md:text-xs font-medium text-[#050505]/50">
-                  {formatTimeAgo(comment.createdAt)}
+                <div className="flex items-center gap-2">
+                 
+                  
+                  {isSignedIn && (userId === comment.user.clerkId || user?.publicMetadata?.role === 'admin') && (
+                    <div className="flex gap-1">
+                      {userId === comment.user.clerkId && (
+                        <button 
+                          onClick={() => startEditingComment(comment)}
+                          className="p-1 text-[#4d61ff] hover:text-[#264143] transition-colors"
+                          aria-label="Edit comment"
+                        >
+                          <Edit className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                      <button 
+                        onClick={() => handleDeleteComment(comment.id)}
+                        className="p-1 text-[#DE5499] hover:text-[#c64a86] transition-colors"
+                        aria-label="Delete comment"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
-              <p className="text-sm md:text-base text-[#050505]/80 break-words">{comment.content}</p>
+              
+              {editingCommentId === comment.id ? (
+                <div className="flex gap-2">
+                  <input
+                    ref={editInputRef}
+                    type="text"
+                    value={editContent}
+                    onChange={(e) => setEditContent(e.target.value)}
+                    className="flex-1 px-3 py-2 text-sm border-[0.1em] border-[#264143] rounded-[0.3em] focus:outline-none focus:ring-1 focus:border-[#4d61ff]"
+                  />
+                  <button
+                    onClick={() => handleUpdateComment(comment.id)}
+                    disabled={isEditing || !editContent.trim()}
+                    className="p-2 bg-[#4d61ff] text-white rounded-[0.3em] hover:bg-[#3d4ecc] disabled:opacity-50"
+                  >
+                    <Check className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={cancelEditingComment}
+                    className="p-2 bg-[#DE5499] text-white rounded-[0.3em] hover:bg-[#c64a86]"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                <p className="text-sm md:text-base text-[#050505]/80 break-words">{comment.content}</p>
+              )}
             </li>
           ))}
         </ul>
