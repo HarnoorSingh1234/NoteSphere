@@ -25,7 +25,7 @@ export interface Note {
   updatedAt: Date;
   authorId: string;
   subjectId: string;
-  tags?: string[];
+  tags: string[];
   author: {
     firstName: string;
     lastName: string;

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { MessageCircle,   FileText, Download , Clock, User, FileSymlink } from 'lucide-react';
+import { MessageCircle, FileText, Download, Clock, User, FileSymlink, Tag } from 'lucide-react';
 import Link from 'next/link';
 import LikeButton from './LikeButton';
 import { NoteType } from '@prisma/client';
@@ -20,6 +20,7 @@ export interface Note {
   updatedAt: string;
   authorClerkId: string;
   subjectId: string;
+  tags?: string[];
   likes: {
     userId: string;
   }[];
@@ -69,39 +70,58 @@ const NoteCard: React.FC<NoteCardProps> = ({ note }) => {
   return (
     <div className="bg-white/95 backdrop-blur-sm border-[0.15em] border-[#264143] rounded-[0.8em] shadow-[0.2em_0.2em_0_#E99F4C] p-4 hover:translate-y-[-0.1em] hover:shadow-[0.25em_0.25em_0_#E99F4C] transition-all duration-200 h-full flex flex-col">
       {/* Card Header with Type Badge */}
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-3 flex-1 min-w-0">
-          <div 
-            style={{ backgroundColor: bgColor.replace('/', ' / '), borderColor: color }} 
-            className="flex items-center justify-center w-10 h-10 rounded-lg border-[0.15em] flex-shrink-0"
-          >
-            <FileText style={{ color: color }} className="w-5 h-5" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <h3 className="font-bold text-[#264143] text-base line-clamp-2 leading-tight mb-2">
-              {note.title || 'Untitled Note'}
-            </h3>
-            <div className="flex items-center gap-1 text-sm text-[#264143]/80">
-              <User className="w-4 h-4 flex-shrink-0" />
-              <span className="truncate">
-                {note.author ? 
-                  `${note.author.firstName || ''} ${note.author.lastName || ''}`.trim() || 'Anonymous' 
-                  : 'Anonymous'}
-              </span>
+      <Link 
+          href={`/notes/${note.id}`}
+          
+        >
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center gap-3 flex-1 min-w-0">
+            <div 
+              style={{ backgroundColor: bgColor.replace('/', ' / '), borderColor: color }} 
+              className="flex items-center justify-center w-10 h-10 rounded-lg border-[0.15em] flex-shrink-0"
+            >
+              <FileText style={{ color: color }} className="w-5 h-5" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h3 className="font-bold text-[#264143] text-base line-clamp-2 leading-tight mb-2">
+                {note.title || 'Untitled Note'}
+              </h3>
+              <div className="flex items-center gap-1 text-sm text-[#264143]/80">
+                <User className="w-4 h-4 flex-shrink-0" />
+                <span className="truncate">
+                  {note.author ? 
+                    `${note.author.firstName || ''} ${note.author.lastName || ''}`.trim() || 'Anonymous' 
+                    : 'Anonymous'}
+                </span>
+              </div>
             </div>
           </div>
-        </div>
-        <div 
-          className="inline-flex items-center px-3 py-1 border-[0.15em] border-[#264143] rounded-full text-sm font-semibold flex-shrink-0" 
-          style={{ backgroundColor: bgColor.replace('/', ' / ') }}
-        >
-          <span style={{ color: '#264143' }} className="text-sm">
-            {note.type?.slice(0, 3) || 'OTH'}
-          </span>
-        </div>
-      </div>
-
-   
+          <div 
+            className="inline-flex items-center px-3 py-1 border-[0.15em] border-[#264143] rounded-full text-sm font-semibold flex-shrink-0" 
+            style={{ backgroundColor: bgColor.replace('/', ' / ') }}
+          >
+            <span style={{ color: '#264143' }} className="text-sm">
+              {note.type?.slice(0, 3) || 'OTH'}
+            </span>
+          </div>      
+        </div> 
+      </Link>      
+      {/* Tags */}
+          {note.tags && note.tags.length > 0 && (
+            <div className="mb-3">
+            
+              <div className="flex flex-wrap gap-1">
+                {note.tags.map((tag, index) => (
+                  <span
+                    key={`tag-${index}-${tag}`}
+                    className="px-2 py-1 text-xs font-medium bg-[#EDDCD9] text-[#264143] border-[0.1em] border-[#264143]/20 rounded-full hover:bg-[#E99F4C]/30 transition-colors"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
 
       {/* Stats Row */}
       <div className="flex items-center justify-between text-xs text-[#264143]/80 bg-[#F8F5F2] p-2 rounded-lg mb-3">

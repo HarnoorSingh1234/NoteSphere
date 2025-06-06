@@ -36,14 +36,13 @@ export default function NoteClientPage({ note, similarNotes, color, bgColor }: N
         {/* Display tags if available */}
         {note.tags && note.tags.length > 0 && (
           <div className="mt-6 bg-white border-[0.15em] border-[#264143] rounded-[0.6em] p-5 shadow-[0.2em_0.2em_0_#DE5499]">
-            <h3 className="text-lg font-bold text-[#264143] mb-3">Tags</h3>
-            <div className="flex flex-wrap gap-2">
-              {note.tags.map((tag: any) => (
+            <h3 className="text-lg font-bold text-[#264143] mb-3">Tags</h3>            <div className="flex flex-wrap gap-2">
+              {note.tags.map((tag: string, index: number) => (
                 <span 
-                  key={tag.id} 
+                  key={`tag-${index}-${tag}`} 
                   className="px-3 py-1 bg-[#EDDCD9] text-[#264143] rounded-full text-sm font-medium"
                 >
-                  {tag.name}
+                  {tag}
                 </span>
               ))}
             </div>

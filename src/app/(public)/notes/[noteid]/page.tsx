@@ -146,18 +146,18 @@ export default function NotePage() {
                   <TagIcon className="w-3.5 h-3.5 text-[#264143]" />
                 </div>
                 Tags
-              </h3>
+              </h3>              
               <div className="flex flex-wrap gap-2">
                 <AnimatePresence>
-                  {note.tags.map((tag: any) => (
+                  {note.tags.map((tag: string, index: number) => (
                     <motion.span 
-                      key={tag.id}
+                      key={`tag-${index}-${tag}`}
                       initial={{ scale: 0.8, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ type: "spring", stiffness: 500, damping: 15 }}
                       className="px-3 py-1 bg-[#EDDCD9] text-[#264143] border-[0.1em] border-[#264143]/30 rounded-full text-sm font-medium hover:bg-[#E99F4C]/30 transition-colors cursor-pointer"
                     >
-                      {tag.name}
+                      {tag}
                     </motion.span>
                   ))}
                 </AnimatePresence>
