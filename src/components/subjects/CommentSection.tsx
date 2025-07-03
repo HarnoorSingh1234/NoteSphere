@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth, useUser } from '@clerk/nextjs';
 import { Send, Edit, Trash2, Check, X } from 'lucide-react';
 import Link from 'next/link';
@@ -36,7 +36,7 @@ export default function CommentSection({ noteId, className = '' }: CommentSectio
   const { userId, isSignedIn } = useAuth();
   const { user } = useUser();
   
-  const fetchComments = async () => {
+  const fetchComments = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
@@ -54,13 +54,13 @@ export default function CommentSection({ noteId, className = '' }: CommentSectio
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [noteId]);
 
   useEffect(() => {
     if (noteId) {
       fetchComments();
     }
-  }, [noteId]);
+  }, [noteId, fetchComments]);
   const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -201,7 +201,18 @@ export default function CommentSection({ noteId, className = '' }: CommentSectio
       )}{isLoading ? (
         <div className="flex justify-center py-4 md:py-6">
           <div className="w-8 h-8 md:w-10 md:h-10 border-3 md:border-4 border-[#4d61ff] rounded-full border-t-transparent animate-spin"></div>
-        </div>      ) : comments.length > 0 ? (
+        </div>
+      ) : error ? (
+        <div className="py-6 md:py-8 text-center border-[0.1em] border-red-300 rounded-[0.4em] bg-red-50">
+          <p className="text-sm md:text-base text-red-600 font-medium mb-2">{error}</p>
+          <button
+            onClick={fetchComments}
+            className="px-4 py-2 bg-[#4d61ff] text-white rounded-[0.3em] hover:bg-[#3d4ecc] transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
+      ) : comments.length > 0 ? (
         <ul className="space-y-3 md:space-y-5">
           {comments.map((comment) => (
             <li key={comment.id} className="border-[0.1em] border-[#050505]/20 rounded-[0.4em] p-3 md:p-4 bg-[#F8F9FA] last:mb-0">
