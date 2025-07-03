@@ -32,7 +32,8 @@ export async function GET(
           select: {
             clerkId: true,
             firstName: true,
-            lastName: true
+            lastName: true,
+            role: true
           }
         }
       }
@@ -106,7 +107,8 @@ export async function POST(
           select: {
             clerkId: true,
             firstName: true,
-            lastName: true
+            lastName: true,
+            role: true
           }
         }
       }

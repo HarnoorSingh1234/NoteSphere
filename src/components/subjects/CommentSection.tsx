@@ -117,7 +117,6 @@ export default function CommentSection({ noteId, className = '' }: CommentSectio
   const startEditingComment = (comment: Comment) => {
     setEditingCommentId(comment.id);
     setEditContent(comment.content);
-    setIsEditing(true);
     setTimeout(() => {
       if (editInputRef.current) {
         editInputRef.current.focus();
@@ -128,7 +127,6 @@ export default function CommentSection({ noteId, className = '' }: CommentSectio
   const cancelEditingComment = () => {
     setEditingCommentId(null);
     setEditContent('');
-    setIsEditing(false);
   };
 
   const handleUpdateComment = async (commentId: string) => {
@@ -164,7 +162,9 @@ export default function CommentSection({ noteId, className = '' }: CommentSectio
     } finally {
       setIsEditing(false);
     }
-  };return (
+  };
+
+  return (
     <div className={`bg-white rounded-[0.6em] border-[0.15em] border-[#264143] p-5 ${className}`} id="comments">
       <h3 className="font-bold text-lg md:text-xl text-[#264143] mb-4">Comments</h3>
       
@@ -219,7 +219,9 @@ export default function CommentSection({ noteId, className = '' }: CommentSectio
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                 
+                  <div className="text-xs text-[#050505]/50">
+                    {formatTimeAgo(comment.createdAt)}
+                  </div>
                   
                   {isSignedIn && (userId === comment.user.clerkId || user?.publicMetadata?.role === 'admin') && (
                     <div className="flex gap-1">
