@@ -7,7 +7,7 @@ import { Notice, User, Comment as PrismaComment } from '@prisma/client';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Heart, MessageCircle, Calendar, Send } from 'lucide-react';
+import { Heart, MessageCircle, Calendar, Send, Edit, Trash2, Check, X } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 
 // Enhanced Notice type with the related data
@@ -48,30 +48,30 @@ export default function NoticeDetails({
   const { user } = useUser();
   const [comment, setComment] = React.useState('');
   const [submittingComment, setSubmittingComment] = React.useState(false);
+  const [editingCommentId, setEditingCommentId] = React.useState<string | null>(null);
+  const [editContent, setEditContent] = React.useState('');
+  const [deletingCommentId, setDeletingCommentId] = React.useState<string | null>(null);
+
+  // Helper to check admin
+  const isAdmin = user?.publicMetadata?.role === 'ADMIN' || user?.publicMetadata?.role === 'admin';
 
   const submitComment = async () => {
     if (!user) {
       toast.error('Please sign in to comment');
       return;
     }
-
     if (!comment.trim()) {
       toast.error('Please enter a comment');
       return;
     }
-
     setSubmittingComment(true);
     try {
       const response = await fetch(`/api/notices/${notice.id}/comments`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content: comment }),
       });
-
       if (!response.ok) throw new Error('Failed to submit comment');
-
       toast.success('Comment added successfully');
       setComment('');
       onRefresh();
@@ -80,6 +80,51 @@ export default function NoticeDetails({
       console.error(error);
     } finally {
       setSubmittingComment(false);
+    }
+  };
+
+  const startEdit = (commentId: string, content: string) => {
+    setEditingCommentId(commentId);
+    setEditContent(content);
+  };
+  const cancelEdit = () => {
+    setEditingCommentId(null);
+    setEditContent('');
+  };
+  const saveEdit = async (commentId: string) => {
+    if (!editContent.trim()) {
+      toast.error('Comment cannot be empty');
+      return;
+    }
+    try {
+      const res = await fetch(`/api/notices/${notice.id}/comments/${commentId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: editContent }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to update comment');
+      toast.success('Comment updated');
+      setEditingCommentId(null);
+      setEditContent('');
+      onRefresh();
+    } catch (err: any) {
+      toast.error(err.message);
+    }
+  };
+  const deleteComment = async (commentId: string) => {
+    if (!confirm('Are you sure you want to delete this comment?')) return;
+    setDeletingCommentId(commentId);
+    try {
+      const res = await fetch(`/api/notices/${notice.id}/comments/${commentId}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to delete comment');
+      toast.success('Comment deleted');
+      onRefresh();
+    } catch (err: any) {
+      toast.error(err.message);
+    } finally {
+      setDeletingCommentId(null);
     }
   };
 
@@ -169,19 +214,43 @@ export default function NoticeDetails({
           )}
 
           <div className="space-y-4">
-            {notice.comments?.map((comment: ExtendedComment) => (
-              <div key={comment.id} className="bg-[#EDDCD9]/30 p-4 rounded-lg">
-                <div className="flex justify-between items-start mb-2">
-                  <span className="font-medium text-[#264143]">
-                    {comment.user.firstName} {comment.user.lastName}
-                  </span>
-                  <span className="text-xs text-[#264143]/70">
-                    {formatDate(comment.createdAt.toString())}
-                  </span>
+            {notice.comments?.map((comment: ExtendedComment) => {
+              const canEditOrDelete = user && (isAdmin || user.id === comment.userId || user.id === comment.user?.clerkId);
+              return (
+                <div key={comment.id} className="bg-[#EDDCD9]/30 p-4 rounded-lg">
+                  <div className="flex justify-between items-start mb-2">
+                    <span className="font-medium text-[#264143]">
+                      {comment.user.firstName} {comment.user.lastName}
+                    </span>
+                    <span className="text-xs text-[#264143]/70">
+                      {formatDate(comment.createdAt.toString())}
+                    </span>
+                  </div>
+                  {editingCommentId === comment.id ? (
+                    <div className="flex gap-2 items-center">
+                      <Textarea
+                        value={editContent}
+                        onChange={e => setEditContent(e.target.value)}
+                        className="flex-1"
+                        rows={2}
+                      />
+                      <Button size="icon" onClick={() => saveEdit(comment.id)} disabled={!editContent.trim()}><Check /></Button>
+                      <Button size="icon" variant="destructive" onClick={cancelEdit}><X /></Button>
+                    </div>
+                  ) : (
+                    <p className="text-[#264143]/80">{comment.content}</p>
+                  )}
+                  {canEditOrDelete && editingCommentId !== comment.id && (
+                    <div className="flex gap-2 mt-2">
+                      <Button size="icon" variant="ghost" onClick={() => startEdit(comment.id, comment.content)}><Edit className="w-4 h-4" /></Button>
+                      <Button size="icon" variant="destructive" onClick={() => deleteComment(comment.id)} disabled={deletingCommentId === comment.id}>
+                        {deletingCommentId === comment.id ? '...' : <Trash2 className="w-4 h-4" />}
+                      </Button>
+                    </div>
+                  )}
                 </div>
-                <p className="text-[#264143]/80">{comment.content}</p>
-              </div>
-            ))}
+              );
+            })}
 
             {notice.comments?.length === 0 && (
               <p className="text-center text-[#264143]/70 py-4">

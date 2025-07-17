@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { ChevronDown, ChevronRight, Book, Notebook, FileText, Edit, Trash2, Plus } from 'lucide-react';
 import { Year, Semester, Subject } from '@/types';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useRouter } from 'next/navigation';
+import { toast } from '@/components/ui/use-toast';
 
 interface AcademicStructureProps {
   years: Year[];
@@ -13,6 +15,8 @@ interface AcademicStructureProps {
 const AcademicStructure: React.FC<AcademicStructureProps> = ({ years }) => {
   const [expandedYears, setExpandedYears] = useState<Record<string, boolean>>({});
   const [expandedSemesters, setExpandedSemesters] = useState<Record<string, boolean>>({});
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const router = useRouter();
   
   const toggleYear = (yearId: string) => {
     setExpandedYears(prev => ({
@@ -26,6 +30,27 @@ const AcademicStructure: React.FC<AcademicStructureProps> = ({ years }) => {
       ...prev,
       [semesterId]: !prev[semesterId]
     }));
+  };
+
+  // Helper to show confirmation and delete
+  const handleDelete = async (type: 'year' | 'semester' | 'subject', id: string) => {
+    if (!confirm(`Are you sure you want to delete this ${type}? This action cannot be undone.`)) return;
+    setDeletingId(id);
+    let url = '';
+    if (type === 'year') url = `/api/years/${id}`;
+    if (type === 'semester') url = `/api/semesters/${id}`;
+    if (type === 'subject') url = `/api/subjects/${id}`;
+    try {
+      const res = await fetch(url, { method: 'DELETE' });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to delete');
+      toast({ title: 'Success', description: data.message || `${type} deleted`, variant: 'default' });
+      router.refresh();
+    } catch (err: any) {
+      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+    } finally {
+      setDeletingId(null);
+    }
   };
   
   return (
@@ -89,14 +114,13 @@ const AcademicStructure: React.FC<AcademicStructureProps> = ({ years }) => {
                     <Edit className="w-4 h-4 text-[#264143]" />
                   </Link>
                   {(year.semesters?.length || 0) === 0 && (
-                    <button 
+                    <button
                       className="p-1.5 bg-white border-[0.1em] border-[#264143] rounded-[0.3em] hover:bg-[#DE5499]/10 transition-colors"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        // Add delete logic here
-                      }}
+                      onClick={e => { e.stopPropagation(); handleDelete('year', year.id); }}
+                      disabled={deletingId === year.id}
                     >
                       <Trash2 className="w-4 h-4 text-[#DE5499]" />
+                      {deletingId === year.id && <span className="ml-2 text-xs">Deleting...</span>}
                     </button>
                   )}
                 </div>
@@ -165,14 +189,13 @@ const AcademicStructure: React.FC<AcademicStructureProps> = ({ years }) => {
                                     <Edit className="w-3.5 h-3.5 text-[#264143]" />
                                   </Link>
                                   {(semester.subjects?.length || 0) === 0 && (
-                                    <button 
+                                    <button
                                       className="p-1 bg-white border-[0.1em] border-[#264143] rounded-[0.3em] hover:bg-[#DE5499]/10 transition-colors"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        // Add delete logic here
-                                      }}
+                                      onClick={e => { e.stopPropagation(); handleDelete('semester', semester.id); }}
+                                      disabled={deletingId === semester.id}
                                     >
                                       <Trash2 className="w-3.5 h-3.5 text-[#DE5499]" />
+                                      {deletingId === semester.id && <span className="ml-2 text-xs">Deleting...</span>}
                                     </button>
                                   )}
                                 </div>
@@ -239,10 +262,13 @@ const AcademicStructure: React.FC<AcademicStructureProps> = ({ years }) => {
                                                     <Edit className="w-3 h-3 text-[#264143]" />
                                                   </Link>
                                                   {((subject._count?.notes ?? subject.notes?.length ?? 0) === 0) && (
-                                                    <button 
+                                                    <button
                                                       className="p-1 bg-white border-[0.1em] border-[#264143] rounded-[0.2em] hover:bg-[#DE5499]/10 transition-colors"
+                                                      onClick={e => { e.stopPropagation(); handleDelete('subject', subject.id); }}
+                                                      disabled={deletingId === subject.id}
                                                     >
                                                       <Trash2 className="w-3 h-3 text-[#DE5499]" />
+                                                      {deletingId === subject.id && <span className="ml-2 text-xs">Deleting...</span>}
                                                     </button>
                                                   )}
                                                 </div>

@@ -31,6 +31,7 @@ export interface Note {
     firstName: string;
     lastName: string;
   };
+  subjectName?: string; // Added for subject name display
 }
 
 interface NoteCardProps {
@@ -86,6 +87,12 @@ const NoteCard: React.FC<NoteCardProps> = ({ note }) => {
               <h3 className="font-bold text-[#264143] text-base line-clamp-2 leading-tight mb-2">
                 {note.title || 'Untitled Note'}
               </h3>
+              {note.subjectId && (
+                <div className="text-xs text-[#264143]/70 break-words max-w-full mb-1">
+                  {/* If you have subject name, use it here instead of subjectId */}
+                  Subject: <span className="whitespace-pre-line break-words line-clamp-2">{note.subjectName || note.subjectId}</span>
+                </div>
+              )}
               <div className="flex items-center gap-1 text-sm text-[#264143]/80">
                 <User className="w-4 h-4 flex-shrink-0" />
                 <span className="truncate">
