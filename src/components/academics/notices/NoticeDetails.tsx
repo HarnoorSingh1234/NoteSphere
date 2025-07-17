@@ -15,6 +15,7 @@ interface ExtendedComment extends PrismaComment {
   user: {
     firstName: string;
     lastName: string;
+    clerkId: string;
   };
 }
 
@@ -215,7 +216,7 @@ export default function NoticeDetails({
 
           <div className="space-y-4">
             {notice.comments?.map((comment: ExtendedComment) => {
-              const canEditOrDelete = user && (isAdmin || user.id === comment.userId || user.id === comment.user?.clerkId);
+              const canEditOrDelete = user && (isAdmin || user.id === comment.user.clerkId);
               return (
                 <div key={comment.id} className="bg-[#EDDCD9]/30 p-4 rounded-lg">
                   <div className="flex justify-between items-start mb-2">
