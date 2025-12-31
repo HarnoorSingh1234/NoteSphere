@@ -10,7 +10,7 @@ A modern academic notes sharing platform where students can discover, share, and
 ## Features ✨
 
 - **Semester-Based Organization**  
-  Browse notes by academic semesters (Sem 1, Sem 2, etc.)
+  Browse notes by academic semesters (Sem 1, Sem 2, Sem 3 etc.)
   
 - **Subject-Centric Collections**  
   Find resources for specific courses (e.g., CS101, MATH201)
